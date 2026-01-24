@@ -194,7 +194,7 @@
         .pi-prefix { font-weight: bold; color: rgb(74, 105, 189); }
         .theme-dark .pi-prefix { color: #ffffff; }
 
-        /* ВЕРНУЛ ЦВЕТА ЗДЕСЬ */
+        /* --- ВОТ ЭТОТ БЛОК ОТВЕЧАЕТ ЗА ЦВЕТА ЦИФР --- */
         .theme-dark .digit-group:nth-child(4n+1),
         .theme-dark .digit-group:nth-child(4n+2) {
             color: #e6f7ff; 
@@ -206,6 +206,7 @@
 
         .theme-light .digit-group:nth-child(odd) { color: rgb(74, 105, 189); }
         .theme-light .digit-group:nth-child(even) { color: rgba(74, 105, 189, 0.8); }
+        /* ------------------------------------------- */
 
         .digit-group { 
             display: inline-block; 
@@ -353,6 +354,7 @@
             .pi-info { padding: 15px; }
             .pi-info h2 { font-size: 1.4rem; }
             
+            /* Таблица без свайпа */
             .records-table th, .records-table td {
                 padding: 8px 4px;
                 font-size: 0.85rem;
