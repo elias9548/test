@@ -42,17 +42,20 @@
             align-items: center;
         }
         
+        /* Блок настроек - Центрирование */
         .controls {
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-between;
+            justify-content: center; /* Центрируем группы кнопок */
+            gap: 30px;               /* Расстояние между группами */
             width: 100%;
             max-width: 900px;
-            margin-bottom: 0; 
-            padding: 15px 20px;
-            border-radius: 15px;
+            margin: 0 auto 20px auto; 
+            padding: 20px;
+            border-radius: 20px;
             transition: all 0.3s ease;
             z-index: 5;
+            text-align: center;
         }
         
         .theme-light .controls {
@@ -68,19 +71,28 @@
         
         .control-group {
             display: flex;
+            flex-direction: column; /* Текст над кнопками для симметрии */
             align-items: center;
             gap: 10px;
         }
         
         .selector-label {
-            font-weight: 500;
-            font-size: 1rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             color: rgb(74, 105, 189);
         }
         .theme-dark .selector-label { color: #ffffff; }
         
+        .control-buttons-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+        
         .language-btn, .theme-btn, .group-btn {
-            padding: 8px 16px;
+            padding: 8px 18px;
             border-radius: 20px;
             border: none;
             font-family: 'Raleway', sans-serif;
@@ -88,6 +100,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             font-weight: 500;
+            white-space: nowrap;
         }
         
         .theme-light .language-btn, .theme-light .theme-btn, .theme-light .group-btn {
@@ -105,15 +118,7 @@
         .active {
             background-color: rgb(74, 105, 189) !important;
             color: white !important;
-        }
-
-        input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { 
-            -webkit-appearance: none !important; 
-            margin: 0 !important; 
-        }
-        input[type=number] {
-            -moz-appearance: textfield !important;
+            box-shadow: 0 4px 10px rgba(74, 105, 189, 0.3);
         }
 
         .custom-group-input {
@@ -123,15 +128,16 @@
             border: 1px solid rgba(74, 105, 189, 0.3);
             background: rgba(74, 105, 189, 0.05);
             text-align: center;
-            font-family: inherit;
-            font-size: 0.9rem;
             outline: none;
         }
-        .theme-dark .custom-group-input { color: #ffffff; border-color: rgba(74, 105, 189, 0.5); }
+        
+        /* Скрытие стрелок у input number */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 
         .pi-header {
-            margin-top: 40px; 
-            margin-bottom: 40px;
+            margin-top: 30px; 
+            margin-bottom: 30px;
             text-align: center;
         }
         
@@ -148,12 +154,11 @@
             font-weight: 300;
             letter-spacing: 3px;
             color: rgb(74, 105, 189);
-            margin-top: 10px;
         }
         .theme-dark .pi-caption { color: #ffffff; }
 
         .pi-value-container {
-            border-radius: 20px;
+            border-radius: 25px;
             padding: 40px;
             width: 100%;
             max-width: 900px;
@@ -176,182 +181,88 @@
             font-size: 1.8rem;
             text-align: center;
             margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(74, 105, 189, 0.3);
             color: rgb(74, 105, 189);
         }
         .theme-dark .pi-value-title { color: #ffffff; }
         
         .pi-value {
             font-size: 1.6rem;
-            line-height: 1.5;
+            line-height: 1.6;
             text-align: justify;
             font-family: 'Courier New', monospace;
             word-wrap: break-word;
-            letter-spacing: 0.5px;
         }
         
-        .pi-prefix { font-weight: bold; color: rgb(74, 105, 189); }
-        .theme-dark .pi-prefix { color: #ffffff; }
-
-        .theme-dark .digit-group:nth-child(4n+1),
-        .theme-dark .digit-group:nth-child(4n+2) {
-            color: #e6f7ff; 
-        }
-        .theme-dark .digit-group:nth-child(4n+3),
-        .theme-dark .digit-group:nth-child(4n+4) {
-            color: rgb(225, 243, 255);
-        }
-
-        .theme-light .digit-group:nth-child(odd) { color: rgb(74, 105, 189); }
-        .theme-light .digit-group:nth-child(even) { color: rgba(74, 105, 189, 0.8); }
-
         .digit-group { 
             display: inline-block; 
             margin-right: 8px; 
             transition: transform 0.2s ease;
-            cursor: default;
         }
-        .digit-group:hover { transform: scale(1.15); z-index: 10; position: relative; }
 
         .test-container {
             width: 100%;
             max-width: 900px;
-            border-radius: 20px;
+            border-radius: 25px;
             padding: 30px;
             margin-bottom: 40px;
-            transition: all 0.5s ease;
+            text-align: center;
         }
         .theme-light .test-container { background: rgba(255, 255, 255, 0.8); border: 1px solid rgba(74, 105, 189, 0.3); }
         .theme-dark .test-container { background: rgba(40, 40, 40, 0.8); border: 1px solid rgba(74, 105, 189, 0.4); }
-        
-        .test-title { color: rgb(74, 105, 189); font-size: 1.5rem; margin-bottom: 20px; text-align: center; }
-        .theme-dark .test-title { color: #ffffff; }
-
-        .test-input-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Courier New', monospace;
-            font-size: 1.8rem;
-            gap: 5px;
-        }
-        
-        .test-prefix {
-            color: rgba(74, 105, 189, 0.8);
-            font-weight: 400;
-        }
-        .theme-dark .test-prefix { color: #ffffff; }
 
         .pi-input {
             background: transparent;
             border: none;
             border-bottom: 2px solid rgb(74, 105, 189);
-            font-family: inherit;
-            font-size: 1.6rem;
+            font-family: 'Courier New', monospace;
+            font-size: 1.8rem;
             color: inherit;
             outline: none;
-            width: 50%;
+            width: 60%;
+            text-align: center;
         }
 
-        .test-result { margin-top: 15px; padding: 15px; border-radius: 10px; display: none; line-height: 1.4; color: #212529; }
-        .theme-dark .test-result { color: #ffffff; }
-        
+        .test-result { margin-top: 15px; padding: 15px; border-radius: 10px; display: none; }
         .result-success { background: rgba(46, 204, 113, 0.1); border-left: 4px solid #2ecc71; }
         .result-error { background: rgba(231, 76, 60, 0.1); border-left: 4px solid #e74c3c; }
 
         .pi-info {
             width: 100%;
             max-width: 900px;
-            margin-top: 20px;
-            padding: 25px;
-            border-radius: 15px;
+            padding: 30px;
+            border-radius: 20px;
             border-left: 5px solid rgb(74, 105, 189);
-            transition: 0.5s;
         }
-        .theme-light .pi-info { background: rgba(255, 255, 255, 0.8); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .theme-light .pi-info { background: rgba(255, 255, 255, 0.8); }
         .theme-dark .pi-info { background: rgba(40, 40, 40, 0.8); }
-
-        .pi-info h2 { font-size: 1.8rem; margin-bottom: 15px; color: rgb(74, 105, 189); }
-        .theme-dark .pi-info h2 { color: #ffffff; }
         
-        .pi-info p { font-size: 1.1rem; line-height: 1.6; margin-bottom: 15px; font-weight: 300; }
-        .theme-dark .pi-info p { color: #ffffff; }
-        
-        .records-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-        .records-table th, .records-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid rgba(74, 105, 189, 0.2);
-        }
-        .records-table th { color: rgb(74, 105, 189); }
-        .theme-dark .records-table th { color: #ffffff; }
-        .theme-dark .records-table td { color: #ffffff; }
-        
-        .footer { margin-top: 40px; padding: 20px; text-align: center; font-size: 0.9rem; width: 100%; color: rgb(74, 105, 189); opacity: 0.8; }
-        .theme-dark .footer { color: #ffffff; }
+        .footer { margin-top: 40px; padding: 20px; opacity: 0.7; font-size: 0.9rem; }
 
         /* --- МОБИЛЬНАЯ ОПТИМИЗАЦИЯ --- */
         @media (max-width: 768px) {
-            body { padding: 10px; }
-            .container { padding: 5px; }
-            
             .controls {
                 flex-direction: column;
-                gap: 15px;
-                padding: 15px;
-                border-radius: 20px;
+                gap: 20px;
+                padding: 20px;
             }
             
-            .control-group {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
-                width: 100%;
-                padding-bottom: 10px;
-                border-bottom: 1px solid rgba(74, 105, 189, 0.1);
-            }
-            .control-group:last-child { border-bottom: none; }
-
-            .control-buttons-wrapper {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 8px;
-                width: 100%;
-            }
+            .control-group { width: 100%; }
+            .control-buttons-wrapper { flex-wrap: wrap; width: 100%; }
 
             .pi-symbol { font-size: 7rem; }
-            .pi-caption { font-size: 1.1rem; letter-spacing: 1px; }
+            .pi-caption { font-size: 1.2rem; }
 
-            /* Блок цифр Пи: увеличены в 1.3 раза, центрирование и симметрия */
             .pi-value-container {
-                padding: 25px 20px; 
-                margin-bottom: 25px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
+                padding: 25px 20px;
             }
-            
-            .pi-value-title { font-size: 1.2rem; margin-bottom: 20px; }
             
             .pi-value {
-                font-size: 1.5rem; /* Увеличено для лучшей видимости на телефонах */
-                line-height: 1.9;
-                text-align: center; 
-                width: 100%;
+                font-size: 1.5rem; /* Твои увеличенные цифры */
+                text-align: center;
+                line-height: 2;
             }
-
-            .test-container { padding: 20px; }
-            .pi-input { width: 75%; font-size: 1.4rem; }
             
-            .pi-info { padding: 15px; }
-            .pi-info h2 { font-size: 1.4rem; }
-            
-            .digit-group:hover { transform: none; }
+            .pi-input { width: 85%; }
         }
     </style>
 </head>
@@ -359,7 +270,7 @@
     <div class="container">
         <div class="controls">
             <div class="control-group">
-                <span class="selector-label" data-ru="Разделение:" data-en="Grouping:">Разделение:</span>
+                <span class="selector-label" data-ru="Разделение" data-en="Grouping">Разделение</span>
                 <div class="control-buttons-wrapper">
                     <button class="group-btn" data-val="1">1</button>
                     <button class="group-btn active" data-val="2">2</button>
@@ -369,7 +280,7 @@
             </div>
             
             <div class="control-group">
-                <span class="selector-label" data-ru="Язык:" data-en="Language:">Язык:</span>
+                <span class="selector-label" data-ru="Язык" data-en="Language">Язык</span>
                 <div class="control-buttons-wrapper">
                     <button class="language-btn active" data-lang="ru">Русский</button>
                     <button class="language-btn" data-lang="en">English</button>
@@ -377,7 +288,7 @@
             </div>
             
             <div class="control-group">
-                <span class="selector-label" data-ru="Тема:" data-en="Theme:">Тема:</span>
+                <span class="selector-label" data-ru="Тема" data-en="Theme">Тема</span>
                 <div class="control-buttons-wrapper">
                     <button class="theme-btn active" data-theme="light" data-ru="Светлая" data-en="Light">Светлая</button>
                     <button class="theme-btn" data-theme="dark" data-ru="Тёмная" data-en="Dark">Тёмная</button>
@@ -399,36 +310,18 @@
             </section>
 
             <section class="test-container">
-                <h2 class="test-title" data-ru="Проверка знаний" data-en="Knowledge Test">Проверка знаний</h2>
-                <div class="test-input-wrapper">
-                    <span class="test-prefix">3.</span>
-                    <input type="text" class="pi-input" id="pi-test-input" placeholder="..." autocomplete="off" inputmode="numeric">
+                <h2 data-ru="Проверка знаний" data-en="Knowledge Test" style="margin-bottom:20px">Проверка знаний</h2>
+                <div style="font-size: 1.8rem;">
+                    <span>3.</span>
+                    <input type="text" class="pi-input" id="pi-test-input" placeholder="..." autocomplete="off">
                 </div>
                 <div id="test-feedback" class="test-result"></div>
             </section>
             
             <section class="pi-info">
-                <h2 data-ru="О числе π" data-en="About π">О числе π</h2>
-                <p data-ru="Число π — это трансцендентная константа, определяющая фундаментальную метрику нашей Вселенной. Будучи иррациональным, оно не имеет конца и никогда не образует периодического повторения." 
-                   data-en="Pi is a transcendental constant that defines the fundamental metric of our universe. It is irrational and never-ending."></p>
-                
-                <h2 data-ru="Мировые рекорды" data-en="World Records">Мировые рекорды</h2>
-                <div style="overflow-x: auto; width: 100%;">
-                    <table class="records-table">
-                        <thead>
-                            <tr>
-                                <th data-ru="Место" data-en="Rank">Место</th>
-                                <th data-ru="Имя" data-en="Name">Имя</th>
-                                <th data-ru="Кол-во знаков" data-en="Digits">Кол-во знаков</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>1</td><td>Rajveer Meena</td><td>70,000</td></tr>
-                            <tr><td>2</td><td>Lu Chao</td><td>67,890</td></tr>
-                            <tr><td>3</td><td>Akira Haraguchi</td><td>100,000*</td></tr>
-                        </tbody>
-                    </table>
-                </div>
+                <h2 data-ru="О числе π" data-en="About π" style="margin-bottom:15px">О числе π</h2>
+                <p data-ru="Число π — это трансцендентная константа, определяющая фундаментальную метрику нашей Вселенной." 
+                   data-en="Pi is a transcendental constant that defines the fundamental metric of our universe."></p>
             </section>
         </main>
         
@@ -439,12 +332,11 @@
 
     <script>
         const PI_DATA = "1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679821480865132823066470938446095505822317253594081284811174502841027019385211055596446229489549303819644288109756659334461284756482337867831652712019091456485669234603486104543266482133936072602491412737245870066063155881748815209209628292540917153643678925903600113305305488204665213841469519415116094330572703657595919530921861173819326117931051185480744623799627495673518857527248912279381830119491298336733624406566430860213949463952247371907021798609437027705392171762931767523846748184676694051320005681271452635608277857713427577896091736371787214684409012249534301465495853710507922796892589235420199561121290219608640344181598136297747713099605187072113499999983729780499510597317328160963185950244594553469083026425223082533446850352619311881710100031378387528865875332083814206171776691473035982534904287554687311595628638823537875937519577818577805321712268066130019278766111959092164201989";
-        
         let step = 2;
 
         function renderPi() {
             const box = document.getElementById('pi-digits');
-            let content = '<span class="pi-prefix">3.</span>';
+            let content = '<span style="font-weight:bold; color:rgb(74, 105, 189);">3.</span>';
             for (let i = 0; i < PI_DATA.length; i += step) {
                 content += `<span class="digit-group">${PI_DATA.substring(i, Math.min(i + step, PI_DATA.length))}</span>`;
             }
@@ -466,26 +358,6 @@
                 document.querySelectorAll('.group-btn').forEach(x => x.classList.remove('active'));
                 step = v;
                 renderPi();
-            }
-        };
-
-        const tInp = document.getElementById('pi-test-input');
-        const tFed = document.getElementById('test-feedback');
-        tInp.oninput = function() {
-            let val = this.value.replace(/[^0-9]/g, '');
-            let lang = localStorage.getItem('pi-language') || 'ru';
-            if (!val) { tFed.style.display = 'none'; return; }
-            tFed.style.display = 'block';
-            let errAt = -1;
-            for(let i=0; i<val.length; i++) if(val[i] !== PI_DATA[i]) { errAt = i; break; }
-
-            if(errAt === -1) {
-                tFed.className = 'test-result result-success';
-                tFed.innerText = lang === 'ru' ? `Правильно! Знаков: ${val.length}` : `Correct! Digits: ${val.length}`;
-            } else {
-                tFed.className = 'test-result result-error';
-                let msg = lang === 'ru' ? `Ошибка в ${errAt+1}-м знаке. Верно:` : `Mistake at digit ${errAt+1}. Correct:`;
-                tFed.innerHTML = `<div>${msg}</div><strong style="font-family:monospace">3.${PI_DATA.substring(0, val.length)}</strong>`;
             }
         };
 
