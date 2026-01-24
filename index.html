@@ -107,6 +107,7 @@
             color: white !important;
         }
 
+        /* --- СКРЫТИЕ КНОПОК БОЛЬШЕ/МЕНЬШЕ (СТРЕЛКИ) ДЛЯ ПК --- */
         .custom-group-input {
             width: 50px;
             height: 35px;
@@ -117,7 +118,16 @@
             font-family: inherit;
             font-size: 0.9rem;
             outline: none;
+            -moz-appearance: textfield; /* Для Firefox */
         }
+
+        /* Убирает стрелки в Chrome, Safari, Edge */
+        .custom-group-input::-webkit-outer-spin-button,
+        .custom-group-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
         .theme-dark .custom-group-input { color: #ffffff; border-color: rgba(74, 105, 189, 0.5); }
 
         .pi-header {
@@ -185,9 +195,7 @@
         .pi-prefix { font-weight: bold; color: rgb(74, 105, 189); }
         .theme-dark .pi-prefix { color: #ffffff; }
 
-        /* --- ФИНАЛЬНЫЙ ФИКС ЦВЕТОВ И ЧЕРЕДОВАНИЯ --- */
-        
-        /* СВЕТЛАЯ ТЕМА: 2 через 2 */
+        /* --- ЦВЕТА И ЧЕРЕДОВАНИЕ 2 ЧЕРЕЗ 2 --- */
         .theme-light .pi-value span.digit-group:nth-child(odd) { 
             color: rgb(74, 105, 189) !important; 
         }
@@ -195,12 +203,11 @@
             color: rgba(74, 105, 189, 0.55) !important; 
         }
 
-        /* ТЕМНАЯ ТЕМА: 2 через 2 (БЕЗ 4n!) */
         .theme-dark .pi-value span.digit-group:nth-child(odd) { 
             color: #ffffff !important; 
         }
         .theme-dark .pi-value span.digit-group:nth-child(even) { 
-            color: rgb(210, 240, 255) !important; /* ТВОЙ ЦВЕТ: ЕЩЕ СВЕТЛЕЕ */
+            color: rgb(210, 240, 255) !important; /* Очень светлый голубой */
         }
 
         .digit-group { 
@@ -292,7 +299,6 @@
         .footer { margin-top: 40px; padding: 20px; text-align: center; font-size: 0.9rem; width: 100%; color: rgb(74, 105, 189); opacity: 0.8; }
         .theme-dark .footer { color: #ffffff; }
 
-        /* МОБИЛКИ (БЕЗ ИЗМЕНЕНИЙ В ТАБЛИЦЕ) */
         @media (max-width: 768px) {
             body { padding: 10px; }
             .container { padding: 5px; }
