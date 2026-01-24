@@ -185,8 +185,8 @@
         .pi-prefix { font-weight: bold; color: rgb(74, 105, 189); }
         .theme-dark .pi-prefix { color: #ffffff; }
 
-        /* --- ПРИНУДИТЕЛЬНОЕ ЦВЕТОВОЕ РАЗДЕЛЕНИЕ --- */
-        /* Светлая тема */
+        /* --- ИСПРАВЛЕННОЕ ЧЕРЕДОВАНИЕ 2 ЧЕРЕЗ 2 И ЦВЕТА --- */
+        /* Светлая тема (2 через 2) */
         body.theme-light .digit-group:nth-child(odd) { 
             color: #4a69bd !important; 
         }
@@ -194,12 +194,12 @@
             color: #7a92d4 !important; 
         }
 
-        /* Темная тема */
+        /* Темная тема (ИСПРАВЛЕНО НА 2 ЧЕРЕЗ 2 И СДЕЛАН СВЕТЛЕЕ) */
         body.theme-dark .digit-group:nth-child(odd) { 
-            color: #e6f7ff !important; 
+            color: #ffffff !important; 
         }
         body.theme-dark .digit-group:nth-child(even) { 
-            color: #9ecae1 !important; 
+            color: #b3e5ff !important; /* Намного светлее, чем было */
         }
 
         .digit-group { 
@@ -348,7 +348,6 @@
             .pi-info { padding: 15px; }
             .pi-info h2 { font-size: 1.4rem; }
             
-            /* Фикс таблицы: убираем свайп */
             .records-table th, .records-table td {
                 padding: 8px 4px;
                 font-size: 0.85rem;
