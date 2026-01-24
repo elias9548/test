@@ -194,18 +194,6 @@
         .pi-prefix { font-weight: bold; color: rgb(74, 105, 189); }
         .theme-dark .pi-prefix { color: #ffffff; }
 
-        .theme-dark .digit-group:nth-child(4n+1),
-        .theme-dark .digit-group:nth-child(4n+2) {
-            color: #e6f7ff; 
-        }
-        .theme-dark .digit-group:nth-child(4n+3),
-        .theme-dark .digit-group:nth-child(4n+4) {
-            color: rgb(225, 243, 255);
-        }
-
-        .theme-light .digit-group:nth-child(odd) { color: rgb(74, 105, 189); }
-        .theme-light .digit-group:nth-child(even) { color: rgba(74, 105, 189, 0.8); }
-
         .digit-group { 
             display: inline-block; 
             margin-right: 8px; 
@@ -305,12 +293,12 @@
                 gap: 15px;
                 padding: 15px;
                 border-radius: 20px;
-                align-items: center; /* Центрируем содержимое блока */
+                align-items: center; /* Центрируем настройки */
             }
             
             .control-group {
                 flex-direction: column;
-                align-items: center; /* Центрируем лейблы и кнопки */
+                align-items: center; /* Центрируем лейблы */
                 gap: 8px;
                 width: 100%;
                 padding-bottom: 10px;
@@ -323,7 +311,7 @@
                 flex-wrap: wrap;
                 gap: 8px;
                 width: 100%;
-                justify-content: center; /* Центрируем кнопки внутри группы */
+                justify-content: center; /* Центрируем кнопки */
             }
 
             .pi-symbol { font-size: 7rem; }
@@ -352,6 +340,12 @@
             .pi-info { padding: 15px; }
             .pi-info h2 { font-size: 1.4rem; }
             
+            /* Фикс таблицы: убираем свайп, уменьшаем шрифт и отступы */
+            .records-table th, .records-table td {
+                padding: 8px 4px;
+                font-size: 0.85rem;
+            }
+
             .digit-group:hover { transform: none; }
         }
     </style>
@@ -414,7 +408,7 @@
                    data-en="Pi is a transcendental constant that defines the fundamental metric of our universe. It is irrational and never-ending."></p>
                 
                 <h2 data-ru="Мировые рекорды" data-en="World Records">Мировые рекорды</h2>
-                <div style="overflow-x: auto; width: 100%;">
+                <div style="width: 100%;">
                     <table class="records-table">
                         <thead>
                             <tr>
