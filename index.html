@@ -185,21 +185,22 @@
         .pi-prefix { font-weight: bold; color: rgb(74, 105, 189); }
         .theme-dark .pi-prefix { color: #ffffff; }
 
-        /* --- ИСПРАВЛЕННОЕ ЧЕРЕДОВАНИЕ 2 ЧЕРЕЗ 2 И ЦВЕТА --- */
-        /* Светлая тема (2 через 2) */
+        /* --- ФИКС ЦВЕТОВ 2 ЧЕРЕЗ 2 ДЛЯ ВСЕХ УСТРОЙСТВ --- */
+        
+        /* СВЕТЛАЯ ТЕМА */
         body.theme-light .digit-group:nth-child(odd) { 
-            color: #4a69bd !important; 
+            color: rgb(74, 105, 189) !important; 
         }
         body.theme-light .digit-group:nth-child(even) { 
-            color: #7a92d4 !important; 
+            color: rgba(74, 105, 189, 0.6) !important; 
         }
 
-        /* Темная тема (ИСПРАВЛЕНО НА 2 ЧЕРЕЗ 2 И СДЕЛАН СВЕТЛЕЕ) */
+        /* ТЕМНАЯ ТЕМА (Чередование 2 через 2, цвет ЕЩЕ СВЕТЛЕЕ) */
         body.theme-dark .digit-group:nth-child(odd) { 
             color: #ffffff !important; 
         }
         body.theme-dark .digit-group:nth-child(even) { 
-            color: #b3e5ff !important; /* Намного светлее, чем было */
+            color: rgb(200, 230, 255) !important; /* Намного светлее для лучшей видимости */
         }
 
         .digit-group { 
