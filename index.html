@@ -107,15 +107,6 @@
             color: white !important;
         }
 
-        input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { 
-            -webkit-appearance: none !important; 
-            margin: 0 !important; 
-        }
-        input[type=number] {
-            -moz-appearance: textfield !important;
-        }
-
         .custom-group-input {
             width: 50px;
             height: 35px;
@@ -194,21 +185,21 @@
         .pi-prefix { font-weight: bold; color: rgb(74, 105, 189); }
         .theme-dark .pi-prefix { color: #ffffff; }
 
-        /* --- ВЕРНУЛ ОТДЕЛЕНИЕ ЦВЕТОМ ДЛЯ ВСЕХ УСТРОЙСТВ --- */
-        .theme-light .digit-group:nth-child(odd) { 
-            color: rgb(74, 105, 189) !important; 
+        /* --- ПРИНУДИТЕЛЬНОЕ ЦВЕТОВОЕ РАЗДЕЛЕНИЕ --- */
+        /* Светлая тема */
+        body.theme-light .digit-group:nth-child(odd) { 
+            color: #4a69bd !important; 
         }
-        .theme-light .digit-group:nth-child(even) { 
-            color: rgba(74, 105, 189, 0.6) !important; 
+        body.theme-light .digit-group:nth-child(even) { 
+            color: #7a92d4 !important; 
         }
 
-        .theme-dark .digit-group:nth-child(4n+1),
-        .theme-dark .digit-group:nth-child(4n+2) {
+        /* Темная тема */
+        body.theme-dark .digit-group:nth-child(odd) { 
             color: #e6f7ff !important; 
         }
-        .theme-dark .digit-group:nth-child(4n+3),
-        .theme-dark .digit-group:nth-child(4n+4) {
-            color: rgb(150, 200, 255) !important;
+        body.theme-dark .digit-group:nth-child(even) { 
+            color: #9ecae1 !important; 
         }
 
         .digit-group { 
@@ -357,7 +348,7 @@
             .pi-info { padding: 15px; }
             .pi-info h2 { font-size: 1.4rem; }
             
-            /* Таблица без свайпа */
+            /* Фикс таблицы: убираем свайп */
             .records-table th, .records-table td {
                 padding: 8px 4px;
                 font-size: 0.85rem;
