@@ -327,17 +327,22 @@
             .pi-symbol { font-size: 7rem; }
             .pi-caption { font-size: 1.1rem; letter-spacing: 1px; }
 
+            /* Блок цифр Пи: строго симметричные отступы и центрирование */
             .pi-value-container {
-                padding: 20px 15px;
+                padding: 25px 20px; /* Равные отступы по краям (20px) */
                 margin-bottom: 25px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
             }
             
-            .pi-value-title { font-size: 1.3rem; margin-bottom: 20px; }
+            .pi-value-title { font-size: 1.2rem; margin-bottom: 20px; }
             
             .pi-value {
-                font-size: 1.2rem;
-                line-height: 1.7;
-                text-align: left;
+                font-size: 1.1rem;
+                line-height: 1.8;
+                text-align: center; /* Центрируем, чтобы "38" и другие не выбивались */
+                width: 100%;
             }
 
             .test-container { padding: 20px; }
