@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Apple Worm Retro Remix</title>
+    <style>
+        body {
+            margin: 0;
+            background: #1a1a2e;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: white;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+        canvas {
+            background: #16213e;
+            border: 5px solid #0f3460;
+            border-radius: 10px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+        .ui { margin-bottom: 10px; text-align: center; }
+        h1 { margin: 5px; color: #e94560; text-shadow: 2px 2px #000; }
+        .controls { font-size: 0.8em; color: #95a5a6; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="ui">
+        <h1>APPLE WORM</h1>
+        <div id="level-txt">Уровень: 1</div>
+    </div>
+    
+    <canvas id="gameCanvas"></canvas>
+
+    <div class="controls">Стрелки — ходить | R — рестарт</div>
+
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const levelTxt = document.getElementById('level-txt');
+
+// Настройки
+const TILE_SIZE = 40;
+const ROWS = 12;
+const COLS = 16;
+canvas.width = COLS * TILE_SIZE;
+canvas.height = ROWS * TILE_SIZE;
+
+// Типы объектов
+const EMPTY = 0;
+const WALL = 1;
+const APPLE = 2;
+const EXIT = 3;
+
+let levelData = [
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,2,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,1,1,1,1,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,1,1,1,1,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,0,0,0,0,3,0,0,1],
+    [1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+];
+
+let worm = {
+    body: [{x: 3, y: 8}, {x: 2, y: 8}, {x: 1, y: 8}],
+    dir: {x: 1, y: 0},
+    growing: false
+};
+
+// Отрисовка
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Рисуем уровень
+    for(let y=0; y<ROWS; y++) {
+        for(let x=0; x<COLS; x++) {
+            let tile = levelData[y][x];
+            if(tile === WALL) {
+                drawWall(x, y);
+            } else if(tile === APPLE) {
+                drawApple(x, y);
+            } else if(tile === EXIT) {
+                drawExit(x, y);
+            }
+        }
+    }
+
+    // Рисуем червяка
+    drawWorm();
+}
+
+function drawWall(x, y) {
+    ctx.fillStyle = '#4e342e';
+    ctx.fillRect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+    ctx.strokeStyle = '#3e2723';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x*TILE_SIZE+2, y*TILE_SIZE+2, TILE_SIZE-4, TILE_SIZE-4);
+}
+
+function drawApple(x, y) {
+    ctx.fillStyle = '#ff4d4d';
+    ctx.beginPath();
+    ctx.arc(x*TILE_SIZE + TILE_SIZE/2, y*TILE_SIZE + TILE_SIZE/2, TILE_SIZE/2.5, 0, Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = '#2ecc71';
+    ctx.fillRect(x*TILE_SIZE + TILE_SIZE/2 - 2, y*TILE_SIZE + 5, 4, 8);
+}
+
+function drawExit(x, y) {
+    let grad = ctx.createRadialGradient(
+        x*TILE_SIZE+20, y*TILE_SIZE+20, 5,
+        x*TILE_SIZE+20, y*TILE_SIZE+20, 20
+    );
+    grad.addColorStop(0, '#000');
+    grad.addColorStop(1, '#e94560');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(x*TILE_SIZE+20, y*TILE_SIZE+20, 18, 0, Math.PI*2);
+    ctx.fill();
+}
+
+function drawWorm() {
+    worm.body.forEach((seg, index) => {
+        const isHead = index === 0;
+        ctx.fillStyle = isHead ? '#95d03a' : '#7cb327';
+        
+        // Рисуем сегмент со скруглением
+        ctx.beginPath();
+        ctx.roundRect(seg.x*TILE_SIZE+2, seg.y*TILE_SIZE+2, TILE_SIZE-4, TILE_SIZE-4, 8);
+        ctx.fill();
+
+        // Глаза у головы
+        if(isHead) {
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(seg.x*TILE_SIZE+12, seg.y*TILE_SIZE+15, 4, 0, Math.PI*2);
+            ctx.arc(seg.x*TILE_SIZE+28, seg.y*TILE_SIZE+15, 4, 0, Math.PI*2);
+            ctx.fill();
+            ctx.fillStyle = 'black';
+            ctx.beginPath();
+            ctx.arc(seg.x*TILE_SIZE+12 + worm.dir.x*2, seg.y*TILE_SIZE+15 + worm.dir.y*2, 2, 0, Math.PI*2);
+            ctx.arc(seg.x*TILE_SIZE+28 + worm.dir.x*2, seg.y*TILE_SIZE+15 + worm.dir.y*2, 2, 0, Math.PI*2);
+            ctx.fill();
+        }
+    });
+}
+
+// Физика гравитации
+function applyGravity() {
+    let supported = false;
+    
+    // Проверяем, касается ли хоть один сегмент чего-то твердого
+    for(let seg of worm.body) {
+        if(levelData[seg.y+1] && levelData[seg.y+1][seg.x] === WALL) {
+            supported = true;
+            break;
+        }
+    }
+
+    if(!supported) {
+        // Проверяем, не упали ли мы за пределы
+        let canFall = true;
+        for(let seg of worm.body) {
+            if(seg.y + 1 >= ROWS - 1) canFall = false;
+        }
+
+        if(canFall) {
+            worm.body.forEach(seg => seg.y++);
+            setTimeout(applyGravity, 100); // Анимация падения
+        }
+    }
+}
+
+function move(dx, dy) {
+    const newHead = { x: worm.body[0].x + dx, y: worm.body[0].y + dy };
+
+    // Коллизия со стенами
+    if(levelData[newHead.y][newHead.x] === WALL) return;
+
+    // Проверка на выход
+    if(levelData[newHead.y][newHead.x] === EXIT) {
+        alert("Уровень пройден!");
+        resetGame();
+        return;
+    }
+
+    // Движение
+    worm.dir = {x: dx, y: dy};
+    worm.body.unshift(newHead);
+
+    if(levelData[newHead.y][newHead.x] === APPLE) {
+        levelData[newHead.y][newHead.x] = EMPTY;
+        // Не удаляем хвост — выросли
+    } else {
+        worm.body.pop();
+    }
+
+    applyGravity();
+    draw();
+}
+
+function resetGame() {
+    worm.body = [{x: 3, y: 8}, {x: 2, y: 8}, {x: 1, y: 8}];
+    worm.dir = {x: 1, y: 0};
+    // Возвращаем яблоко
+    levelData[3][3] = APPLE;
+    draw();
+}
+
+window.addEventListener('keydown', e => {
+    switch(e.key) {
+        case 'ArrowUp': move(0, -1); break;
+        case 'ArrowDown': move(0, 1); break;
+        case 'ArrowLeft': move(-1, 0); break;
+        case 'ArrowRight': move(1, 0); break;
+        case 'r': case 'к': resetGame(); break;
+    }
+});
+
+// Начальная отрисовка
+draw();
+
+</script>
+</body>
+</html>
