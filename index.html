@@ -67,6 +67,7 @@
         }
 
         @media (max-width: 600px) {
+            /* Шапка становится flex-wrap: каждая группа на своей строке */
             .top-nav {
                 height: auto;
                 flex-wrap: wrap;
@@ -74,30 +75,36 @@
                 gap: 8px;
                 align-items: center;
             }
-            .top-nav .brand-group {
-                flex: 1;
-                order: 0;
-            }
-            .top-nav > .theme-btn {
-                order: 0;
-                margin-left: auto;
-            }
-            .top-nav > div.nav-fields {
+            /* Строка 1: brand-group растягивается, theme-btn справа */
+            .top-nav > .brand-group {
+                flex: 1 1 auto;
                 order: 1;
-                width: 100%;
-                margin-left: 0 !important;
+            }
+            .top-nav > button#theme-btn {
+                order: 1;
+                flex: 0 0 auto;
+            }
+            /* Строки 2+3: средний div занимает всю ширину */
+            .top-nav > div {
+                order: 2;
+                flex: 0 0 100%;
+                display: flex !important;
+                flex-direction: row;
                 flex-wrap: wrap;
                 gap: 8px;
+                margin-left: 0 !important;
             }
-            .top-nav > div.nav-fields > .user-field:nth-child(1),
-            .top-nav > div.nav-fields > .user-field:nth-child(2) {
-                flex: 1;
-                min-width: 0;
+            /* Строка 2: @septimabot и код — по размеру содержимого, рядом */
+            .top-nav > div > .user-field:nth-child(1),
+            .top-nav > div > .user-field:nth-child(2) {
+                flex: 0 0 auto;
             }
-            .top-nav > div.nav-fields > .user-field:nth-child(3) {
-                width: 100%;
+            /* Строка 3: ID/username — вся ширина */
+            .top-nav > div > .user-field:nth-child(3) {
+                flex: 0 0 100%;
+                margin-left: 0;
             }
-            .top-nav .user-field input {
+            .top-nav > div > .user-field:nth-child(3) input {
                 width: 100%;
                 min-width: 0;
             }
@@ -1200,7 +1207,7 @@
             <span class="brand-name">SEPTIMA</span>
         </div>
 
-        <div class="nav-fields" style="display:flex; align-items:center; gap:6px; margin-left:auto;">
+        <div style="display:flex; align-items:center; gap:6px; margin-left:auto;">
             <div class="user-field" style="cursor:default; pointer-events:none; margin-left:0;">
                 <span style="font-weight:500; font-size:13px; letter-spacing:0.2px; color:#8a8a95; white-space:nowrap;">@septimabot</span>
             </div>
