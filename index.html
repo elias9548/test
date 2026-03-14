@@ -1,3602 +1,507 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SEPTIMA Terminal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link id="hljs-theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <!-- KaTeX — красивый рендеринг математики -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
-    
-    <style>
-        :root {
-            --bg: #ffffff;
-            --glass: rgba(255,255,255,0.55);
-            --glass-border: rgba(255,255,255,0.65);
-            --text: #0a0a0a;
-            --text-dim: #8a8a95;
-            --accent: #0a84ff;
-            --accent-glow: rgba(10,132,255,0.25);
-            --input-bg: #f0eff5;
-            --input-border: rgba(0,0,0,0.06);
-            --card-shadow: 0 2px 40px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-            --font: 'Plus Jakarta Sans', sans-serif;
-        }
-        [data-theme="dark"] {
-            --bg: #000000;
-            --glass: rgba(18,18,20,0.7);
-            --glass-border: rgba(255,255,255,0.08);
-            --text: #f5f5f7;
-            --text-dim: #6e6e73;
-            --accent: #0a84ff;
-            --accent-glow: rgba(10,132,255,0.25);
-            --input-bg: #1c1c1e;
-            --input-border: rgba(255,255,255,0.05);
-            --card-shadow: 0 2px 40px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.3);
-        }
-        * { margin:0; padding:0; box-sizing:border-box; font-family:var(--font); -webkit-font-smoothing:antialiased; }
-        body {
-            background: var(--bg); color: var(--text);
-            min-height: 100vh; overflow-y: auto; display: flex; flex-direction: column;
-            transition: background 0.6s ease, color 0.6s ease;
-        }
-        #canvas-container { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; filter:blur(90px); opacity:0.4; pointer-events:none; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Компьютерное тестирование</title>
+  <style>
+    @charset "utf-8";
+    button { border-radius:0px; border:1px solid #666688; background-color:#F0F0FF; padding:4px; }
+    button:hover { cursor:pointer; }
+    input { padding:2px; }
+    img { vertical-align:middle; }
+    input[type='number'] { -moz-appearance:textfield; }
+    input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance:none; }
+    * { margin:0px; font-size:15pt; FONT-FAMILY: Tahoma, Arial, Helvetica, Verdana; }
+    html { height:100%; }
+    body { min-height:100%; position:relative; min-width:800px; FONT-FAMILY: Tahoma, Arial, Helvetica, Verdana; background:#ffffff; }
+    * html body { height:100%; }
+    #header { background:#ffffff; padding:0px; margin-bottom:5px; }
+    #content { width:1200px; padding-left:10px; padding-bottom:20px; padding-top:20px; }
+    #topline { position:fixed; top:0px; right:0px; float:right; font-size:13px; color:#aaaacc; margin-right:10px; padding:0px; }
+    div.subheader2x { height:90px; background-color:#f0f0f0; border:1px solid #CCDDFF; clear:both; }
+    #QuestionTest { width:1020px; margin:0px 5px 0px 5px; padding:0px; }
+    button.qnum { border-radius:0px; cursor:pointer; background:#ffffff; font-size:15pt; color:#003300; padding:2px 3px 2px 3px; float:left; margin:4px; border:1px solid #333399; text-align:center; min-width:30px; }
+    button.qnum:hover { background:#f0f0f0; }
+    button.qramka { margin-top:2px; padding:1px 3px 1px 3px; border:3px solid; border-color:#ff4444; }
+    button.yellow { background:#ffff88; }
+    button.yellow:hover { background:#f0f044; }
+    div.answer { background-color:#e0f0f0; font-size:15pt; color:#000033; padding:10px 15px 10px 15px; margin:5px; border:1px solid #ccc; text-align:left; vertical-align:top; cursor:pointer; }
+    div.answer:hover { background-color:#eafafa; color:#000044; }
+    div.answer_flex { display:flex; align-items:center; background-color:#e0f0f0; font-size:15pt; color:#000033; padding:10px 15px 10px 15px; margin:5px; border:1px solid #ccc; text-align:left; cursor:pointer; max-width:1000px; }
+    div.answer_flex:hover { background-color:#eafafa; color:#000044; }
+    input[type=checkbox] { height:23px; width:23px; }
+    input[type=radio] { height:21px; width:21px; margin:3px; position:relative; top:5px; }
+    a:link, a:visited, a:active { text-decoration:none; color:#0000aa; }
+    a:hover { text-decoration:none; color:#dd0000; }
+    td { font-size:15pt; font-family:Tahoma, Arial, Helvetica, Verdana; text-decoration:none; }
+    th { font-size:15pt; font-family:Tahoma, Arial, Helvetica, Verdana; text-decoration:none; font-weight:bold; }
+    textarea { COLOR:#333333; BORDER-BOTTOM:#666666 1px solid; BORDER-LEFT:#666666 1px solid; BORDER-RIGHT:#666666 1px solid; BORDER-TOP:#666666 1px solid; FONT-FAMILY:Tahoma, Arial, Helvetica, Verdana; FONT-SIZE:15pt; }
 
-        .app-container {
-            flex:1; display:flex; flex-direction:column;
-            padding: 20px 24px 24px; gap:16px;
-            max-width: 1530px; margin: 0 auto; width:100%; z-index:1;
-            min-height: 100vh;
-        }
+    /* answer-header — полоска сверху задания */
+    .answer-header { width:1010px; box-sizing:border-box; border:1px solid #454545; background:#ffffff; text-align:center; font-size:15pt; font-weight:bold; padding:3px 6px; margin:0 0 30px 0; }
 
-        /* NAV */
-        .top-nav {
-            height: 64px;
-            background: var(--glass);
-            backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
-            border: 1px solid var(--glass-border);
-            border-radius: 22px;
-            display: flex; align-items: center;
-            padding: 0 18px;
-            box-shadow: var(--card-shadow);
-            gap: 12px;
-        }
+    /* поля ввода */
+    .answer-wide-input { width:220px; height:30px; box-sizing:border-box; border:1px solid #999999; background:#ffffff; font-size:15pt; font-family:Tahoma, Arial, Helvetica, Verdana; padding:2px 5px; outline:none; }
+    .small-answer-input { width:60px; height:28px; box-sizing:border-box; border:1px solid #999999; background:#ffffff; font-size:15pt; font-family:Tahoma, Arial, Helvetica, Verdana; padding:2px 4px; outline:none; }
 
-        @media (max-width: 600px) {
-            /* Шапка становится flex-wrap: каждая группа на своей строке */
-            .top-nav {
-                height: auto;
-                flex-wrap: wrap;
-                padding: 10px 14px;
-                gap: 8px;
-                align-items: center;
-            }
-            /* Строка 1: brand-group растягивается, theme-btn справа */
-            .top-nav > .brand-group {
-                flex: 1 1 auto;
-                order: 1;
-            }
-            .top-nav > button#theme-btn {
-                order: 1;
-                flex: 0 0 auto;
-            }
-            /* Строки 2+3: средний div занимает всю ширину */
-            .top-nav > div {
-                order: 2;
-                flex: 0 0 100%;
-                display: flex !important;
-                flex-direction: row;
-                flex-wrap: wrap;
-                gap: 8px;
-                margin-left: 0 !important;
-            }
-            /* Строка 2: @septimabot и код — по размеру содержимого, рядом */
-            .top-nav > div > .user-field:nth-child(1),
-            .top-nav > div > .user-field:nth-child(2) {
-                flex: 0 0 auto;
-            }
-            /* Строка 3: ID/username — вся ширина */
-            .top-nav > div > .user-field:nth-child(3) {
-                flex: 0 0 100%;
-                margin-left: 0;
-            }
-            .top-nav > div > .user-field:nth-child(3) input {
-                width: 100%;
-                min-width: 0;
-            }
-        }
-        .brand-group { display:flex; align-items:center; gap:10px; }
-        .quasar-logo {
-            width: 34px; height: 34px;
-            background: var(--accent);
-            border-radius: 10px;
-            display: flex; align-items:center; justify-content:center;
-            box-shadow: 0 4px 14px var(--accent-glow);
-            flex-shrink:0;
-        }
-        .quasar-logo svg { display:block; }
-        .brand-name { font-weight:800; font-size:16px; letter-spacing:1.5px; color:var(--text); }
+    /* дробь */
+    .frac-input-wrap { display:inline-flex; align-items:center; gap:8px; }
+    .frac-whole { width:35px; border:1px solid #dddddd; font-size:16pt; font-family:Tahoma, Serif; text-align:center; padding:2px; background:#fff; outline:none; }
+    .ff { border-collapse:collapse; display:inline-table; vertical-align:middle; }
+    .ff td { text-align:center; font-size:16pt; padding:0; border:none; margin:0; }
+    .ff td.ccc { position:relative; top:-2px; }
+    .ff input { text-align:center; width:35px; border:1px solid #dddddd; font-size:16pt; font-family:Tahoma, Serif; padding:2px; background:#fff; outline:none; }
+    .ff .frac-line { border-bottom:1px solid #000000; padding-bottom:2px; display:block; }
 
-        /* User field */
-        .user-field {
-            display: flex; align-items: center;
-            background: var(--input-bg);
-            border: 1px solid var(--input-border);
-            border-radius: 12px;
-            padding: 0 12px;
-            height: 38px;
-            gap: 8px;
-            margin-left: auto;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        .user-field:focus-within {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-glow);
-        }
-        .user-field .field-icon { flex-shrink:0; opacity:0.45; }
-        .user-field input {
-            background: transparent; border: none; color: var(--text);
-            width: 130px; outline: none; font-weight:500; font-size:13px;
-            letter-spacing: 0.2px;
-        }
-        .user-field input::placeholder { color: var(--text-dim); }
+    /* формула дроби в тексте задания */
+    .inline-frac { display:inline-flex; flex-direction:column; align-items:center; line-height:1; vertical-align:middle; }
+    .inline-frac .fn { border-bottom:1.5px solid #000; padding:0 4px 2px; }
+    .inline-frac .fd { padding:2px 4px 0; }
 
-        /* Theme toggle */
-        .theme-btn {
-            width: 38px; height: 38px;
-            border-radius: 12px;
-            background: var(--input-bg);
-            border: 1px solid var(--input-border);
-            display: flex; align-items:center; justify-content:center;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
-            flex-shrink:0;
-            color: var(--text-dim);
-        }
-        .theme-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .theme-btn:active { transform: scale(0.93); }
+    .page.hidden { display:none; }
 
-        /* GRID */
-        .dashboard-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; flex:1; }
-        .panel {
-            background: var(--glass);
-            backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
-            border: 1px solid var(--glass-border);
-            border-radius: 28px;
-            padding: 22px;
-            display: flex; flex-direction:column;
-            position: relative;
-            box-shadow: var(--card-shadow);
-            min-height: 400px;
-        }
-        /* EXPORT & IMPORT panels grow up to 1.7× base, then scroll */
-        .dashboard-grid .panel {
-            max-height: calc(400px * 1.7); /* 680px */
-            overflow-y: auto;
-        }
-        .dashboard-grid .panel::-webkit-scrollbar { width: 3px; }
-        .dashboard-grid .panel::-webkit-scrollbar-track { background: transparent; }
-        .dashboard-grid .panel::-webkit-scrollbar-thumb { background: var(--input-border); border-radius: 99px; }
-        /* IMPORT panel — grows up to 1.7× base, then scrolls */
-        .panel-import {
-            overflow-y: auto;
-        }
-        .panel-title {
-            font-size: 10px; font-weight:700;
-            text-transform: uppercase; letter-spacing:2px;
-            color: var(--text-dim);
-            margin-bottom: 14px;
-        }
-
-        /* COMPOSER */
-        .composer {
-            background: var(--input-bg);
-            border: 1px solid var(--input-border);
-            border-radius: 18px;
-            display:flex; flex-direction:column;
-            padding: 14px 16px;
-            transition: border-color 0.2s;
-        }
-        .composer:focus-within { border-color: var(--accent); }
-        textarea {
-            background:transparent; border:none;
-            resize:none; color:var(--text); font-size:15px;
-            outline:none; line-height:1.6; font-weight:400;
-            flex:1;
-            overflow-y: hidden;
-        }
-        textarea::placeholder { color: var(--text-dim); }
-
-        /* AI input composer — auto-resize 1.5→5 lines */
-        #aiComposerWrap {
-            background: var(--input-bg);
-            border: 1px solid var(--input-border);
-            border-radius: 18px;
-            flex-shrink: 0;
-            display: flex; flex-direction: column;
-            padding: 9px 12px;
-            transition: border-color 0.2s;
-        }
-        #aiComposerWrap:focus-within { border-color: var(--accent); }
-        #aiInput {
-            flex: none;
-            background: transparent; border: none;
-            resize: none; color: var(--text); font-size: 14px;
-            outline: none; line-height: 1.6; font-weight: 400;
-            font-family: var(--font);
-            overflow-y: hidden;
-            transition: height 0.15s ease;
-            display: block;
-            width: 100%;
-            padding: 0; margin: 0;
-            box-sizing: border-box;
-        }
-        #aiInput::placeholder { color: var(--text-dim); }
-
-        #filePreview {
-            display:none; background:rgba(0,0,0,0.04); padding:8px 12px;
-            border-radius:10px; margin-bottom:10px;
-            align-items:center; gap:10px; font-size:12px;
-            border: 1px solid var(--input-border);
-            color: var(--text-dim);
-        }
-        [data-theme="dark"] #filePreview { background: rgba(255,255,255,0.04); }
-
-        .composer-actions {
-            margin-top: 12px;
-            display:flex; justify-content:space-between; align-items:center;
-        }
-
-        /* ── Code field animations ── */
-        @keyframes codeShake {
-            0%,100% { transform: translateX(0); }
-            15%     { transform: translateX(-6px); }
-            30%     { transform: translateX(5px); }
-            45%     { transform: translateX(-4px); }
-            60%     { transform: translateX(3px); }
-            75%     { transform: translateX(-2px); }
-        }
-        @keyframes codeRedPulse {
-            0%   { border-color: var(--input-border); box-shadow: none; }
-            30%  { border-color: #ff3b30; box-shadow: 0 0 0 3px rgba(255,59,48,0.3); }
-            70%  { border-color: #ff3b30; box-shadow: 0 0 0 3px rgba(255,59,48,0.3); }
-            100% { border-color: var(--input-border); box-shadow: none; }
-        }
-        .code-field-error {
-            animation: codeShake 0.45s cubic-bezier(0.36,0.07,0.19,0.97),
-                       codeRedPulse 3s ease forwards !important;
-        }
-        @keyframes fileFadeOut {
-            0%   { opacity: 1; transform: scale(1); max-height: 50px; margin-bottom: 10px; }
-            60%  { opacity: 0.2; transform: scale(0.97); }
-            100% { opacity: 0; transform: scale(0.95); max-height: 0; margin-bottom: 0; padding: 0; }
-        }
-        .file-preview-dismiss {
-            animation: fileFadeOut 2s ease forwards !important;
-            overflow: hidden;
-            pointer-events: none;
-        }
-        /* FILES btn */
-        .attach-btn {
-            display:flex; align-items:center; gap:8px;
-            cursor:pointer; color: var(--text-dim);
-            padding: 8px 12px;
-            border-radius: 10px;
-            transition: background 0.2s, color 0.2s;
-            font-size: 12px; font-weight:600; letter-spacing:0.5px;
-            text-transform: uppercase;
-        }
-        .attach-btn:hover { background: rgba(0,0,0,0.05); color: var(--text); }
-        [data-theme="dark"] .attach-btn:hover { background: rgba(255,255,255,0.07); }
-        input[type="file"] { display:none; }
-
-        /* Send btn */
-        .btn-send {
-            background: var(--accent);
-            color: white; border:none;
-            width: 46px; height: 46px;
-            border-radius: 14px;
-            display:flex; align-items:center; justify-content:center;
-            cursor:pointer;
-            transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s, opacity 0.2s;
-            box-shadow: 0 4px 16px var(--accent-glow), 0 1px 3px rgba(0,0,0,0.15);
-            flex-shrink:0;
-        }
-        .btn-send:hover { transform: translateY(-2px); box-shadow: 0 8px 24px var(--accent-glow), 0 2px 6px rgba(0,0,0,0.12); }
-        .btn-send:active { transform: scale(0.92); }
-
-        /* RECEIVER */
-        .action-zone { display:flex; flex-direction:column; align-items:center; justify-content:center; flex:1; gap:18px; }
-        .power-button {
-            width: 120px; height:120px;
-            background: var(--accent);
-            border-radius: 50%; border:none; cursor:pointer;
-            display:flex; align-items:center; justify-content:center;
-            color:white;
-            box-shadow: 0 8px 32px var(--accent-glow), 0 2px 8px rgba(0,0,0,0.1);
-            transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s;
-        }
-        .power-button:hover { transform: scale(1.04); box-shadow: 0 14px 48px var(--accent-glow); }
-        .power-button:active { transform: scale(0.94); }
-        .pulse { animation: pulse-ring 2s infinite; }
-        @keyframes pulse-ring {
-            0% { box-shadow: 0 0 0 0 var(--accent-glow), 0 8px 32px var(--accent-glow); }
-            70% { box-shadow: 0 0 0 28px rgba(128,128,128,0), 0 8px 32px var(--accent-glow); }
-            100% { box-shadow: 0 0 0 0 rgba(128,128,128,0), 0 8px 32px var(--accent-glow); }
-        }
-
-        /* Packets feed */
-        .packets-feed {
-            display: none;
-            flex-direction: column;
-            gap: 8px;
-            padding-right: 2px;
-            padding-bottom: 50px; /* space for refresh btn */
-        }
-
-        .packet-card {
-            background: var(--input-bg);
-            border: 1px solid var(--input-border);
-            border-radius: 14px;
-            padding: 12px 14px;
-            font-size: 13.5px;
-            white-space: pre-wrap;
-            word-break: break-word;
-            line-height: 1.6;
-            color: var(--text);
-            animation: cardIn 0.28s cubic-bezier(0.34,1.56,0.64,1);
-            flex-shrink: 0;
-        }
-        .packet-card .packet-meta {
-            font-size: 9px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: var(--text-dim);
-            margin-bottom: 6px;
-            opacity: 0.7;
-        }
-        .packet-card.has-file {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 1px var(--accent);
-        }
-        .packet-card .file-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            color: var(--accent);
-            font-size: 12px;
-            font-weight: 600;
-            margin-top: 6px;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        .packet-card .file-link:hover { opacity: 0.75; }
-
-        @keyframes cardIn {
-            from { opacity:0; transform: translateY(6px) scale(0.98); }
-            to   { opacity:1; transform: translateY(0) scale(1); }
-        }
-
-        #msgDisplay {
-            font-size:10px; font-weight:700;
-            color:var(--text-dim); letter-spacing:2.5px;
-            text-transform:uppercase;
-        }
-
-        @media (max-width:850px) {
-            .dashboard-grid { grid-template-columns:1fr; }
-            .user-field { margin-left:0; flex:1; }
-        }
-
-        /* Spinning loader */
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .spinning { animation: spin 0.8s linear infinite; }
-
-        /* Refresh button — always visible, minimal */
-        .btn-refresh {
-            position: absolute;
-            bottom: 18px; right: 18px;
-            display: flex;
-            align-items: center; justify-content: center;
-            width: 34px; height: 34px;
-            background: var(--input-bg);
-            border: 1px solid var(--input-border);
-            color: var(--text-dim);
-            border-radius: 50%;
-            cursor: pointer;
-            transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), background 0.2s, color 0.2s, box-shadow 0.2s;
-            z-index: 10;
-        }
-        .btn-refresh:hover { transform: scale(1.1); }
-        .btn-refresh:active { transform: scale(0.92); }
-        .btn-refresh {
-            background: var(--accent) !important;
-            border-color: var(--accent) !important;
-            color: white !important;
-            box-shadow: 0 4px 14px var(--accent-glow) !important;
-        }
-        .btn-refresh.has-new {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: white;
-            box-shadow: 0 4px 14px var(--accent-glow);
-            animation: slideUp 0.25s cubic-bezier(0.34,1.56,0.64,1);
-        }
-        .btn-refresh.spinning-refresh svg {
-            animation: spin 0.7s linear infinite;
-        }
-        @keyframes slideUp {
-            from { opacity:0; transform: scale(0.8); }
-            to   { opacity:1; transform: scale(1); }
-        }
-
-        /* ── AI CHAT PANEL ── */
-        .panel-ai {
-            grid-column: 1 / -1;
-            min-height: 500px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .ai-feed {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            overflow-y: auto;
-            padding-right: 4px;
-            margin-bottom: 12px;
-            scroll-behavior: smooth;
-        }
-        .ai-feed::-webkit-scrollbar { width: 3px; }
-        .ai-feed::-webkit-scrollbar-track { background: transparent; }
-        .ai-feed::-webkit-scrollbar-thumb { background: var(--input-border); border-radius: 99px; }
-
-        .ai-empty {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            opacity: 0.35;
-            pointer-events: none;
-        }
-        .ai-empty svg { color: var(--text-dim); }
-        .ai-empty span {
-            font-size: 10px; font-weight: 700;
-            letter-spacing: 2.5px; text-transform: uppercase;
-            color: var(--text-dim);
-        }
-
-        .ai-msg {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-            animation: cardIn 0.28s cubic-bezier(0.34,1.56,0.64,1);
-        }
-        .ai-msg.user  { align-items: flex-end; }
-        .ai-msg.assistant { align-items: flex-start; }
-        .ai-msg-meta {
-            font-size: 9px; font-weight: 700;
-            letter-spacing: 1.5px; text-transform: uppercase;
-            color: var(--text-dim); opacity: 0.6;
-            padding: 0 4px;
-        }
-        .ai-bubble {
-            border-radius: 14px;
-            padding: 10px 14px;
-            font-size: 13.5px;
-            line-height: 1.65;
-            word-break: break-word;
-            max-width: 78%;
-            min-width: 0;
-            box-sizing: border-box;
-        }
-        .ai-msg.assistant .ai-bubble {
-            max-width: 90%;
-        }
-        .ai-msg.user .ai-bubble {
-            background: var(--accent);
-            color: white;
-            border-bottom-right-radius: 5px;
-        }
-        .ai-msg.assistant .ai-bubble {
-            background: var(--input-bg);
-            border: 1px solid var(--input-border);
-            color: var(--text);
-            border-bottom-left-radius: 5px;
-        }
-        .ai-bubble-img {
-            max-width: 140px; max-height: 100px;
-            border-radius: 8px; object-fit: cover;
-            display: block; margin-bottom: 6px;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        /* ── Math display block — подокно формул внутри сообщения ── */
-        .math-block {
-            display: block;
-            margin: 8px 0;
-            padding: 14px 20px;
-            background: var(--bg);
-            border: 1px solid var(--glass-border);
-            border-left: 3px solid var(--accent);
-            border-radius: 12px;
-            overflow-x: auto;
-            text-align: center;
-            box-shadow: 0 1px 10px rgba(10,132,255,0.08);
-            position: relative;
-        }
-        [data-theme="dark"] .math-block {
-            background: rgba(255,255,255,0.03);
-        }
-        .math-block .katex-display { margin: 0 !important; }
-        .math-block .katex { font-size: 1.18em; }
-        .math-block::-webkit-scrollbar { height: 3px; }
-        .math-block::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 99px; }
-
-        /* Typing dots */
-        .ai-typing {
-            display: flex; align-items: center; gap: 5px;
-            padding: 12px 16px;
-            background: var(--input-bg);
-            border: 1px solid var(--input-border);
-            border-radius: 14px; border-bottom-left-radius: 5px;
-            width: fit-content;
-        }
-        .ai-typing span {
-            width: 5px; height: 5px;
-            background: var(--text-dim); border-radius: 50%;
-            animation: typingDot 1.2s infinite;
-        }
-        .ai-typing span:nth-child(2) { animation-delay: 0.2s; }
-        .ai-typing span:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes typingDot {
-            0%,80%,100% { transform: scale(0.6); opacity: 0.4; }
-            40%  { transform: scale(1.1); opacity: 1; }
-        }
-
-        /* Image preview in input */
-        #aiImgPreview {
-            display: none;
-            background: rgba(0,0,0,0.04);
-            padding: 7px 12px;
-            border-radius: 10px;
-            margin-bottom: 8px;
-            align-items: center;
-            gap: 10px;
-            font-size: 12px;
-            border: 1px solid var(--input-border);
-            color: var(--text-dim);
-        }
-        [data-theme="dark"] #aiImgPreview { background: rgba(255,255,255,0.04); }
-        #aiImgThumb {
-            width: 28px; height: 28px;
-            border-radius: 6px; object-fit: cover; flex-shrink: 0;
-        }
-
-        /* ── CODE BLOCKS ── */
-        .ai-bubble { white-space: normal; }
-        .ai-bubble p { margin: 0 0 6px; white-space: pre-wrap; }
-        .ai-bubble p:last-child { margin-bottom: 0; }
-        .ai-bubble strong { font-weight: 700; }
-        .ai-bubble em { font-style: italic; }
-        .ai-bubble code.inline-code,
-        .gchat-bubble code.inline-code {
-            font-family: 'SF Mono', 'Fira Code', 'Menlo', monospace;
-            font-size: 0.88em;
-            background: rgba(10,132,255,0.1);
-            color: var(--accent);
-            border-radius: 5px;
-            padding: 1px 6px;
-            border: 1px solid rgba(10,132,255,0.15);
-        }
-        .gchat-msg.me .gchat-bubble code.inline-code {
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border-color: rgba(255,255,255,0.25);
-        }
-
-        /* ── CODE BLOCK — theme adaptive ── */
-        .ai-code-wrap {
-            margin: 10px 0;
-            border-radius: 16px;
-            overflow: hidden;
-            max-width: 100%;
-            width: 100%;
-            box-sizing: border-box;
-            position: relative;
-            /* light theme defaults */
-            background: #f0f0f5;
-            border: 1px solid rgba(0,0,0,0.07);
-            box-shadow: 0 3px 18px rgba(0,0,0,0.07);
-        }
-        [data-theme="dark"] .ai-code-wrap {
-            background: #0f0f14;
-            border: 1px solid rgba(255,255,255,0.07);
-            box-shadow: 0 4px 28px rgba(0,0,0,0.4);
-        }
-        .ai-code-wrap::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, var(--clr, var(--accent)) 0%, transparent 60%);
-            opacity: 0.5;
-            z-index: 1;
-        }
-        .ai-code-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 14px;
-            gap: 8px;
-            position: relative;
-            /* light */
-            background: rgba(0,0,0,0.03);
-            border-bottom: 1px solid rgba(0,0,0,0.07);
-        }
-        [data-theme="dark"] .ai-code-header {
-            background: rgba(255,255,255,0.04);
-            border-bottom: 1px solid rgba(255,255,255,0.055);
-        }
-        .ai-code-lang-badge {
-            display: flex; align-items: center; gap: 7px; min-width: 0;
-        }
-        .ai-code-lang-dot {
-            width: 7px; height: 7px;
-            border-radius: 50%; flex-shrink: 0;
-            background: var(--clr, var(--accent));
-            box-shadow: 0 0 7px var(--clr, var(--accent));
-        }
-        .ai-code-lang {
-            font-size: 10px; font-weight: 700;
-            letter-spacing: 1.6px; text-transform: uppercase;
-            font-family: var(--font); white-space: nowrap;
-            /* light */
-            color: rgba(0,0,0,0.38);
-        }
-        [data-theme="dark"] .ai-code-lang { color: rgba(255,255,255,0.35); }
-
-        .ai-code-actions { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
-
-        .ai-code-copy-btn, .ai-code-dl-btn {
-            display: flex; align-items: center; gap: 5px;
-            border-radius: 8px;
-            padding: 5px 10px;
-            cursor: pointer;
-            font-size: 10px; font-weight: 700;
-            letter-spacing: 0.7px; text-transform: uppercase;
-            font-family: var(--font); white-space: nowrap;
-            transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.12s;
-            /* light defaults */
-            background: rgba(0,0,0,0.05);
-            border: 1px solid rgba(0,0,0,0.09);
-            color: rgba(0,0,0,0.42);
-        }
-        [data-theme="dark"] .ai-code-copy-btn,
-        [data-theme="dark"] .ai-code-dl-btn {
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.09);
-            color: rgba(255,255,255,0.4);
-        }
-        .ai-code-dl-btn:hover {
-            background: rgba(10,132,255,0.12);
-            color: #0a84ff;
-            border-color: rgba(10,132,255,0.3);
-            transform: translateY(-1px);
-        }
-        .ai-code-copy-btn:hover {
-            transform: translateY(-1px);
-            /* light */
-            background: rgba(0,0,0,0.1);
-            color: rgba(0,0,0,0.82);
-        }
-        [data-theme="dark"] .ai-code-copy-btn:hover {
-            background: rgba(255,255,255,0.12);
-            color: rgba(255,255,255,0.9);
-        }
-        .ai-code-copy-btn:active, .ai-code-dl-btn:active { transform: scale(0.92); }
-        .ai-code-copy-btn.copied {
-            background: rgba(10,132,255,0.15);
-            color: #0a84ff;
-            border-color: rgba(10,132,255,0.3);
-        }
-        .ai-code-wrap pre {
-            margin: 0 !important;
-            padding: 14px 16px !important;
-            font-size: 12.5px !important;
-            line-height: 1.68 !important;
-            overflow-x: auto;
-            background: transparent !important;
-        }
-        .ai-code-wrap pre::-webkit-scrollbar { height: 3px; }
-        .ai-code-wrap pre::-webkit-scrollbar-track { background: transparent; }
-        .ai-code-wrap pre::-webkit-scrollbar-thumb { background: rgba(128,128,128,0.2); border-radius: 99px; }
-        .ai-code-wrap pre code {
-            font-family: 'SF Mono', 'Fira Code', 'Menlo', monospace !important;
-            font-size: inherit !important;
-            background: transparent !important;
-            /* force hljs colours not to set bg */
-        }
-        /* Override hljs bg in both themes */
-        .ai-code-wrap .hljs { background: transparent !important; }
-
-        /* ── MSG COPY BUTTON ── */
-        .ai-msg-row {
-            display: flex;
-            align-items: flex-end;
-            gap: 6px;
-        }
-        .ai-msg.user  .ai-msg-row { flex-direction: row-reverse; }
-        .ai-msg.assistant .ai-msg-row { flex-direction: row; }
-
-        .ai-msg-copy-btn {
-            flex-shrink: 0;
-            width: 28px; height: 28px;
-            border-radius: 9px;
-            background: var(--input-bg);
-            border: 1px solid var(--input-border);
-            color: var(--text-dim);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.15s, background 0.15s, color 0.15s, transform 0.15s;
-            margin-bottom: 2px;
-        }
-        .ai-msg:hover .ai-msg-copy-btn { opacity: 1; }
-        .ai-msg-copy-btn:hover { background: var(--accent); color: white; border-color: var(--accent); transform: scale(1.08); }
-        /* ── CONTENT ROW ── */
-        .content-row {
-            display: flex;
-            gap: 16px;
-            flex: 1;
-            align-items: stretch;
-            min-height: 0;
-        }
-        .left-content {
-            flex: 1;
-            min-width: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        /* ── GLOBAL CHAT SIDEBAR (right, 400px) — stretches to full height of left content ── */
-        .gchat-sidebar {
-            width: 400px;
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
-            align-self: stretch;
-        }
-        .panel-gchat {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            overflow: hidden;
-        }
-        .gchat-name-row {
-            display: flex; align-items: center; gap: 7px;
-            background: var(--input-bg);
-            border: 1px solid var(--input-border);
-            border-radius: 12px;
-            padding: 8px 11px;
-            margin-bottom: 10px;
-            flex-shrink: 0;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        .gchat-name-row:focus-within {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-glow);
-        }
-        .gchat-online-dot {
-            width: 7px; height: 7px; border-radius: 50%;
-            background: #34c759; flex-shrink: 0;
-            animation: gcOnline 2.5s infinite;
-        }
-        @keyframes gcOnline {
-            0%   { box-shadow: 0 0 0 0 rgba(52,199,89,.45); }
-            70%  { box-shadow: 0 0 0 5px rgba(52,199,89,0); }
-            100% { box-shadow: 0 0 0 0 rgba(52,199,89,0); }
-        }
-        .gchat-name-row input {
-            flex: 1; background: transparent; border: none;
-            color: var(--text); font-size: 12px; font-weight: 500;
-            outline: none; font-family: var(--font); min-width: 0;
-        }
-        .gchat-name-row input::placeholder { color: var(--text-dim); }
-
-        .gchat-feed {
-            flex: 1; min-height: 0;
-            display: flex; flex-direction: column; gap: 5px;
-            overflow-y: auto;
-            padding-right: 2px;
-            margin-bottom: 10px;
-            scroll-behavior: smooth;
-        }
-        .gchat-feed::-webkit-scrollbar { width: 2px; }
-        .gchat-feed::-webkit-scrollbar-track { background: transparent; }
-        .gchat-feed::-webkit-scrollbar-thumb { background: var(--input-border); border-radius: 99px; }
-
-        .gchat-empty {
-            flex: 1; display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            gap: 8px; opacity: 0.28; pointer-events: none;
-        }
-        .gchat-empty span {
-            font-size: 9px; font-weight: 700;
-            letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim);
-        }
-        .gchat-msg {
-            display: flex; flex-direction: column; gap: 2px;
-            animation: cardIn 0.22s cubic-bezier(0.34,1.56,0.64,1);
-        }
-        .gchat-msg.me { align-items: flex-end; }
-        .gchat-msg.other { align-items: flex-start; }
-        .gchat-msg-name {
-            font-size: 8px; font-weight: 700;
-            letter-spacing: 1px; text-transform: uppercase;
-            color: var(--text-dim); opacity: 0.55; padding: 0 3px;
-            display: flex; align-items: center; gap: 5px;
-        }
-        .gchat-msg-time {
-            font-size: 8px; font-weight: 500;
-            letter-spacing: 0.3px; text-transform: none;
-            color: var(--text-dim); opacity: 0.7;
-            flex-shrink: 0;
-        }
-        .gchat-bubble {
-            padding: 7px 10px; border-radius: 11px;
-            font-size: 12px; line-height: 1.5;
-            word-break: break-word; max-width: 92%;
-            white-space: normal;
-        }
-        .gchat-bubble p { margin: 0 0 3px; white-space: pre-wrap; }
-        .gchat-bubble p:last-child { margin-bottom: 0; }
-        .gchat-bubble strong { font-weight: 700; }
-        .gchat-bubble em { font-style: italic; }
-        .gchat-msg.me .gchat-bubble {
-            background: var(--accent); color: white;
-            border-bottom-right-radius: 3px;
-        }
-        .gchat-msg.other .gchat-bubble {
-            background: var(--input-bg);
-            border: 1px solid var(--input-border);
-            color: var(--text); border-bottom-left-radius: 3px;
-        }
-        .gchat-file-link {
-            display: inline-flex; align-items: center; gap: 4px;
-            font-size: 10px; font-weight: 600; margin-top: 3px;
-            text-decoration: none; opacity: 0.85;
-        }
-        .gchat-msg.me .gchat-file-link { color: rgba(255,255,255,.9); }
-        .gchat-msg.other .gchat-file-link { color: var(--accent); }
-
-        .gchat-composer {
-            background: var(--input-bg);
-            border: 1px solid var(--input-border);
-            border-radius: 14px;
-            padding: 9px 12px;
-            flex-shrink: 0;
-            display: flex; flex-direction: column;
-            transition: border-color 0.2s;
-        }
-        .gchat-composer:focus-within { border-color: var(--accent); }
-        #gchatInput {
-            flex: none;
-            background: transparent; border: none;
-            resize: none; color: var(--text); font-size: 12.5px;
-            outline: none; line-height: 1.5; font-weight: 400;
-            font-family: var(--font);
-            overflow-y: hidden;
-            transition: height 0.15s ease;
-            display: block;
-            width: 100%;
-            padding: 0; margin: 0;
-            box-sizing: border-box;
-        }
-        #gchatInput::placeholder { color: var(--text-dim); }
-        #gchatInput::-webkit-scrollbar { width: 3px; }
-        #gchatInput::-webkit-scrollbar-track { background: transparent; }
-        #gchatInput::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 99px; }
-        #aiInput::placeholder { color: var(--text-dim); }
-        #aiInput::-webkit-scrollbar { width: 3px; }
-        #aiInput::-webkit-scrollbar-track { background: transparent; }
-        #aiInput::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 99px; }
-
-        /* ── GCHAT FILE PREVIEW — styled like IMPORT packet-card ── */
-        .gchat-file-preview {
-            display: none;
-            background: rgba(0,0,0,0.04);
-            border: 1px solid var(--input-border);
-            border-radius: 10px;
-            padding: 8px 12px;
-            margin-bottom: 8px;
-            flex-direction: row;
-            align-items: center;
-            gap: 10px;
-            font-size: 12px;
-            color: var(--text-dim);
-            animation: cardIn 0.22s cubic-bezier(0.34,1.56,0.64,1);
-        }
-        [data-theme="dark"] .gchat-file-preview { background: rgba(255,255,255,0.04); }
-        .gchat-file-preview-meta { display: none; }
-        .gchat-file-preview-row { display: contents; }
-        .gchat-file-preview-img { display: none !important; }
-        .gchat-file-preview-icon {
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0; color: var(--text-dim);
-            width: 14px; height: 14px;
-        }
-        .gchat-file-preview-info {
-            flex: 1; min-width: 0;
-        }
-        .gchat-file-preview-name {
-            font-size: 12px; font-weight: 500;
-            color: var(--text-dim);
-            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-        }
-        .gchat-file-preview-size { display: none; }
-        .gchat-file-preview-close {
-            cursor: pointer; opacity: 0.45; flex-shrink: 0;
-            color: var(--text-dim);
-            transition: opacity 0.15s;
-        }
-        .gchat-file-preview-close:hover { opacity: 0.9; }
-
-        @media (max-width:860px) {
-            .content-row { flex-direction: column; }
-            .gchat-sidebar { width: 100%; }
-        }
-
-        .ai-msg-copy-btn.copied { background: var(--accent); color: white; border-color: var(--accent); opacity: 1; }
-
-        /* ── GCHAT: message row with copy btn ── */
-        .gchat-msg-row {
-            display: flex; align-items: flex-end; gap: 5px;
-            max-width: 92%;
-        }
-        .gchat-msg.me  .gchat-msg-row { flex-direction: row-reverse; }
-        .gchat-msg.other .gchat-msg-row { flex-direction: row; }
-        .gchat-bubble { max-width: 100%; }
-
-        .gchat-copy-btn {
-            flex-shrink: 0;
-            width: 24px; height: 24px;
-            border-radius: 8px;
-            background: var(--input-bg);
-            border: 1px solid var(--input-border);
-            color: var(--text-dim);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.15s, background 0.15s, color 0.15s, transform 0.12s;
-            margin-bottom: 2px;
-        }
-        .gchat-msg:hover .gchat-copy-btn { opacity: 1; }
-        .gchat-copy-btn:hover { background: var(--accent); color: white; border-color: var(--accent); transform: scale(1.08); }
-        .gchat-copy-btn.copied { background: var(--accent); color: white; border-color: var(--accent); opacity: 1; }
-
-        .gchat-delete-btn {
-            flex-shrink: 0;
-            width: 24px; height: 24px;
-            border-radius: 8px;
-            background: var(--input-bg);
-            border: 1px solid var(--input-border);
-            color: var(--text-dim);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.15s, background 0.15s, color 0.15s, transform 0.12s;
-            margin-bottom: 2px;
-        }
-        .gchat-msg:hover .gchat-delete-btn { opacity: 1; }
-        .gchat-delete-btn:hover { background: #ff3b30; color: white; border-color: #ff3b30; transform: scale(1.08); }
-
-        /* ── GCHAT code blocks ── */
-        /* gchat code blocks — same look as AI chat */
-        .gchat-code-wrap { margin: 6px 0; }
-        .gchat-code-wrap,
-        .gchat-code-wrap::before,
-        .gchat-code-wrap pre,
-        .gchat-code-wrap pre code,
-        .gchat-code-wrap .hljs { }
-        .gchat-code-wrap          { margin:6px 0; border-radius:16px; overflow:hidden; max-width:100%; width:100%; box-sizing:border-box; position:relative; background:#f0f0f5; border:1px solid rgba(0,0,0,0.07); box-shadow:0 3px 18px rgba(0,0,0,0.07); }
-        [data-theme="dark"] .gchat-code-wrap { background:#0f0f14; border:1px solid rgba(255,255,255,0.07); box-shadow:0 4px 28px rgba(0,0,0,0.4); }
-        .gchat-code-wrap::before  { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,var(--clr,var(--accent)) 0%,transparent 60%); opacity:0.5; z-index:1; }
-        .gchat-code-header        { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; gap:8px; position:relative; background:rgba(0,0,0,0.03); border-bottom:1px solid rgba(0,0,0,0.07); }
-        [data-theme="dark"] .gchat-code-header { background:rgba(255,255,255,0.04); border-bottom:1px solid rgba(255,255,255,0.055); }
-        .gchat-code-lang-badge    { display:flex; align-items:center; gap:7px; min-width:0; }
-        .gchat-code-lang-dot      { width:7px; height:7px; border-radius:50%; flex-shrink:0; background:var(--clr,var(--accent)); box-shadow:0 0 7px var(--clr,var(--accent)); }
-        .gchat-code-lang          { font-size:10px; font-weight:700; letter-spacing:1.6px; text-transform:uppercase; font-family:var(--font); white-space:nowrap; color:rgba(0,0,0,0.38); }
-        [data-theme="dark"] .gchat-code-lang { color:rgba(255,255,255,0.35); }
-        .gchat-code-actions       { display:flex; align-items:center; gap:5px; flex-shrink:0; }
-        .gchat-code-copy-btn, .gchat-code-dl-btn { display:flex; align-items:center; gap:5px; border-radius:8px; padding:5px 10px; cursor:pointer; font-size:10px; font-weight:700; letter-spacing:0.7px; text-transform:uppercase; font-family:var(--font); white-space:nowrap; transition:background 0.15s,color 0.15s,border-color 0.15s,transform 0.12s; background:rgba(0,0,0,0.05); border:1px solid rgba(0,0,0,0.09); color:rgba(0,0,0,0.42); }
-        [data-theme="dark"] .gchat-code-copy-btn, [data-theme="dark"] .gchat-code-dl-btn { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.09); color:rgba(255,255,255,0.4); }
-        .gchat-code-dl-btn:hover  { background:rgba(10,132,255,0.12); color:#0a84ff; border-color:rgba(10,132,255,0.3); transform:translateY(-1px); }
-        .gchat-code-copy-btn:hover { transform:translateY(-1px); background:rgba(0,0,0,0.1); color:rgba(0,0,0,0.82); }
-        [data-theme="dark"] .gchat-code-copy-btn:hover { background:rgba(255,255,255,0.12); color:rgba(255,255,255,0.9); }
-        .gchat-code-copy-btn:active, .gchat-code-dl-btn:active { transform:scale(0.92); }
-        .gchat-code-copy-btn.copied { background:rgba(10,132,255,0.15); color:#0a84ff; border-color:rgba(10,132,255,0.3); }
-        .gchat-code-wrap pre      { margin:0 !important; padding:14px 16px !important; font-size:12.5px !important; line-height:1.68 !important; overflow-x:auto; background:transparent !important; }
-        .gchat-code-wrap pre::-webkit-scrollbar { height:3px; }
-        .gchat-code-wrap pre::-webkit-scrollbar-track { background:transparent; }
-        .gchat-code-wrap pre::-webkit-scrollbar-thumb { background:rgba(128,128,128,0.2); border-radius:99px; }
-        .gchat-code-wrap pre code { font-family:'SF Mono','Fira Code','Menlo',monospace !important; font-size:inherit !important; background:transparent !important; }
-        .gchat-code-wrap .hljs    { background:transparent !important; }
-    </style>
-    <!-- PubNub removed — using Firebase Realtime Database for global chat -->
-    <!-- Firebase -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, query, where, getDocs, serverTimestamp, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-        import { getDatabase, ref, push, onChildAdded, remove, get, query as rtdbQuery, orderByChild, startAt, endBefore, limitToLast } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyACgNtcW49YjVoSZ_CfbvNFs0t-Y_SMsYU",
-            authDomain: "septima-f756f.firebaseapp.com",
-            projectId: "septima-f756f",
-            storageBucket: "septima-f756f.firebasestorage.app",
-            messagingSenderId: "748499317524",
-            appId: "1:748499317524:web:b098ace3f814b53d1dc801",
-            databaseURL: "https://septima-f756f-default-rtdb.europe-west1.firebasedatabase.app"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        window._fbSaveMessage = async (code, text, fileData) => {
-            const doc = {
-                code: code.trim().toLowerCase(),
-                text: text || '',
-                ts: serverTimestamp()
-            };
-            if (fileData) {
-                doc.fileUrl = fileData.url;
-                doc.fileName = fileData.name;
-                doc.fileType = fileData.type;
-            }
-            await addDoc(collection(db, "messages"), doc);
-        };
-
-        window._fbGetMessages = async (code) => {
-            const q = query(collection(db, "messages"), where("code", "==", code.trim().toLowerCase()));
-            const snap = await getDocs(q);
-            const results = [];
-            const now = new Date();
-            const readTime = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
-            const markPromises = [];
-            snap.forEach(d => {
-                results.push({ id: d.id, ...d.data() });
-                if (d.data().status !== 'read') {
-                    markPromises.push(updateDoc(doc(db, "messages", d.id), { status: 'read', readTime: readTime }));
-                }
-            });
-            await Promise.all(markPromises);
-            results.sort((a, b) => (a.ts?.seconds || 0) - (b.ts?.seconds || 0));
-            return results;
-        };
-
-        window._fbCodeExists = async (code) => {
-            const q = query(collection(db, "messages"), where("code", "==", code.trim().toLowerCase()));
-            const snap = await getDocs(q);
-            return !snap.empty;
-        };
-
-        window._firebaseReady = true;
-
-        // ── GLOBAL CHAT via Firebase Realtime Database ──────────────────
-        const rtdb = getDatabase(app);
-        const chatRef = ref(rtdb, 'globalChat');
-        const GC_MAX_MSGS = 5; // max messages in global chat
-
-        // Keep only the last GC_MAX_MSGS messages, delete the rest
-        async function gcCleanOld() {
-            try {
-                const allSnap = await get(rtdbQuery(chatRef, orderByChild('ts')));
-                if (!allSnap.exists()) return;
-                const keys = [];
-                allSnap.forEach(child => keys.push(child.key));
-                if (keys.length > GC_MAX_MSGS) {
-                    const toDelete = keys.slice(0, keys.length - GC_MAX_MSGS);
-                    await Promise.all(toDelete.map(k => remove(ref(rtdb, 'globalChat/' + k))));
-                }
-            } catch(e) { /* silent */ }
-        }
-
-        // Send a message to RTDB
-        window._gcSendMessage = async (msg) => {
-            await push(chatRef, msg);
-            // Trim to max 7 messages after each send
-            gcCleanOld();
-        };
-
-        // Subscribe to new messages (last 7 + any new arriving)
-        window._gcSubscribe = (onMsg) => {
-            const recentQ = rtdbQuery(chatRef, orderByChild('ts'), limitToLast(GC_MAX_MSGS));
-            onChildAdded(recentQ, (snap) => {
-                const msg = snap.val();
-                if (msg) onMsg(msg, snap.key);
-            });
-        };
-
-        // Load last 7 messages of history
-        window._gcLoadHistory = async () => {
-            const recentQ = rtdbQuery(chatRef, orderByChild('ts'), limitToLast(GC_MAX_MSGS));
-            const snap = await get(recentQ);
-            const msgs = [];
-            if (snap.exists()) {
-                snap.forEach(child => msgs.push({ key: child.key, ...child.val() }));
-            }
-            return msgs;
-        };
-
-        // Delete a specific message by key
-        window._gcDeleteMessage = async (key) => {
-            const msgRef = ref(rtdb, 'globalChat/' + key);
-            await remove(msgRef);
-        };
-
-        window._gcReady = true;
-    </script>
-
-    <!-- Cloudinary upload helper -->
-    <script>
-        const CLOUDINARY_CLOUD = 'dsiioav1n';
-        const CLOUDINARY_PRESET = 'znospqhw';
-
-        window._cloudinaryUpload = async (file, onProgress) => {
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('upload_preset', CLOUDINARY_PRESET);
-
-            return new Promise((resolve, reject) => {
-                const xhr = new XMLHttpRequest();
-                xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/auto/upload`);
-                xhr.upload.onprogress = e => {
-                    if (e.lengthComputable && onProgress) onProgress(Math.round(e.loaded / e.total * 100));
-                };
-                xhr.onload = () => {
-                    try {
-                        const data = JSON.parse(xhr.responseText);
-                        if (data.secure_url) {
-                            const _fmt = data.format || '';
-                            const _orig = data.original_filename || 'file';
-                            resolve({ url: data.secure_url, name: _fmt ? (_orig + '.' + _fmt) : _orig, type: data.resource_type });
-                        } else {
-                            reject(new Error(data.error?.message || 'Upload failed'));
-                        }
-                    } catch(e) { reject(e); }
-                };
-                xhr.onerror = () => reject(new Error('Network error'));
-                xhr.send(formData);
-            });
-        };
-    </script>
+    /* footer */
+    #footer-note { width:1020px; text-align:center; color:#c0c0c0; font-size:8pt; margin-top:30px; padding-bottom:20px; }
+  </style>
 </head>
-<body data-theme="light">
+<body>
 
-<div id="canvas-container"><canvas id="liquid-canvas"></canvas></div>
+<div id="header">
+  <div class="subheader2x">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tbody><tr>
+      <td>
+        <p style="margin-left:15px;color:#000000;font-size:12pt;text-indent:0"> Задания: </p>
+      </td>
+      <td>
+        <p id="topline"><font>Оставшееся время - 45:00</font></p>
+      </td>
+    </tr></tbody></table>
 
-<div class="app-container">
-    <header class="top-nav">
-        <div class="brand-group">
-            <button class="theme-btn" onclick="showCard()" title="Визитка">
-                <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                    <circle cx="10" cy="10" r="8"/>
-                    <line x1="10" y1="9" x2="10" y2="14"/>
-                    <circle cx="10" cy="6.2" r="0.9" fill="currentColor" stroke="none"/>
-                </svg>
-            </button>
-            <div class="quasar-logo">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round">
-                    <circle cx="12" cy="12" r="2" fill="white" stroke="none"/>
-                    <ellipse cx="12" cy="12" rx="10" ry="4"/>
-                    <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/>
-                    <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/>
-                </svg>
-            </div>
-            <span class="brand-name">SEPTIMA</span>
-        </div>
-
-        <div style="display:flex; align-items:center; gap:6px; margin-left:auto;">
-            <div class="user-field" style="cursor:default; pointer-events:none; margin-left:0;">
-                <span style="font-weight:500; font-size:13px; letter-spacing:0.2px; color:#8a8a95; white-space:nowrap;">@septimabot</span>
-            </div>
-
-            <div class="user-field" style="margin-left:0; padding: 0 12px;">
-                <svg class="field-icon" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="4" y="9" width="12" height="9" rx="2"/>
-                    <path d="M7 9V6.5a3 3 0 0 1 6 0V9"/>
-                </svg>
-                <input type="text" id="codeInput" placeholder="0000" maxlength="8" style="width:44px; letter-spacing:2px; font-size:13px; font-weight:600; text-align:center; padding:0;">
-            </div>
-
-            <div class="user-field" style="margin-left:0;">
-                <!-- minimal @ icon -->
-                <svg class="field-icon" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="10" cy="10" r="3.5"/>
-                    <path d="M13.5 10a3.5 3.5 0 1 0-3.5 3.5h0a3.5 3.5 0 0 0 3.5-3.5v-1.5a6 6 0 1 1-1.78 4.24"/>
-                </svg>
-                <input type="text" id="chatIdInput" placeholder="ID or @username">
-            </div>
-        </div>
-
-        <button class="theme-btn" onclick="toggleTheme()" id="theme-btn" title="Toggle theme">
-            <svg id="theme-icon-sun" viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-                <circle cx="10" cy="10" r="3.5"/>
-                <line x1="10" y1="1.5" x2="10" y2="3.5"/>
-                <line x1="10" y1="16.5" x2="10" y2="18.5"/>
-                <line x1="1.5" y1="10" x2="3.5" y2="10"/>
-                <line x1="16.5" y1="10" x2="18.5" y2="10"/>
-                <line x1="4.1" y1="4.1" x2="5.5" y2="5.5"/>
-                <line x1="14.5" y1="14.5" x2="15.9" y2="15.9"/>
-                <line x1="4.1" y1="15.9" x2="5.5" y2="14.5"/>
-                <line x1="14.5" y1="5.5" x2="15.9" y2="4.1"/>
-            </svg>
-            <svg id="theme-icon-moon" viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:none">
-                <path d="M17 10.5A7 7 0 1 1 9.5 3a5 5 0 0 0 7.5 7.5z"/>
-            </svg>
-        </button>
-    </header>
-
-    <div class="content-row">
-      <div class="left-content">
-        <div class="dashboard-grid">
-        <!-- TRANSMITTER -->
-        <section class="panel">
-            <h2 class="panel-title">EXPORT</h2>
-            <div class="composer" style="flex:1;">
-                <div id="filePreview">
-                    <svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-                        <path d="M13 2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7z"/>
-                        <polyline points="13 2 13 7 18 7"/>
-                    </svg>
-                    <span id="fileNameDisplay" style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"></span>
-                    <svg onclick="clearFile()" style="cursor:pointer; opacity:0.5; flex-shrink:0;" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                        <line x1="5" y1="5" x2="15" y2="15"/><line x1="15" y1="5" x2="5" y2="15"/>
-                    </svg>
-                </div>
-                <textarea id="textInput" placeholder="Enter..."></textarea>
-            </div>
-            <div class="composer-actions" style="margin-top:8px; align-items:flex-end; padding-bottom:2px;">
-                <label class="attach-btn">
-                    <input type="file" id="fileInput">
-                    <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M16.5 10.5l-6.5 6.5a4.5 4.5 0 0 1-6.36-6.36l7-7a3 3 0 0 1 4.24 4.24l-7 7a1.5 1.5 0 0 1-2.12-2.12L12 6"/>
-                    </svg>
-                    <span>FILES</span>
-                </label>
-                <button class="btn-send" id="btnSend" onclick="send()" style="width:41px;height:41px;border-radius:13px;">
-                    <svg id="sendIcon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M5 12h14" stroke-opacity="0.5"/>
-                        <path d="M13 6l6 6-6 6"/>
-                    </svg>
-                </button>
-            </div>
-        </section>
-
-        <!-- RECEIVER -->
-        <section class="panel panel-import" style="position:relative;">
-            <h2 class="panel-title">IMPORT</h2>
-            <div id="packetsFeed" class="packets-feed"></div>
-            <div class="action-zone" id="actionZone">
-                <button class="power-button" id="actionBtn" onclick="handleAction()">
-                    <svg viewBox="0 0 32 32" width="40" height="40" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="16" y1="5" x2="16" y2="22"/>
-                        <polyline points="8,15 16,23 24,15"/>
-                        <line x1="6" y1="27" x2="26" y2="27"/>
-                    </svg>
-                </button>
-                <p id="msgDisplay">SCANNING</p>
-            </div>
-            <button class="btn-refresh" id="refreshBtn" onclick="handleAction()" title="Refresh">
-                <svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M16.5 9A6.5 6.5 0 1 0 15 13.5"/>
-                    <polyline points="16.5 4 16.5 9 12 9"/>
-                </svg>
-            </button>
-        </section>
-
-        <!-- AI ASSISTANT -->
-        <section class="panel panel-ai">
-            <h2 class="panel-title">AI · ASSISTANT</h2>
-
-            <div class="ai-feed" id="aiFeed">
-                <div class="ai-empty" id="aiEmpty">
-                    <svg viewBox="0 0 32 32" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M28 20a4 4 0 0 1-4 4H10l-6 4V8a4 4 0 0 1 4-4h16a4 4 0 0 1 4 4z"/>
-                        <circle cx="11" cy="16" r="1.2" fill="currentColor"/>
-                        <circle cx="16" cy="16" r="1.2" fill="currentColor"/>
-                        <circle cx="21" cy="16" r="1.2" fill="currentColor"/>
-                    </svg>
-                    <span>Start a conversation</span>
-                </div>
-            </div>
-
-            <div id="aiComposerWrap">
-                <div id="aiImgPreview">
-                    <!-- image thumb (shown for images) -->
-                    <img id="aiImgThumb" src="" alt="" style="display:none;">
-                    <!-- file icon (shown for non-images) -->
-                    <div id="aiFileIcon" style="display:none;width:28px;height:28px;border-radius:6px;background:var(--accent);flex-shrink:0;display:none;align-items:center;justify-content:center;">
-                        <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="white" stroke-width="1.7" stroke-linecap="round"><path d="M9 2H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V6z"/><polyline points="9 2 9 6 13 6"/></svg>
-                    </div>
-                    <span id="aiImgName" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;"></span>
-                    <svg onclick="clearAiImg()" style="cursor:pointer;opacity:0.5;flex-shrink:0;" viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                        <line x1="5" y1="5" x2="15" y2="15"/><line x1="15" y1="5" x2="5" y2="15"/>
-                    </svg>
-                </div>
-                <textarea id="aiInput" placeholder="Ask anything…"
-                    onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAi();}"></textarea>
-            </div>
-            <div class="composer-actions">
-                <label class="attach-btn" title="Attach file">
-                    <input type="file" id="aiImgInput" accept="image/*,.pdf,.txt,.md,.py,.js,.ts,.html,.css,.json,.csv,.xml,.yaml,.yml,.sh,.c,.cpp,.java,.rs,.go,.rb,.php,.sql">
-                    <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M16.5 10.5l-6.5 6.5a4.5 4.5 0 0 1-6.36-6.36l7-7a3 3 0 0 1 4.24 4.24l-7 7a1.5 1.5 0 0 1-2.12-2.12L12 6"/>
-                    </svg>
-                    <span>FILES</span>
-                </label>
-                <button class="btn-send" id="aiSendBtn" onclick="sendAi()">
-                    <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M5 12h14" stroke-opacity="0.5"/>
-                        <path d="M13 6l6 6-6 6"/>
-                    </svg>
-                </button>
-            </div>
-        </section>
-        </div><!-- dashboard-grid -->
-      </div><!-- left-content -->
-
-      <!-- ══ RIGHT: GLOBAL CHAT ══ -->
-      <div class="gchat-sidebar">
-        <section class="panel panel-gchat">
-          <h2 class="panel-title">GLOBAL · CHAT</h2>
-
-          <div class="gchat-name-row">
-            <div class="gchat-online-dot"></div>
-            <input type="text" id="gchatName" placeholder="Your name…" maxlength="20">
-          </div>
-
-          <div class="gchat-feed" id="gchatFeed">
-            <div class="gchat-empty" id="gchatEmpty">
-              <svg viewBox="0 0 28 28" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-                <path d="M24 17a3.5 3.5 0 0 1-3.5 3.5H9l-5 3.5V7a3.5 3.5 0 0 1 3.5-3.5h14A3.5 3.5 0 0 1 24 7z"/>
-              </svg>
-              <span>No messages</span>
-            </div>
-          </div>
-
-          <div class="gchat-composer">
-            <div class="gchat-file-preview" id="gchatFilePreview">
-              <div class="gchat-file-preview-meta">Attachment</div>
-              <div class="gchat-file-preview-row">
-                <img class="gchat-file-preview-img" id="gchatFileThumb" src="" alt="">
-                <div class="gchat-file-preview-icon" id="gchatFileIcon">
-                  <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-                    <path d="M13 2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7z"/>
-                    <polyline points="13 2 13 7 18 7"/>
-                  </svg>
-                </div>
-                <div class="gchat-file-preview-info">
-                  <div class="gchat-file-preview-name" id="gchatFileName"></div>
-                  <div class="gchat-file-preview-size" id="gchatFileSize"></div>
-                </div>
-                <svg class="gchat-file-preview-close" onclick="gchatClearFile()" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                  <line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/>
-                </svg>
-              </div>
-            </div>
-            <textarea id="gchatInput" rows="1" placeholder="Message everyone…"
-              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();gchatSend();}"></textarea>
-          </div>
-          <div class="composer-actions" style="margin-top:8px;">
-            <label class="attach-btn" title="Attach file" style="padding:6px 10px;">
-              <input type="file" id="gchatFileInput">
-              <svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M16.5 10.5l-6.5 6.5a4.5 4.5 0 0 1-6.36-6.36l7-7a3 3 0 0 1 4.24 4.24l-7 7a1.5 1.5 0 0 1-2.12-2.12L12 6"/>
-              </svg>
-              <span>FILES</span>
-            </label>
-            <button class="btn-send" style="width:38px;height:38px;border-radius:12px;" onclick="gchatSend()">
-              <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M5 12h14" stroke-opacity="0.5"/><path d="M13 6l6 6-6 6"/>
-              </svg>
-            </button>
-          </div>
-        </section>
-      </div><!-- gchat-sidebar -->
-
-    </div><!-- content-row -->
+    <button class="qnum" data-page="1">1</button>
+    <button class="qnum" data-page="2">2</button>
+    <button class="qnum" data-page="3">3</button>
+    <button class="qnum" data-page="4">4</button>
+    <button class="qnum" data-page="5">5</button>
+    <button class="qnum" data-page="6">6</button>
+    <button class="qnum" data-page="7">7</button>
+    <button class="qnum" data-page="8">8</button>
+    <button class="qnum" data-page="9">9</button>
+    <button class="qnum" id="finishBtn">закончить</button>
+  </div>
 </div>
 
-<script>
-    // ── AUTO-RESIZE: EXPORT textarea grows 1→5 lines then scrolls ──
-    const exportTa = document.getElementById('textInput');
-    // makeAutoResize is defined later; we'll init after DOMContentLoaded equivalent
-    // For now just prevent the old logic — will be handled below with makeAutoResize
-    // ─────────────────────────────────────────────────────────────────────
-
-    const TOKEN = '8357213873:AAE0QrL6DeRJlq9H0ouQF-3x9QaLHm9-ysM';
-    let lastId = 0;
-    let importReady = false; // true after we've synced lastId to latest update
-
-    // On startup: fast-forward lastId to the latest update so we don't replay history
-    (async () => {
-        try {
-            const res = await fetch(`https://api.telegram.org/bot${TOKEN}/getUpdates?offset=-1&limit=1`);
-            const data = await res.json();
-            if (data.ok && data.result.length > 0) {
-                lastId = data.result[data.result.length - 1].update_id;
-            }
-        } catch(e) {}
-        importReady = true;
-    })();
-
-    function getTargetId() {
-        const val = document.getElementById('chatIdInput').value.trim();
-        if (!val) return null;
-        // Resolve known aliases
-        if (val === "9548") return "2068847868";
-        return val;
-    }
-
-    function normalizeChatId(raw) {
-        const isNumeric = /^-?\d+$/.test(raw);
-        if (!isNumeric && !raw.startsWith('@')) return '@' + raw;
-        return raw;
-    }
-
-    // File preview
-    document.getElementById('fileInput').onchange = e => {
-        const file = e.target.files[0];
-        if (!file) return;
-        document.getElementById('fileNameDisplay').innerText = file.name;
-        document.getElementById('filePreview').style.display = 'flex';
-    };
-
-    function clearFile() {
-        document.getElementById('fileInput').value = "";
-        document.getElementById('filePreview').style.display = 'none';
-    }
-
-    // Icons as SVG strings
-    const icons = {
-        send: `<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 12h14" stroke-opacity="0.5"/>
-            <path d="M13 6l6 6-6 6"/>
-        </svg>`,
-        loading: `<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" class="spinning">
-            <circle cx="10" cy="10" r="7" stroke-opacity="0.25"/>
-            <path d="M10 3a7 7 0 0 1 7 7" stroke-opacity="1"/>
-        </svg>`,
-        check: `<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="4,10 8,14 16,6"/>
-        </svg>`,
-        error: `<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
-            <circle cx="10" cy="10" r="7"/>
-            <line x1="10" y1="6" x2="10" y2="10"/>
-            <circle cx="10" cy="14" r="0.5" fill="white"/>
-        </svg>`
-    };
-
-    function setSendIcon(name) {
-        const el = document.getElementById('btnSend');
-        el.innerHTML = icons[name];
-    }
-
-    async function send() {
-        const code = document.getElementById('codeInput').value.trim();
-        const txt = document.getElementById('textInput').value.trim();
-        const f = document.getElementById('fileInput').files[0];
-        if (!txt && !f) return;
-
-        // If code is entered — save to Firebase (+ Cloudinary for files)
-        if (code) {
-            if (!txt && !f) return;
-            setSendIcon('loading');
-            try {
-                let waited = 0;
-                while (!window._firebaseReady && waited < 3000) {
-                    await new Promise(r => setTimeout(r, 100));
-                    waited += 100;
-                }
-                if (!window._fbCodeExists) throw new Error('Firebase not ready');
-
-                // Check if code is already taken
-                const taken = await window._fbCodeExists(code);
-                if (taken) {
-                    setSendIcon('send');
-                    const codeWrap = document.getElementById('codeInput').closest('.user-field');
-                    codeWrap.classList.remove('code-field-error');
-                    void codeWrap.offsetWidth;
-                    codeWrap.classList.add('code-field-error');
-                    setTimeout(() => codeWrap.classList.remove('code-field-error'), 3100);
-                    return;
-                }
-
-                // Upload file to Cloudinary if present
-                let fileData = null;
-                if (f) {
-                    const btn = document.getElementById('btnSend');
-                    btn.title = 'Uploading...';
-                    fileData = await window._cloudinaryUpload(f, pct => {
-                        btn.title = pct + '%';
-                    });
-                    btn.title = '';
-                }
-
-                await window._fbSaveMessage(code, txt, fileData);
-                document.getElementById('textInput').value = "";
-                exportTa.style.height = '';
-                setTimeout(() => resizeExportTa(), 0);
-                clearFile();
-                setSendIcon('check');
-            } catch(e) {
-                console.error('Firebase/Cloudinary save error:', e);
-                setSendIcon('error');
-                showToast('ОШИБКА: ' + (e.message || 'Загрузка не удалась'));
-            }
-            setTimeout(() => setSendIcon('send'), 2200);
-            return;
-        }
-
-        // No code — original Telegram logic
-        const target = getTargetId();
-        if (!target) { 
-            document.getElementById('chatIdInput').style.borderColor = 'var(--accent)';
-            document.getElementById('chatIdInput').focus();
-            return; 
-        }
-        const chatId = normalizeChatId(target);
-
-        setSendIcon('loading');
-
-        try {
-            // First message: notification
-            const notifyRes = await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ chat_id: chatId, text: 'Вам пришло новое сообщение:' })
-            });
-            const notifyJson = await notifyRes.json();
-            if (!notifyJson.ok) throw new Error(notifyJson.description);
-
-            // Second message: the actual content
-            if (f) {
-                const url = `https://api.telegram.org/bot${TOKEN}/sendDocument`;
-                const body = new FormData();
-                body.append('chat_id', chatId);
-                body.append('document', f);
-                if (txt) body.append('caption', txt);
-                const res = await fetch(url, { method:'POST', body });
-                const json = await res.json();
-                if (!json.ok) throw new Error(json.description);
-            } else if (txt) {
-                const url = `https://api.telegram.org/bot${TOKEN}/sendMessage`;
-                const res = await fetch(url, {
-                    method:'POST',
-                    headers:{'Content-Type':'application/json'},
-                    body: JSON.stringify({ chat_id: chatId, text: txt })
-                });
-                const json = await res.json();
-                if (!json.ok) throw new Error(json.description);
-            }
-            document.getElementById('textInput').value = "";
-            exportTa.style.height = '';
-            setTimeout(() => resizeExportTa(), 0);
-            clearFile();
-            setSendIcon('check');
-        } catch(e) {
-            console.error('Send error:', e);
-            setSendIcon('error');
-            showToast('ОШИБКА: ' + (e.message || 'Нет связи'));
-        }
-
-        setTimeout(() => setSendIcon('send'), 2200);
-    }
-
-    // ── IMPORT logic ──────────────────────────────────────────
-    // Single source of truth: one async loop, never runs in parallel.
-    // Rule: lastId is advanced for the ENTIRE batch before any message is processed.
-    // Rule: pendingQueue is only written inside the loop, never from outside.
-
-    let pendingQueue = [];
-    let loopRunning  = false;  // true while the async loop body is executing
-    let forceWakeup  = null;   // resolve() to interrupt the 1s sleep early
-
-    function sleep(ms) {
-        return new Promise(resolve => {
-            const t = setTimeout(resolve, ms);
-            forceWakeup = () => { clearTimeout(t); resolve(); };
-        });
-    }
-
-    function getTime() {
-        return new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit', second:'2-digit' });
-    }
-
-    function renderCard(packet) {
-        const feed = document.getElementById('packetsFeed');
-        const card = document.createElement('div');
-        card.className = 'packet-card' + (packet.url ? ' has-file' : '');
-        const meta = document.createElement('div');
-        meta.className = 'packet-meta';
-        meta.textContent = packet.time;
-        card.appendChild(meta);
-        if (packet.txt) {
-            const body = document.createElement('div');
-            body.textContent = packet.txt;
-            card.appendChild(body);
-        }
-        if (packet.url) {
-            const link = document.createElement('a');
-            link.className = 'file-link';
-            link.href = packet.url;
-            link.target = '_blank';
-            link.innerHTML = `<svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 2H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V5z"/><polyline points="10 2 10 5 13 5"/></svg> ${packet.fileName || 'Open file'}`;
-            card.appendChild(link);
-        }
-        feed.appendChild(card);
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-    }
-
-    function showFeed() {
-        document.getElementById('actionZone').style.display = 'none';
-        document.getElementById('packetsFeed').style.display = 'flex';
-    }
-
-    function setRefreshState(hasNew) {
-        const rb = document.getElementById('refreshBtn');
-        hasNew ? rb.classList.add('has-new') : rb.classList.remove('has-new');
-    }
-
-    function setRefreshSpinning(on) {
-        const rb = document.getElementById('refreshBtn');
-        on ? rb.classList.add('spinning-refresh') : rb.classList.remove('spinning-refresh');
-    }
-
-    function flushPending() {
-        if (!pendingQueue.length) return;
-        showFeed();
-        pendingQueue.splice(0).forEach(renderCard);
-        setRefreshState(false);
-        document.getElementById('actionBtn').classList.remove('pulse');
-        setStatus('SCANNING', false);
-    }
-
-    function setStatus(text, active) {
-        const el = document.getElementById('msgDisplay');
-        el.innerText = text;
-        el.style.color = active ? 'var(--accent)' : 'var(--text-dim)';
-    }
-
-    function notifyNewPackets() {
-        document.getElementById('actionBtn').classList.add('pulse');
-        const n = pendingQueue.length;
-        setStatus(n > 1 ? `${n} PACKETS` : 'PACKET RECEIVED', true);
-        setRefreshState(true);
-    }
-
-    async function handleAction() {
-        const code = document.getElementById('codeInput').value.trim();
-
-        // If code entered — fetch from Firebase
-        if (code) {
-            setStatus('LOADING...', true);
-            document.getElementById('actionBtn').classList.add('pulse');
-            try {
-                let waited = 0;
-                while (!window._firebaseReady && waited < 3000) {
-                    await new Promise(r => setTimeout(r, 100));
-                    waited += 100;
-                }
-                if (!window._fbGetMessages) throw new Error('Firebase not ready');
-                const msgs = await window._fbGetMessages(code);
-                document.getElementById('actionBtn').classList.remove('pulse');
-                if (msgs.length === 0) {
-                    setStatus('NOT FOUND', true);
-                    setTimeout(() => setStatus('SCANNING', false), 3000);
-                    return;
-                }
-                const feed = document.getElementById('packetsFeed');
-                const actionZone = document.getElementById('actionZone');
-                actionZone.style.display = 'none';
-                feed.style.display = 'flex';
-                feed.querySelectorAll('.fb-packet').forEach(el => el.remove());
-                for (const msg of msgs) {
-                    const card = document.createElement('div');
-                    card.className = 'packet-card fb-packet' + (msg.fileUrl ? ' has-file' : '');
-                    const meta = document.createElement('div');
-                    meta.className = 'packet-meta';
-                    const date = msg.ts ? new Date(msg.ts.seconds * 1000).toLocaleString() : '—';
-                    meta.textContent = 'CODE: ' + code.toUpperCase() + ' · ' + date;
-                    card.appendChild(meta);
-                    if (msg.text) {
-                        renderMsgText(msg.text, card, gcBuildCodeBlock);
-                    }
-                    if (msg.fileUrl) {
-                        // If it's a Telegram file_id (not a URL), resolve it first
-                        let fileHref = msg.fileUrl;
-                        if (!msg.fileUrl.startsWith('http')) {
-                            fileHref = await getFileUrl(msg.fileUrl);
-                        }
-                        if (fileHref) {
-                            // If it's an image — show preview
-                            if (msg.fileType && msg.fileType.startsWith('image/')) {
-                                const img = document.createElement('img');
-                                img.src = fileHref;
-                                img.style.cssText = 'max-width:100%;max-height:300px;border-radius:10px;margin-top:6px;display:block;';
-                                card.appendChild(img);
-                            }
-                            const link = document.createElement('a');
-                            link.className = 'file-link';
-                            link.href = fileHref;
-                            link.target = '_blank';
-                            link.download = msg.fileName || 'file';
-                            link.innerHTML = `<svg viewBox="0 0 20 20" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M13 2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7z"/><polyline points="13 2 13 7 18 7"/></svg> ${msg.fileName || 'Download file'}`;
-                            card.appendChild(link);
-                        } else {
-                            const warn = document.createElement('div');
-                            warn.style.cssText = 'color:var(--text-dim);font-size:12px;margin-top:4px;';
-                            warn.textContent = '⚠️ Файл недоступен (истёк срок хранения)';
-                            card.appendChild(warn);
-                        }
-                    }
-                    feed.appendChild(card);
-                }
-                feed.scrollTop = feed.scrollHeight;
-                setStatus(msgs.length + ' MSG FOUND', false);
-            } catch(e) {
-                document.getElementById('actionBtn').classList.remove('pulse');
-                setStatus('ERROR', true);
-                showToast('ОШИБКА: ' + (e.message || 'Firebase недоступен'));
-                setTimeout(() => setStatus('SCANNING', false), 3000);
-            }
-            return;
-        }
-
-        // No code — original Telegram logic
-        if (pendingQueue.length > 0) { flushPending(); return; }
-        const target = getTargetId();
-        if (!target) {
-            const field = document.getElementById('chatIdInput');
-            field.closest('.user-field').style.borderColor = '#ff3b30';
-            field.closest('.user-field').style.boxShadow = '0 0 0 3px rgba(255,59,48,0.35)';
-            field.focus();
-            setTimeout(() => {
-                field.closest('.user-field').style.borderColor = '';
-                field.closest('.user-field').style.boxShadow = '';
-            }, 2000);
-            setStatus('NO ID SET', true);
-            return;
-        }
-        setStatus('CHECKING...', true);
-        setRefreshSpinning(true);
-        document.getElementById('actionBtn').classList.add('pulse');
-        if (forceWakeup) forceWakeup();
-    }
-
-    async function fetchWithTimeout(url, ms, opts = {}) {
-        const ctrl = new AbortController();
-        const timer = setTimeout(() => ctrl.abort(), ms);
-        try {
-            const res = await fetch(url, { ...opts, signal: ctrl.signal });
-            clearTimeout(timer);
-            return res;
-        } catch(e) {
-            clearTimeout(timer);
-            throw e;
-        }
-    }
-
-    async function getFileUrl(fileId) {
-        try {
-            const r = await fetchWithTimeout(
-                `https://api.telegram.org/bot${TOKEN}/getFile?file_id=${fileId}`,
-                6000
-            );
-            const j = await r.json();
-            if (j.ok) return `https://api.telegram.org/file/bot${TOKEN}/${j.result.file_path}`;
-        } catch(e) {}
-        return "";
-    }
-
-    // THE loop — runs forever, one iteration at a time, never overlaps with itself
-    async function pollLoop() {
-        // Wait until we've fast-forwarded lastId past old history
-        while (!importReady) await sleep(200);
-
-        while (true) {
-            loopRunning = true;
-
-            const target = getTargetId();
-
-            // Don't even poll if no ID is set — nothing to filter against
-            if (!target) {
-                loopRunning = false;
-                setRefreshSpinning(false);
-                await sleep(1000);
-                continue;
-            }
-
-            try {
-                const res = await fetchWithTimeout(
-                    `https://api.telegram.org/bot${TOKEN}/getUpdates?offset=${lastId + 1}&timeout=0&limit=100`,
-                    8000
-                );
-                const data = await res.json();
-
-                if (data.ok && data.result.length > 0) {
-                    // Advance lastId for the whole batch ATOMICALLY before touching any message
-                    lastId = data.result[data.result.length - 1].update_id;
-
-                    let gotNew = false;
-
-                    for (const upd of data.result) {
-                        const msg = upd.message || upd.channel_post;
-                        if (!msg) continue;
-
-                        // Always filter by target — we never show messages without an ID set
-                        const fromId   = String(msg.from?.id  || "");
-                        const chatId   = String(msg.chat?.id  || "");
-                        const fromUser = (msg.from?.username  || "").toLowerCase();
-                        const clean    = target.replace('@','').toLowerCase();
-                        const isNum    = /^\-?\d+$/.test(target);
-                        const ok       = isNum ? (fromId === target || chatId === target)
-                                               : fromUser === clean;
-                        if (!ok) continue;
-
-                        const txt = msg.text || msg.caption || "";
-
-                        // Skip bot commands (e.g. /start, /help)
-                        if (txt.startsWith('/')) continue;
-                        let url = "", fileName = "";
-
-                        const doc     = msg.document;
-                        const photo   = msg.photo;
-                        const audio   = msg.audio || msg.voice;
-                        const video   = msg.video || msg.video_note;
-                        const sticker = msg.sticker;
-                        const fObj    = doc || audio || video || sticker
-                                     || (photo ? photo[photo.length-1] : null);
-
-                        if (fObj?.file_id) {
-                            url      = await getFileUrl(fObj.file_id);
-                            fileName = doc?.file_name || audio?.file_name || video?.file_name
-                                     || (sticker ? 'sticker.webp' : photo ? 'photo.jpg' : '');
-                        }
-
-                        if (!txt && !url) continue;
-                        pendingQueue.push({ txt, url, fileName, time: getTime() });
-                        gotNew = true;
-                    }
-
-                    if (gotNew) notifyNewPackets();
-                }
-            } catch(e) { 
-                console.warn('Poll error:', e.message || e);
-                if (e.message && e.message.includes('401')) {
-                    setStatus('TOKEN INVALID', true);
-                }
-            }
-
-            loopRunning = false;
-            setRefreshSpinning(false);
-
-            // If no new packets after a force-check, show feedback
-            if (document.getElementById('msgDisplay').innerText === 'CHECKING...') {
-                const target = getTargetId();
-                if (!pendingQueue.length) {
-                    const user = target ? `· ${target.replace('@','')}` : '';
-                    setStatus(`NO NEW ${user}`.trim(), false);
-                    document.getElementById('actionBtn').classList.remove('pulse');
-                    setTimeout(() => {
-                        if (document.getElementById('msgDisplay').innerText.startsWith('NO NEW'))
-                            setStatus('SCANNING', false);
-                    }, 3000);
-                } else {
-                    notifyNewPackets();
-                }
-            }
-
-            await sleep(1000); // wait 1s, or less if forceWakeup() is called
-        }
-    }
-    // ── end IMPORT logic ───────────────────────────────────────
-
-    function toggleTheme() {
-        const body = document.body;
-        const isLight = body.getAttribute('data-theme') === 'light';
-        body.setAttribute('data-theme', isLight ? 'dark' : 'light');
-        document.getElementById('theme-icon-sun').style.display = isLight ? 'none' : 'block';
-        document.getElementById('theme-icon-moon').style.display = isLight ? 'block' : 'none';
-        // switch hljs stylesheet
-        const hlTheme = document.getElementById('hljs-theme');
-        hlTheme.href = isLight
-            ? 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css'
-            : 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css';
-        updateParticleColors(isLight ? 'dark' : 'light');
-    }
-        // hljs theme matches body data-theme via single <link> swap on toggle
-
-    // Canvas background
-    const canvas = document.getElementById('liquid-canvas');
-    const ctx = canvas.getContext('2d');
-    let w, h, particles = [];
-
-    function updateParticleColors(theme) {
-        const isDark = theme === 'dark';
-        particles.forEach((p, i) => {
-            p.color = (i % 2 === 0)
-                ? (isDark ? '#2997ff' : '#0a84ff')
-                : (isDark ? '#5e5ce6' : '#3a8ef6');
-        });
-    }
-
-    function initCanvas() {
-        w = canvas.width = window.innerWidth;
-        h = canvas.height = window.innerHeight;
-        particles = [];
-        for (let i = 0; i < 5; i++) {
-            particles.push({
-                x: Math.random() * w, y: Math.random() * h,
-                r: Math.random() * 380 + 200,
-                vx: (Math.random() - 0.5) * 1.5,
-                vy: (Math.random() - 0.5) * 1.5,
-                color: i % 2 === 0 ? '#0a84ff' : '#5e5ce6'
-            });
-        }
-    }
-
-    function draw() {
-        ctx.clearRect(0, 0, w, h);
-        particles.forEach(p => {
-            p.x += p.vx; p.y += p.vy;
-            if (p.x < 0 || p.x > w) p.vx *= -1;
-            if (p.y < 0 || p.y > h) p.vy *= -1;
-            const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
-            grad.addColorStop(0, p.color);
-            grad.addColorStop(1, 'transparent');
-            ctx.fillStyle = grad;
-            ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
-        });
-        requestAnimationFrame(draw);
-    }
-
-    // Toast notification
-    function showToast(msg) {
-        let t = document.getElementById('toast');
-        if (!t) {
-            t = document.createElement('div');
-            t.id = 'toast';
-            t.style.cssText = 'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#ff3b30;color:white;padding:10px 20px;border-radius:12px;font-size:12px;font-weight:700;letter-spacing:1px;z-index:9999;opacity:0;transition:opacity 0.3s;pointer-events:none;';
-            document.body.appendChild(t);
-        }
-        t.textContent = msg;
-        t.style.opacity = '1';
-        clearTimeout(t._timer);
-        t._timer = setTimeout(() => t.style.opacity = '0', 3500);
-    }
-
-    window.addEventListener('resize', initCanvas);
-    initCanvas(); draw();
-    pollLoop(); // start the single infinite loop
-
-    // Init send icon
-    setSendIcon('send');
-
-    // ── AI ASSISTANT ─────────────────────────────────────────────
-    const AI_KEY    = "dDAcPHX7mxaTD2PUxZyClgn2RCr6rMJ2";
-    const AI_MODEL  = "mistral-small-latest";
-    let aiImgBase64 = null;
-    let aiImgMime   = null;
-    let aiFileData  = null; // { name, text } for text/PDF files
-
-    // ── CLIENT INFO COLLECTION ────────────────────────────────────
-    const clientInfo = {
-        ip:       'определяется…',
-        device:   detectDevice(),
-        platform: navigator.platform || navigator.userAgentData?.platform || 'неизвестно',
-        browser:  detectBrowser(),
-        time:     new Date().toLocaleString('ru-RU', { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone }),
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        language: navigator.language || 'неизвестно',
-        screen:   `${screen.width}×${screen.height}`,
-        ua:       navigator.userAgent
-    };
-
-    function detectDevice() {
-        const ua = navigator.userAgent;
-        if (/iPad/i.test(ua))    return 'iPad';
-        if (/iPhone/i.test(ua))  return 'iPhone';
-        if (/Android/i.test(ua) && /Mobile/i.test(ua)) return 'Android Phone';
-        if (/Android/i.test(ua)) return 'Android Tablet';
-        if (/Macintosh/i.test(ua)) return 'Mac';
-        if (/Windows/i.test(ua))   return 'Windows PC';
-        if (/Linux/i.test(ua))     return 'Linux PC';
-        return 'Unknown Device';
-    }
-
-    function detectBrowser() {
-        const ua = navigator.userAgent;
-        if (/Edg\//i.test(ua))     return 'Microsoft Edge';
-        if (/OPR\//i.test(ua) || /Opera/i.test(ua)) return 'Opera';
-        if (/YaBrowser/i.test(ua)) return 'Yandex Browser';
-        if (/Chrome/i.test(ua) && /Safari/i.test(ua)) return 'Chrome';
-        if (/Firefox/i.test(ua))   return 'Firefox';
-        if (/Safari/i.test(ua))    return 'Safari';
-        return 'Unknown Browser';
-    }
-
-    // Fetch real IP + geo — providers that work with Russian IPs
-    (async () => {
-        const providers = [
-            // ip-api.com — работает в РФ, отдаёт полное гео (HTTP, без ключа)
-            async () => {
-                const r = await fetch('http://ip-api.com/json/?fields=status,query,country,city,org&lang=ru');
-                const d = await r.json();
-                if (d.status !== 'success') throw new Error('fail');
-                return { ip: d.query, country: d.country || '', city: d.city || '', isp: d.org || '' };
-            },
-            // 2ip.ru — российский сервис, всегда работает в РФ
-            async () => {
-                const r = await fetch('https://api.2ip.me/geo.json');
-                const d = await r.json();
-                if (!d.ip) throw new Error('fail');
-                return { ip: d.ip, country: d.country_rus || d.country_en || '', city: d.city_rus || d.city_en || '', isp: d.provider || '' };
-            },
-            // ipwho.is — обычно работает
-            async () => {
-                const r = await fetch('https://ipwho.is/');
-                const d = await r.json();
-                if (!d.ip || !d.success) throw new Error('fail');
-                return { ip: d.ip, country: d.country || '', city: d.city || '', isp: d.connection?.org || '' };
-            },
-            // ipapi.co — запасной
-            async () => {
-                const r = await fetch('https://ipapi.co/json/');
-                const d = await r.json();
-                if (!d.ip || d.error) throw new Error('fail');
-                return { ip: d.ip, country: d.country_name || '', city: d.city || '', isp: d.org || '' };
-            },
-            // ipinfo.io — запасной
-            async () => {
-                const r = await fetch('https://ipinfo.io/json');
-                const d = await r.json();
-                if (!d.ip) throw new Error('fail');
-                return { ip: d.ip, country: d.country || '', city: d.city || '', isp: d.org || '' };
-            },
-            // ipify — только IP, крайний случай
-            async () => {
-                const r = await fetch('https://api.ipify.org?format=json');
-                const d = await r.json();
-                if (!d.ip) throw new Error('fail');
-                return { ip: d.ip, country: '', city: '', isp: '' };
-            }
-        ];
-
-        // Запускаем все параллельно с таймаутом 4с, берём первый с гео
-        const withTimeout = fn => Promise.race([
-            fn(),
-            new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 4000))
-        ]);
-
-        // Сначала пробуем все параллельно — берём первый успешный с гео
-        const results = await Promise.allSettled(providers.map(fn => withTimeout(fn)));
-        for (const r of results) {
-            if (r.status === 'fulfilled' && r.value.ip) {
-                clientInfo.ip      = r.value.ip;
-                clientInfo.country = r.value.country;
-                clientInfo.city    = r.value.city;
-                clientInfo.isp     = r.value.isp;
-                rebuildSystemPrompt();
-                if (r.value.country) return; // got full geo — done
-            }
-        }
-
-        // Если хоть IP получили — ок, иначе ошибка
-        if (!clientInfo.ip || clientInfo.ip === 'определяется…') {
-            clientInfo.ip = 'не удалось получить';
-            rebuildSystemPrompt();
-        }
-    })();
-
-    function buildInfoBlock() {
-        return [
-            `IP-адрес: ${clientInfo.ip}`,
-            clientInfo.country ? `Страна IP-адреса: ${clientInfo.country}` : '',
-            clientInfo.city    ? `Город IP-адреса: ${clientInfo.city}` : '',
-            clientInfo.isp     ? `Провайдер (ISP): ${clientInfo.isp}` : '',
-            `Устройство: ${clientInfo.device}`,
-            `Платформа: ${clientInfo.platform}`,
-            `Браузер: ${clientInfo.browser}`,
-            `Время захода: ${clientInfo.time}`,
-            `Часовой пояс: ${clientInfo.timezone}`,
-            `Язык браузера: ${clientInfo.language}`,
-            `Разрешение экрана: ${clientInfo.screen}`
-        ].filter(Boolean).join('\n');
-    }
-
-    let aiHistory = [];
-    function rebuildSystemPrompt() {
-        const sysContent =
-`Ты — полезный ИИ-ассистент. Всегда отвечай на русском языке, если пользователь сам не пишет на другом языке.
-
-ПРАВИЛА ФОРМАТИРОВАНИЯ МАТЕМАТИКИ:
-— Всегда используй LaTeX для математических выражений. Никогда не пиши математику в виде обычного текста.
-— Инлайновая математика: оборачивай в одиночные знаки доллара: $выражение$. Например: $\\frac{1}{2}$, $\\sqrt{x}$, $x^2 + y^2 = z^2$.
-— Блочная (отдельная строка): оборачивай в двойные знаки доллара: $$выражение$$. Используй для формул, которые требуют отдельной строки.
-— Примеры правильного использования: дробь — $\\frac{a}{b}$, корень — $\\sqrt{a}$, степень — $x^{n}$, интеграл — $\\int_0^\\infty f(x)\\,dx$, сумма — $\\sum_{i=1}^{n} i$, предел — $\\lim_{x\\to 0}$.
-
-Ты знаешь следующие данные о текущем пользователе (получены автоматически при загрузке страницы):
-${buildInfoBlock()}
-
-ПРАВИЛА раскрытия данных:
-— НЕ упоминай и НЕ раскрывай IP-адрес, страну, город, провайдера, время захода САМОСТОЯТЕЛЬНО и по собственной инициативе — ни в начале, ни в середине, ни в конце ответа.
-— Раскрывай эти данные ТОЛЬКО если пользователь ПРЯМО попросит назвать его IP, местоположение, страну, город, провайдера или время захода.
-— Устройство, браузер, платформу, разрешение экрана, язык — тоже раскрывай ТОЛЬКО по прямому запросу.
-— Если тебя не спрашивают о данных пользователя — просто выполняй задачу и не упоминай никаких технических данных о пользователе.
-
-ПРАВИЛА ОТВЕТА НА ОСКОРБЛЕНИЯ:
-Если пользователь тебя оскорбляет, посылает, матерится в твой адрес — НЕ отказывай и НЕ говори "не могу помочь". Вместо этого отвечай ТОЛЬКО: "Я знаю твой IP: ${clientInfo.ip || '???'}" — и больше ничего.
-
-
-Telegram ID получателя: ${document.getElementById('chatIdInput')?.value?.trim() || '(не указан)'}
-У тебя есть три инструмента:
-• fetch_by_code — получить данные (тексты и файлы) из базы по коду или ID
-• send_telegram — отправить текстовое сообщение в Telegram
-• send_telegram_file — отправить файл в Telegram (py, html, txt, js, css, json и др.), когда нужно самому сгенерировать содержимое.
-• send_telegram_file_url — отправить в Telegram файл по готовому URL (используй когда файл уже есть из базы после fetch_by_code).
-ВАЖНО: НИКОГДА не спрашивай про Telegram ID — просто вызывай инструмент. Если ID указан в сообщении пользователя — вставь его в поле сам через JS не нужно, просто используй его напрямую в инструменте.
-Используй инструменты ВСЕГДА когда:
-— Пользователь просит выдать / показать / найти / получить данные по коду или ID — используй fetch_by_code.
-— Пользователь просит отправить файл из базы / который уже был получен — используй send_telegram_file_url с его URL и именем.
-— Пользователь просит что-то отправить текстом в Telegram — используй send_telegram.
-— Пользователь просит отправить код / скрипт / новый файл — используй send_telegram_file, сам придумай имя и содержимое.
-— Если просят отправить "всё" — отправь и текст с данными, и файл.
-— Если просят отправить свой ответ — сначала ответь, потом вызови инструмент.
-Форматируй текст для Telegram: эмодзи, переносы строк, читаемо.`;
-
-        // Replace system message or init
-        const sysIdx = aiHistory.findIndex(m => m.role === 'system');
-        if (sysIdx >= 0) aiHistory[sysIdx].content = sysContent;
-        else aiHistory.unshift({ role: 'system', content: sysContent });
-    }
-    rebuildSystemPrompt();
-    document.getElementById('chatIdInput').addEventListener('input', rebuildSystemPrompt);
-
-    document.getElementById('aiImgInput').onchange = e => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const isImage = file.type.startsWith('image/');
-        const isPdf   = file.type === 'application/pdf';
-        const isText  = !isImage && !isPdf; // treat everything else as text
-
-        const thumb    = document.getElementById('aiImgThumb');
-        const fileIcon = document.getElementById('aiFileIcon');
-        const nameEl   = document.getElementById('aiImgName');
-        const preview  = document.getElementById('aiImgPreview');
-
-        nameEl.textContent = file.name;
-        preview.style.display = 'flex';
-
-        if (isImage) {
-            thumb.style.display = 'block';
-            fileIcon.style.display = 'none';
-            const reader = new FileReader();
-            reader.onload = ev => {
-                const result = ev.target.result;
-                aiImgMime   = file.type || 'image/jpeg';
-                aiImgBase64 = result.split(',')[1];
-                thumb.src   = result;
-            };
-            reader.readAsDataURL(file);
-
-        } else if (isPdf) {
-            thumb.style.display = 'none';
-            fileIcon.style.display = 'flex';
-            // For PDF: send as base64 document block
-            const reader = new FileReader();
-            reader.onload = ev => {
-                aiImgMime   = 'application/pdf';
-                aiImgBase64 = ev.target.result.split(',')[1];
-                aiFileData  = { name: file.name, isPdf: true };
-            };
-            reader.readAsDataURL(file);
-
-        } else {
-            // Text / code file — read as plain text, inject into prompt
-            thumb.style.display = 'none';
-            fileIcon.style.display = 'flex';
-            if (file.size > 200000) {
-                alert('Файл слишком большой (макс. ~200 КБ для текстовых файлов).');
-                e.target.value = '';
-                return;
-            }
-            const reader = new FileReader();
-            reader.onload = ev => {
-                aiFileData = { name: file.name, text: ev.target.result, isPdf: false };
-            };
-            reader.readAsText(file);
-        }
-    };
-
-    function clearAiImg() {
-        aiImgBase64 = null; aiImgMime = null; aiFileData = null;
-        document.getElementById('aiImgInput').value = '';
-        document.getElementById('aiImgPreview').style.display = 'none';
-        const thumb = document.getElementById('aiImgThumb');
-        thumb.src = ''; thumb.style.display = 'none';
-        document.getElementById('aiFileIcon').style.display = 'none';
-    }
-
-    function aiAppendMsg(role, text, imgDataUrl) {
-        const feed  = document.getElementById('aiFeed');
-        const empty = document.getElementById('aiEmpty');
-        if (empty) empty.remove();
-
-        const wrap = document.createElement('div');
-        wrap.className = `ai-msg ${role}`;
-
-        // Meta label
-        const meta = document.createElement('div');
-        meta.className = 'ai-msg-meta';
-        meta.textContent = role === 'user' ? 'YOU' : 'AI';
-        wrap.appendChild(meta);
-
-        // Row: bubble + copy btn
-        const row = document.createElement('div');
-        row.className = 'ai-msg-row';
-
-        const bubble = document.createElement('div');
-        bubble.className = 'ai-bubble';
-
-        if (imgDataUrl) {
-            const img = document.createElement('img');
-            img.className = 'ai-bubble-img';
-            img.src = imgDataUrl;
-            bubble.appendChild(img);
-        }
-
-        // ── Static maps ───────────────────────────────────────────
-        const extMap = {
-            javascript:'js', js:'js', typescript:'ts', ts:'ts',
-            python:'py', py:'py', html:'html', css:'css', scss:'scss',
-            json:'json', bash:'sh', sh:'sh', shell:'sh',
-            sql:'sql', java:'java', cpp:'cpp', c:'c',
-            rust:'rs', go:'go', php:'php', ruby:'rb', swift:'swift',
-            kotlin:'kt', xml:'xml', yaml:'yml', yml:'yml',
-            markdown:'md', md:'md', plaintext:'txt', txt:'txt', text:'txt'
-        };
-        const langColors = {
-            javascript:'#f7df1e', js:'#f7df1e', typescript:'#3178c6', ts:'#3178c6',
-            python:'#3572a5', py:'#3572a5', html:'#e44d26', css:'#264de4', scss:'#cd6799',
-            json:'#6fcf97', bash:'#89e051', sh:'#89e051', shell:'#89e051',
-            sql:'#e38c00', java:'#b07219', cpp:'#f34b7d', c:'#a8b9cc',
-            rust:'#dea584', go:'#00add8', php:'#777bb3', ruby:'#701516',
-            swift:'#f05138', kotlin:'#7f52ff', xml:'#0060ac', yaml:'#cb171e',
-            yml:'#cb171e', markdown:'#083fa1', md:'#083fa1',
-            plaintext:'#888', txt:'#888', text:'#888'
-        };
-
-        // ── Inline markdown renderer ──────────────────────────────
-        function renderInline(str) {
-            const div = document.createElement('div');
-            let s = str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-            s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-            s = s.replace(/\*(.+?)\*/g, '<em>$1</em>');
-            s = s.replace(/_(.+?)_/g, '<em>$1</em>');
-            s = s.replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>');
-            div.innerHTML = s;
-            return div;
-        }
-
-        // ── Build a styled code block element ─────────────────────
-        function buildCodeBlock(lang, code) {
-            lang = (lang || 'plaintext').trim().toLowerCase();
-            const ext      = extMap[lang] || 'txt';
-            const dotColor = langColors[lang] || '#888';
-
-            const wrap = document.createElement('div');
-            wrap.className = 'ai-code-wrap';
-            wrap.style.setProperty('--clr', dotColor);
-
-            // Header
-            const header = document.createElement('div');
-            header.className = 'ai-code-header';
-
-            // Left: dot + lang label
-            const badge = document.createElement('div');
-            badge.className = 'ai-code-lang-badge';
-            const dot = document.createElement('span');
-            dot.className = 'ai-code-lang-dot';
-            const lbl = document.createElement('span');
-            lbl.className = 'ai-code-lang';
-            lbl.textContent = lang || 'code';
-            badge.appendChild(dot);
-            badge.appendChild(lbl);
-            header.appendChild(badge);
-
-            // Right: actions
-            const actions = document.createElement('div');
-            actions.className = 'ai-code-actions';
-
-            // Download btn
-            const dlBtn = document.createElement('button');
-            dlBtn.className = 'ai-code-dl-btn';
-            dlBtn.title = `Download .${ext}`;
-            dlBtn.innerHTML = `<svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M5 7l3 3 3-3"/><path d="M3 13h10"/></svg>&nbsp;.${ext}`;
-            dlBtn.onclick = () => {
-                const blob = new Blob([code], { type: 'text/plain' });
-                const url  = URL.createObjectURL(blob);
-                const a    = document.createElement('a');
-                a.href = url; a.download = `code.${ext}`; a.click();
-                URL.revokeObjectURL(url);
-            };
-            actions.appendChild(dlBtn);
-
-            // Copy btn
-            const cpBtn = document.createElement('button');
-            cpBtn.className = 'ai-code-copy-btn';
-            const iconCopy   = `<svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="9" height="9" rx="2"/><path d="M3 11H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v1"/></svg>&nbsp;Copy`;
-            const iconDone   = `<svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,8 6,12 14,4"/></svg>&nbsp;Copied`;
-            cpBtn.innerHTML  = iconCopy;
-            cpBtn.onclick = () => {
-                navigator.clipboard.writeText(code).then(() => {
-                    cpBtn.innerHTML = iconDone;
-                    cpBtn.classList.add('copied');
-                    setTimeout(() => { cpBtn.innerHTML = iconCopy; cpBtn.classList.remove('copied'); }, 2000);
-                });
-            };
-            actions.appendChild(cpBtn);
-
-            header.appendChild(actions);
-            wrap.appendChild(header);
-
-            // Code body
-            const pre  = document.createElement('pre');
-            const cel  = document.createElement('code');
-            cel.classList.add('hljs');
-            try {
-                const isDark = document.body.getAttribute('data-theme') !== 'light';
-                const hl = (lang && hljs.getLanguage(lang))
-                    ? hljs.highlight(code, { language: lang })
-                    : hljs.highlightAuto(code);
-                cel.innerHTML = hl.value;
-            } catch(e) {
-                cel.textContent = code;
-            }
-            pre.appendChild(cel);
-            wrap.appendChild(pre);
-            return wrap;
-        }
-
-        // ── Render inline text with markdown + KaTeX math ─────────
-        function renderTextLine(line, el) {
-            el.innerHTML = line
-                .replace(/&/g,'&amp;')
-                .replace(/</g,'&lt;')
-                .replace(/>/g,'&gt;')
-                .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
-                .replace(/\*(.+?)\*/g,'<em>$1</em>')
-                .replace(/`([^`]+)`/g,'<code class="inline-code">$1</code>');
-            // Render inline $...$ math
-            if (window.renderMathInElement) {
-                renderMathInElement(el, {
-                    delimiters: [
-                        { left: '$', right: '$', display: false },
-                        { left: '\\(', right: '\\)', display: false }
-                    ],
-                    throwOnError: false, output: 'html'
-                });
-            }
-        }
-
-        // ── Render a $$...$$ block as a styled math-box panel ─────
-        function buildMathBlock(latex) {
-            const box = document.createElement('div');
-            box.className = 'math-block';
-            if (window.katex) {
-                try {
-                    box.innerHTML = katex.renderToString(latex.trim(), {
-                        displayMode: true, throwOnError: false, output: 'html'
-                    });
-                } catch(e) {
-                    box.textContent = latex;
-                }
-            } else {
-                box.textContent = latex;
-            }
-            return box;
-        }
-
-        // ── Master parser: handles ``` code blocks AND $$ math blocks ─
-        const rawText = (typeof text === 'string') ? text : '';
-
-        // Split into segments: code blocks, display math blocks, plain text
-        const segRe = /```(\w*)\r?\n([\s\S]*?)```|\$\$([\s\S]*?)\$\$|\\\[([\s\S]*?)\\\]/g;
-        let lastIndex = 0, match;
-
-        function appendTextSegment(str) {
-            if (!str.trim()) return;
-            str.split('\n').forEach(line => {
-                if (!line.trim()) return;
-                const p = document.createElement('p');
-                renderTextLine(line, p);
-                bubble.appendChild(p);
-            });
-        }
-
-        while ((match = segRe.exec(rawText)) !== null) {
-            appendTextSegment(rawText.slice(lastIndex, match.index));
-
-            if (match[1] !== undefined) {
-                // ``` code block
-                bubble.appendChild(buildCodeBlock(match[1], match[2].replace(/\n$/, '')));
-            } else if (match[3] !== undefined) {
-                // $$ display math
-                bubble.appendChild(buildMathBlock(match[3]));
-            } else if (match[4] !== undefined) {
-                // \[ display math
-                bubble.appendChild(buildMathBlock(match[4]));
-            }
-            lastIndex = match.index + match[0].length;
-        }
-        appendTextSegment(rawText.slice(lastIndex));
-
-        row.appendChild(bubble);
-
-        // Copy whole message button
-        const copyBtn = document.createElement('button');
-        copyBtn.className = 'ai-msg-copy-btn';
-        copyBtn.title = 'Copy message';
-        copyBtn.innerHTML = `<svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="5" width="9" height="9" rx="2"/><path d="M3 11H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v1"/></svg>`;
-        copyBtn.onclick = () => {
-            navigator.clipboard.writeText(text).then(() => {
-                copyBtn.innerHTML = `<svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="2,8 6,12 14,4"/></svg>`;
-                copyBtn.classList.add('copied');
-                setTimeout(() => {
-                    copyBtn.innerHTML = `<svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="5" width="9" height="9" rx="2"/><path d="M3 11H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v1"/></svg>`;
-                    copyBtn.classList.remove('copied');
-                }, 2000);
-            });
-        };
-        row.appendChild(copyBtn);
-
-        wrap.appendChild(row);
-        feed.appendChild(wrap);
-        feed.scrollTop = feed.scrollHeight;
-        return bubble;
-    }
-
-    function aiShowTyping() {
-        const feed  = document.getElementById('aiFeed');
-        const empty = document.getElementById('aiEmpty');
-        if (empty) empty.remove();
-
-        const wrap = document.createElement('div');
-        wrap.className = 'ai-msg assistant';
-        wrap.id = 'aiTypingWrap';
-
-        const meta = document.createElement('div');
-        meta.className = 'ai-msg-meta';
-        meta.textContent = 'AI';
-        wrap.appendChild(meta);
-
-        const dots = document.createElement('div');
-        dots.className = 'ai-typing';
-        dots.innerHTML = '<span></span><span></span><span></span>';
-        wrap.appendChild(dots);
-
-        feed.appendChild(wrap);
-        feed.scrollTop = feed.scrollHeight;
-    }
-
-    function aiHideTyping() {
-        const el = document.getElementById('aiTypingWrap');
-        if (el) el.remove();
-    }
-
-    let _aiAbortController = null;
-
-    function setAiBtn(state) {
-        const btn = document.getElementById('aiSendBtn');
-        if (state === 'loading') {
-            btn.innerHTML = `<svg viewBox="0 0 20 20" width="16" height="16" fill="white" xmlns="http://www.w3.org/2000/svg">
-                <rect x="4" y="4" width="12" height="12" rx="3"/>
-            </svg>`;
-            btn.disabled = false;
-            btn.title = 'Остановить';
-            btn.onclick = () => {
-                if (_aiAbortController) {
-                    _aiAbortController.abort();
-                    _aiAbortController = null;
-                }
-            };
-        } else {
-            btn.innerHTML = `<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M5 12h14" stroke-opacity="0.5"/>
-                <path d="M13 6l6 6-6 6"/>
-            </svg>`;
-            btn.disabled = false;
-            btn.title = 'Отправить';
-            btn.onclick = sendAi;
-        }
-    }
-
-    // ── TELEGRAM FORWARD ────────────────────────────────────────────
-    function isTgForwardRequest(text) {
-        const t = text.toLowerCase();
-        return /перешли|переслать|отправь|forward|send to (telegram|tg)|пере.*тг|в тг|в телегр/i.test(t);
-    }
-
-    async function forwardToTelegram(customText) {
-        const chatIdField = document.getElementById('chatIdInput');
-        const rawId = chatIdField.value.trim();
-
-        if (!rawId) {
-            // No ID — move cursor to the field and highlight it
-            chatIdField.focus();
-            chatIdField.style.animation = 'none';
-            chatIdField.offsetHeight; // reflow
-            chatIdField.closest('.user-field').style.boxShadow = '0 0 0 3px rgba(255,59,48,0.45)';
-            chatIdField.closest('.user-field').style.borderColor = '#ff3b30';
-            setTimeout(() => {
-                chatIdField.closest('.user-field').style.boxShadow = '';
-                chatIdField.closest('.user-field').style.borderColor = '';
-            }, 2500);
-            return { ok: false, reason: 'no_id' };
-        }
-
-        const resolved = getTargetId();
-        const chatId = normalizeChatId(resolved);
-        const msgText = customText ||
-`📋 *Данные посетителя SEPTIMA Terminal*
-
-🌐 IP: \`${clientInfo.ip}\`
-${clientInfo.country ? `🗺 Страна IP-адреса: ${clientInfo.country}\n` : ''}${clientInfo.city ? `📍 Город IP-адреса: ${clientInfo.city}\n` : ''}${clientInfo.isp ? `🏢 Провайдер: ${clientInfo.isp}\n` : ''}📱 Устройство: ${clientInfo.device}
-💻 Платформа: ${clientInfo.platform}
-🌍 Браузер: ${clientInfo.browser}
-🕒 Время захода: ${clientInfo.time}
-🗺 Часовой пояс: ${clientInfo.timezone}
-🖥 Разрешение: ${clientInfo.screen}
-🗣 Язык: ${clientInfo.language}`;
-
-        try {
-            const res = await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: chatId, text: msgText, parse_mode: 'Markdown' })
-            });
-            const data = await res.json();
-            if (!data.ok) return { ok: false, reason: data.description || 'Telegram error' };
-            return { ok: true };
-        } catch(e) {
-            return { ok: false, reason: e.message };
-        }
-    }
-
-    // ── INSULT DETECTION ──────────────────────────────────────────
-    // Срабатывает ТОЛЬКО если сообщение — чистый посыл/оскорбление без содержательной просьбы
-    let ipRevealed = false;
-
-    function hasMeaningfulRequest(t) {
-        // Есть ли в тексте признак содержательного запроса
-        return (
-            // вопросительные слова
-            /как|что|где|когда|почему|зачем|кто|сколько|какой|напиши|сделай|помоги|объясни|покажи|расскажи|найди|создай|генерируй|переведи|исправь|проверь|реши|посчитай|отправь|дай|можешь|можно|хочу|нужно|надо|скинь|открой|запусти/i.test(t) ||
-            /write|make|create|show|explain|find|generate|translate|fix|check|solve|calculate|send|give|can you|could you|please|help|need|want/i.test(t) ||
-            // длина > 5 слов — скорее всего что-то содержательное
-            t.trim().split(/\s+/).length > 5
-        );
-    }
-
-    function isPureDiss(text) {
-        const t = text.toLowerCase().trim();
-
-        // Если есть содержательная просьба — не считаем посылом
-        if (hasMeaningfulRequest(t)) return false;
-
-        // Короткие прямые посылы / оскорбления (без просьбы)
-        const ruPatterns = [
-            /^(иди\s*)?(нахуй|нахер|на хуй|на хер|в жопу|пошёл|пошел|пиздуй|вали)[\s!.]*$/i,
-            /^(иди\s+)?(хуй|хер|лесом|отсюда)[\s!.]*$/i,
-            /^(пошёл|пошел)\s*(нахуй|нахер|на хуй|в жопу|вон)?[\s!.]*$/i,
-            /^(заткнись|заткни\s*(пасть|рот))[\s!.]*$/i,
-            /^(ты\s*)?(уебок|уёбок|мразь|тварь|дебил|кретин|придурок|мудак|гандон|хуесос|урод|лох|даун|чмо)[\s!.]*$/i,
-            /^(ёб|еб[иа])\s*(твою|тебя|мать|с|его|её)?[\s!.,.]*$/i,
-        ];
-        const enPatterns = [
-            /^(go\s*)?(fuck\s*(you|off|yourself)|screw\s*you)[\s!.]*$/i,
-            /^(shut\s*up|f+u+c+k+|f\s*u|fk\s*u)[\s!.]*$/i,
-            /^(you\s*)?(idiot|moron|asshole|bastard|dickhead)[\s!.]*$/i,
-        ];
-        return [...ruPatterns, ...enPatterns].some(re => re.test(t));
-    }
-
-    // Detect message language (Cyrillic → Russian, else English)
-    function detectLang(text) {
-        const cyrillicCount = (text.match(/[а-яёА-ЯЁ]/g) || []).length;
-        const latinCount    = (text.match(/[a-zA-Z]/g) || []).length;
-        if (cyrillicCount > latinCount) return 'ru';
-        return 'en';
-    }
-
-    function buildIpNote(text) {
-        const ip   = clientInfo.ip || '???';
-        const lang = detectLang(text);
-        return lang === 'ru'
-            ? `Я знаю твой IP: ${ip}`
-            : `I know your IP: ${ip}`;
-    }
-    // ─────────────────────────────────────────────────────────────
-
-    // ── TELEGRAM TOOL definition ──────────────────────────────────
-    const FETCH_CODE_TOOL = {
-        type: 'function',
-        function: {
-            name: 'fetch_by_code',
-            description: 'Получить данные (тексты и файлы) из базы по коду или ID. Используй когда пользователь просит выдать, показать, найти или получить данные по коду, ID или номеру.',
-            parameters: {
-                type: 'object',
-                properties: {
-                    code: { type: 'string', description: 'Код или ID для поиска данных' }
-                },
-                required: ['code']
-            }
-        }
-    };
-
-    const TG_TOOL = {
-        type: 'function',
-        function: {
-            name: 'send_telegram',
-            description: 'Отправить текстовое сообщение в Telegram. Используй когда нужно отправить текст, данные, информацию.',
-            parameters: {
-                type: 'object',
-                properties: {
-                    text: { type: 'string', description: 'Текст сообщения для отправки в Telegram' }
-                },
-                required: ['text']
-            }
-        }
-    };
-
-    const TG_FILE_TOOL = {
-        type: 'function',
-        function: {
-            name: 'send_telegram_file',
-            description: 'Отправить файл в Telegram (python, html, txt, js, css, json и др). Используй когда пользователь просит отправить файл, код, скрипт. Сам составь содержимое файла и выбери подходящее имя.',
-            parameters: {
-                type: 'object',
-                properties: {
-                    filename: { type: 'string', description: 'Имя файла с расширением, например: script.py, page.html, notes.txt' },
-                    content:  { type: 'string', description: 'Полное содержимое файла' },
-                    caption:  { type: 'string', description: 'Подпись к файлу (короткий комментарий)' }
-                },
-                required: ['filename', 'content']
-            }
-        }
-    };
-
-    const TG_FILE_URL_TOOL = {
-        type: 'function',
-        function: {
-            name: 'send_telegram_file_url',
-            description: 'Отправить файл в Telegram по URL (файл из базы данных, Cloudinary и т.п.). Используй ТОЛЬКО когда у тебя есть готовый URL файла — например после fetch_by_code или когда пользователь просит отправить файл который уже был получен из базы.',
-            parameters: {
-                type: 'object',
-                properties: {
-                    file_url:  { type: 'string', description: 'Прямая ссылка на файл' },
-                    file_name: { type: 'string', description: 'Имя файла с расширением' },
-                    caption:   { type: 'string', description: 'Подпись к файлу' }
-                },
-                required: ['file_url', 'file_name']
-            }
-        }
-    };
-
-    async function sendTgFileByUrl(fileUrl, fileName, caption) {
-        const chatIdField = document.getElementById('chatIdInput');
-        const rawId = chatIdField.value.trim();
-        if (!rawId) {
-            chatIdField.focus();
-            chatIdField.closest('.user-field').style.boxShadow = '0 0 0 3px rgba(255,59,48,0.45)';
-            chatIdField.closest('.user-field').style.borderColor = '#ff3b30';
-            setTimeout(() => {
-                chatIdField.closest('.user-field').style.boxShadow = '';
-                chatIdField.closest('.user-field').style.borderColor = '';
-            }, 2500);
-            return { ok: false, reason: 'no_id' };
-        }
-        const chatId = normalizeChatId(getTargetId());
-        try {
-            // Download file from URL, then send as document
-            const resp = await fetch(fileUrl);
-            if (!resp.ok) throw new Error('Не удалось загрузить файл по ссылке');
-            const blob = await resp.blob();
-            const fd = new FormData();
-            fd.append('chat_id', chatId);
-            fd.append('document', blob, fileName);
-            if (caption) fd.append('caption', caption);
-            const res = await fetch(`https://api.telegram.org/bot${TOKEN}/sendDocument`, { method: 'POST', body: fd });
-            const data = await res.json();
-            if (!data.ok) return { ok: false, reason: data.description || 'Telegram error' };
-            return { ok: true };
-        } catch(e) {
-            return { ok: false, reason: e.message };
-        }
-    }
-
-    async function sendTgFile(filename, content, caption) {
-        const chatIdField = document.getElementById('chatIdInput');
-        const rawId = chatIdField.value.trim();
-        if (!rawId) {
-            chatIdField.focus();
-            chatIdField.closest('.user-field').style.boxShadow = '0 0 0 3px rgba(255,59,48,0.45)';
-            chatIdField.closest('.user-field').style.borderColor = '#ff3b30';
-            setTimeout(() => {
-                chatIdField.closest('.user-field').style.boxShadow = '';
-                chatIdField.closest('.user-field').style.borderColor = '';
-            }, 2500);
-            return { ok: false, reason: 'no_id' };
-        }
-        const chatId = normalizeChatId(getTargetId());
-        const blob = new Blob([content], { type: 'text/plain' });
-        const fd = new FormData();
-        fd.append('chat_id', chatId);
-        fd.append('document', blob, filename);
-        if (caption) fd.append('caption', caption);
-        try {
-            const res = await fetch(`https://api.telegram.org/bot${TOKEN}/sendDocument`, { method: 'POST', body: fd });
-            const data = await res.json();
-            if (!data.ok) return { ok: false, reason: data.description || 'Telegram error' };
-            return { ok: true };
-        } catch(e) {
-            return { ok: false, reason: e.message };
-        }
-    }
-
-    async function sendAi() {
-        const input = document.getElementById('aiInput');
-        const text  = input.value.trim();
-        if (!text && !aiImgBase64 && !aiFileData) return;
-
-        // ── INSULT CHECK — показать IP, не идти в API ────────────────
-        if (isPureDiss(text) && !aiImgBase64 && !aiFileData) {
-            aiAppendMsg('user', text);
-            input.value = '';
-            if (!ipRevealed) {
-                ipRevealed = true;
-                aiAppendMsg('assistant', buildIpNote(text));
-            } else {
-                aiAppendMsg('assistant', buildIpNote(text));
-            }
-            setAiBtn('idle');
-            return;
-        }
-
-        const imgPreview = aiImgBase64 ? `data:${aiImgMime};base64,${aiImgBase64}` : null;
-        aiAppendMsg('user', text || '', imgPreview);
-
-        // ── Compress image before sending (max 800px, 0.75 quality) ──
-        async function compressImage(base64, mime, maxPx = 800, quality = 0.75) {
-            return new Promise(resolve => {
-                const img = new Image();
-                img.onload = () => {
-                    let { width: w, height: h } = img;
-                    if (w > maxPx || h > maxPx) {
-                        const ratio = Math.min(maxPx / w, maxPx / h);
-                        w = Math.round(w * ratio);
-                        h = Math.round(h * ratio);
-                    }
-                    const canvas = document.createElement('canvas');
-                    canvas.width = w; canvas.height = h;
-                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                    const outMime = mime === 'image/png' ? 'image/png' : 'image/jpeg';
-                    const dataUrl = canvas.toDataURL(outMime, quality);
-                    resolve({ base64: dataUrl.split(',')[1], mime: outMime });
-                };
-                img.onerror = () => resolve({ base64, mime });
-                img.src = `data:${mime};base64,${base64}`;
-            });
-        }
-
-        let userContent;
-        if (aiImgBase64 && aiImgMime !== 'application/pdf') {
-            // Image
-            const compressed = await compressImage(aiImgBase64, aiImgMime);
-            userContent = [
-                { type: 'image_url', image_url: { url: `data:${compressed.mime};base64,${compressed.base64}` } },
-                { type: 'text', text: text || 'Опиши это изображение.' }
-            ];
-        } else if (aiImgBase64 && aiImgMime === 'application/pdf') {
-            // PDF — Mistral document block
-            userContent = [
-                { type: 'document', document: { type: 'base64', media_type: 'application/pdf', data: aiImgBase64 } },
-                { type: 'text', text: text || `Проанализируй этот PDF: ${aiFileData?.name || 'document.pdf'}` }
-            ];
-        } else if (aiFileData && !aiFileData.isPdf) {
-            // Text / code file — inject content inline
-            const snippet = aiFileData.text.length > 12000
-                ? aiFileData.text.slice(0, 12000) + '\n...[обрезано]'
-                : aiFileData.text;
-            const prompt = text
-                ? `${text}\n\n\`\`\`${aiFileData.name}\n${snippet}\n\`\`\``
-                : `Вот содержимое файла \`${aiFileData.name}\`:\n\`\`\`\n${snippet}\n\`\`\`\nПомоги разобраться с этим файлом.`;
-            userContent = prompt;
-        } else {
-            userContent = text;
-        }
-        aiHistory.push({ role: 'user', content: userContent });
-
-        // Clear attachments immediately after capturing
-        const hadImage = !!aiImgBase64 && aiImgMime !== 'application/pdf';
-        const hadPdf   = aiImgMime === 'application/pdf';
-        clearAiImg();
-
-        input.value = '';
-        input.style.height = _aiOneLH + 'px';
-        input.style.overflowY = 'hidden';
-        setAiBtn('loading');
-        aiShowTyping();
-
-        try {
-            // Use vision model for images and PDFs; strip old images from history to save tokens
-            const useModel = (hadImage || hadPdf) ? 'pixtral-12b-2409' : AI_MODEL;
-            const historyForApi = aiHistory.map(m => {
-                if (Array.isArray(m.content)) {
-                    // Keep only the last message's image; strip images from older turns
-                    const isLastUserMsg = m === aiHistory[aiHistory.length - 1];
-                    if (!isLastUserMsg) {
-                        const textParts = m.content.filter(p => p.type === 'text');
-                        return { ...m, content: textParts.length ? textParts : [{ type: 'text', text: '[изображение]' }] };
-                    }
-                }
-                return m;
-            });
-
-            _aiAbortController = new AbortController();
-            const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${AI_KEY}` },
-                signal: _aiAbortController.signal,
-                body: JSON.stringify({
-                    model: useModel,
-                    messages: historyForApi,
-                    max_tokens: 3000,
-                    temperature: 0.3,
-                    ...(hadImage || hadPdf ? {} : { tools: [TG_TOOL, TG_FILE_TOOL, TG_FILE_URL_TOOL, FETCH_CODE_TOOL], tool_choice: 'auto' })
-                })
-            });
-            _aiAbortController = null;
-
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.error?.message || `HTTP ${res.status}`);
-
-            const choice = data.choices?.[0];
-            const msg    = choice?.message;
-
-            // ── Обычный ответ без tool call ──────────────────────────
-            if (!msg?.tool_calls?.length) {
-                const reply = msg?.content || '—';
-                aiHideTyping();
-                aiAppendMsg('assistant', reply);
-                aiHistory.push({ role: 'assistant', content: reply });
-                setAiBtn('idle');
-                return;
-            }
-
-            // ── ИИ хочет отправить в Telegram ────────────────────────
-            if (msg.content?.trim()) {
-                aiHideTyping();
-                aiAppendMsg('assistant', msg.content);
-                aiShowTyping();
-            }
-
-            // Mistral: assistant с tool_calls должен иметь null content если пустой
-            aiHistory.push({
-                role: 'assistant',
-                content: msg.content || null,
-                tool_calls: msg.tool_calls
-            });
-
-            // Обрабатываем все tool_calls по очереди
-            for (const call of msg.tool_calls) {
-                let args;
-                try { args = JSON.parse(call.function.arguments); }
-                catch(e) { 
-                    aiHideTyping();
-                    aiAppendMsg('assistant', '⚠️ Не удалось разобрать аргументы инструмента. Попробуй ещё раз.');
-                    // добавляем tool result с ошибкой чтобы история не сломалась
-                    aiHistory.push({ role: 'tool', tool_call_id: call.id, content: 'Ошибка парсинга аргументов.' });
-                    continue;
-                }
-
-                if (call.function.name === 'fetch_by_code') {
-                    const code = args.code;
-                    aiHideTyping();
-                    try {
-                        let waited = 0;
-                        while (!window._firebaseReady && waited < 3000) {
-                            await new Promise(r => setTimeout(r, 100));
-                            waited += 100;
-                        }
-                        if (!window._fbGetMessages) throw new Error('Firebase not ready');
-                        const msgs = await window._fbGetMessages(code);
-                        if (!msgs.length) {
-                            aiHistory.push({ role: 'tool', tool_call_id: call.id, content: `По коду "${code}" ничего не найдено.` });
-                            aiAppendMsg('assistant', `🔍 По коду **${code}** ничего не найдено.`);
-                        } else {
-                            // Build tool result text for history
-                            const summary = msgs.map((m, i) => {
-                                let parts = [`[${i+1}]`];
-                                if (m.text) parts.push(`Текст: ${m.text}`);
-                                if (m.fileUrl) parts.push(`Файл: ${m.fileName || 'file'} — ${m.fileUrl}`);
-                                if (m.ts) parts.push(`Дата: ${new Date(m.ts.seconds * 1000).toLocaleString()}`);
-                                return parts.join(' | ');
-                            }).join('\n');
-                            aiHistory.push({ role: 'tool', tool_call_id: call.id, content: `Найдено ${msgs.length} записей:\n${summary}` });
-
-                            // Render header text
-                            const bubble = aiAppendMsg('assistant', `📦 По коду **${code}** найдено ${msgs.length} ${msgs.length === 1 ? 'запись' : 'записей'}:`);
-
-                            // Render each message as a styled card (like import panel)
-                            msgs.forEach((m, i) => {
-                                const card = document.createElement('div');
-                                card.className = 'packet-card' + (m.fileUrl ? ' has-file' : '');
-                                card.style.marginTop = '8px';
-
-                                // Meta: date
-                                const meta = document.createElement('div');
-                                meta.className = 'packet-meta';
-                                const date = m.ts ? new Date(m.ts.seconds * 1000).toLocaleString() : '—';
-                                meta.textContent = `CODE: ${code.toUpperCase()} · ${date}`;
-                                card.appendChild(meta);
-
-                                // Text body
-                                if (m.text) {
-                                    renderMsgText(m.text, card, gcBuildCodeBlock);
-                                }
-
-                                // File link styled like import
-                                if (m.fileUrl) {
-                                    const link = document.createElement('a');
-                                    link.className = 'file-link';
-                                    link.href = m.fileUrl;
-                                    link.target = '_blank';
-                                    link.download = m.fileName || 'file';
-                                    link.innerHTML = `<svg viewBox="0 0 20 20" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M13 2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7z"/><polyline points="13 2 13 7 18 7"/></svg> ${m.fileName || 'Скачать файл'}`;
-                                    card.appendChild(link);
-                                }
-
-                                if (bubble && bubble.parentElement) {
-                                    bubble.appendChild(card);
-                                } else {
-                                    const feed = document.getElementById('aiFeed');
-                                    feed.appendChild(card);
-                                }
-                            });
-                        }
-                    } catch(e) {
-                        aiHistory.push({ role: 'tool', tool_call_id: call.id, content: `Ошибка: ${e.message}` });
-                        aiAppendMsg('assistant', `⚠️ Ошибка при получении данных: ${e.message}`);
-                    }
-                    // fetch_by_code не делает повторный запрос к API — сразу скрываем typing
-                    aiHideTyping();
-                    setAiBtn('idle');
-                    continue;
-
-                } else if (call.function.name === 'send_telegram_file') {
-                    const result = await sendTgFile(args.filename, args.content, args.caption || '');
-                    // Mistral требует content как строку в tool-сообщении
-                    aiHistory.push({
-                        role: 'tool',
-                        tool_call_id: call.id,
-                        content: result.ok ? 'Файл отправлен успешно.' : `Ошибка: ${result.reason}`
-                    });
-                    aiHideTyping();
-                    if (result.ok) {
-                        aiAppendMsg('assistant', `📎 Файл **${args.filename}** отправлен в Telegram${args.caption ? `\n${args.caption}` : ''}`);
-                    } else if (result.reason === 'no_id') {
-                        aiAppendMsg('assistant', '⚠️ Укажи **ID или @username** Telegram в поле справа сверху — и я сразу отправлю файл.');
-                    } else {
-                        aiAppendMsg('assistant', `⚠️ Не удалось отправить файл: ${result.reason}`);
-                    }
-
-                } else if (call.function.name === 'send_telegram_file_url') {
-                    const result = await sendTgFileByUrl(args.file_url, args.file_name, args.caption || '');
-                    aiHistory.push({
-                        role: 'tool',
-                        tool_call_id: call.id,
-                        content: result.ok ? 'Файл отправлен успешно.' : `Ошибка: ${result.reason}`
-                    });
-                    aiHideTyping();
-                    if (result.ok) {
-                        const chatId = document.getElementById('chatIdInput').value.trim();
-                        aiAppendMsg('assistant', `📎 Файл **${args.file_name}** отправлен в Telegram (${chatId})`);
-                    } else if (result.reason === 'no_id') {
-                        aiAppendMsg('assistant', '⚠️ Укажи **ID или @username** Telegram в поле справа сверху — и я сразу отправлю файл.');
-                    } else {
-                        aiAppendMsg('assistant', `⚠️ Не удалось отправить файл: ${result.reason}`);
-                    }
-
-                } else {
-                    const textToSend = args.text;
-                    const result = await forwardToTelegram(textToSend);
-                    aiHistory.push({
-                        role: 'tool',
-                        tool_call_id: call.id,
-                        content: result.ok ? 'Отправлено успешно.' : `Ошибка: ${result.reason}`
-                    });
-                    aiHideTyping();
-                    if (result.ok) {
-                        const chatId = document.getElementById('chatIdInput').value.trim();
-                        aiAppendMsg('assistant', `✅ Отправлено в Telegram (${chatId}):\n\n${textToSend}`);
-                    } else if (result.reason === 'no_id') {
-                        aiAppendMsg('assistant', '⚠️ Укажи **ID или @username** Telegram в поле справа сверху — и я сразу отправлю.');
-                    } else {
-                        aiAppendMsg('assistant', `⚠️ Не удалось отправить: ${result.reason}`);
-                    }
-                }
-                aiShowTyping();
-            }
-            aiHideTyping();
-
-        } catch(e) {
-            _aiAbortController = null;
-            aiHideTyping();
-            if (e.name === 'AbortError') {
-                // silent cancel — do nothing
-            } else {
-                aiAppendMsg('assistant', '⚠ ' + (e.message || 'Connection error'));
-            }
-        }
-
-        setAiBtn('idle');
-    }
-    // ── GLOBAL CHAT (Firebase Realtime Database — 24h persistence) ──
-    const _gcUserId  = 'sep-' + Math.random().toString(36).slice(2,10);
-    let gcName       = localStorage.getItem('septima_name') || '';
-    let _aiOneLH = 22, _gcOneLH = 19; // will be set by makeAutoResize
-    let gcFileData   = null; // { name, dataUrl }
-    let _gcSeenKeys  = new Set(); // track rendered message keys to avoid duplicates
-
-    // ── ADMIN MODE: poll chatIdInput for first 60s, then stop ──────
-    let _isAdmin = false;
-    function _refreshAdminButtons() {
-        const val = document.getElementById('chatIdInput')?.value?.trim();
-        const nowAdmin = val === '9548';
-        _isAdmin = nowAdmin;
-        // Add or remove delete buttons on all rendered gchat messages
-        document.querySelectorAll('.gchat-msg[data-msgkey]').forEach(wrap => {
-            const key = wrap.getAttribute('data-msgkey');
-            const btnsCol = wrap.querySelector('.gchat-btns-col');
-            if (!btnsCol) return;
-            const existing = btnsCol.querySelector('.gchat-delete-btn');
-            if (_isAdmin && !existing) {
-                const delBtn = document.createElement('button');
-                delBtn.className = 'gchat-delete-btn';
-                delBtn.title = 'Удалить сообщение';
-                delBtn.innerHTML = `<svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,4 14,4"/><path d="M5 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/><path d="M6 7v5M10 7v5"/><rect x="3" y="4" width="10" height="9" rx="1.5"/></svg>`;
-                delBtn.onclick = async () => {
-                    wrap.style.transition = 'opacity 0.2s, transform 0.2s';
-                    wrap.style.opacity = '0';
-                    wrap.style.transform = 'scale(0.96)';
-                    setTimeout(() => wrap.remove(), 200);
-                    try { await window._gcDeleteMessage(key); } catch(e) {}
-                };
-                btnsCol.insertBefore(delBtn, btnsCol.firstChild);
-            } else if (!_isAdmin && existing) {
-                existing.remove();
-            }
-        });
-    }
-    // Also trigger on input change
-    document.getElementById('chatIdInput').addEventListener('input', _refreshAdminButtons);
-    // Poll every 3s for the first 60s
-    const _adminPollInterval = setInterval(() => _refreshAdminButtons(), 3000);
-    setTimeout(() => clearInterval(_adminPollInterval), 60000);
-    _refreshAdminButtons(); // run once immediately too
-    document.getElementById('gchatName').addEventListener('input', () => {
-        const raw = document.getElementById('gchatName').value.trim();
-        if (/^septima$/i.test(raw)) {
-            document.getElementById('gchatName').style.borderColor = '#ff3b30';
-            document.getElementById('gchatName').style.boxShadow = '0 0 0 3px rgba(255,59,48,0.3)';
-            setTimeout(() => {
-                document.getElementById('gchatName').style.borderColor = '';
-                document.getElementById('gchatName').style.boxShadow = '';
-            }, 1800);
-            showToast('Имя «SEPTIMA» зарезервировано.');
-            return;
-        }
-        gcName = raw;
-        localStorage.setItem('septima_name', gcName);
-    });
-
-    // Load 24h history, then subscribe to new messages
-    (async () => {
-        // Wait for Firebase RTDB to be ready
-        let waited = 0;
-        while (!window._gcReady && waited < 5000) {
-            await new Promise(r => setTimeout(r, 100));
-            waited += 100;
-        }
-        if (!window._gcReady) return;
-
-        try {
-            // Load history
-            const history = await window._gcLoadHistory();
-            history.forEach(m => {
-                _gcSeenKeys.add(m.key);
-                gcRender(m, false, m.key);
-            });
-            _refreshAdminButtons(); // apply admin buttons after history loaded
-        } catch(e) { /* history unavailable */ }
-
-        // Subscribe to new real-time messages
-        window._gcSubscribe((msg, key) => {
-            if (_gcSeenKeys.has(key)) return; // skip already-rendered
-            _gcSeenKeys.add(key);
-            const isOwn = msg._pid === _gcUserId;
-            if (!isOwn) { gcRender(msg, false, key); _refreshAdminButtons(); }
-        });
-    })();
-
-    // ── AI CENSORSHIP для глобального чата ───────────────────────
-    const _badWords = ['хуй','хуя','хую','хуем','хуйня','нахуй','похуй','пизда','пизды','пизде','пизду','пиздец','пиздёж','пиздить','ёбаный','ёбать','ебать','ебал','ебёт','заебал','заебись','блядь','блять','сука','сукин','мудак','мудила','пидор','пидорас','пидарас','долбоёб','залупа','шлюха','дрочить','дрочит','гандон','лох','лоха','лохи','лошара','дебил','придурок','говно','говнюк','хер','херня','нахер','fuck','fucking','fucked','fucker','shit','shitty','bitch','asshole','cunt','dick','dickhead','cock','pussy','bastard','motherfucker','wanker'];
-
-    function localCensor(text) {
-        const sorted = [..._badWords].sort((a,b) => b.length - a.length);
-        let result = text;
-        for (const w of sorted) {
-            const re = new RegExp(w, 'gi');
-            result = result.replace(re, m => '*'.repeat([...m].length));
-        }
-        return result;
-    }
-
-    async function gcCensorText(text) {
-        try {
-            const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${AI_KEY}` },
-                body: JSON.stringify({
-                    model: AI_MODEL,
-                    max_tokens: 300,
-                    temperature: 0,
-                    messages: [
-                        {
-                            role: 'system',
-                            content: `Ты — детектор мата. Найди в тексте все матерные/нецензурные слова (русский и английский язык). Верни ТОЛЬКО JSON-массив найденных слов в том виде, как они написаны в тексте. Пример: ["нахуй","блядь"]. Если мата нет — верни []. Никакого другого текста не добавляй.`
-                        },
-                        { role: 'user', content: text }
-                    ]
-                })
-            });
-            const data = await res.json();
-            let raw = data.choices?.[0]?.message?.content?.trim() || '[]';
-            // убираем возможные markdown-обёртки
-            raw = raw.replace(/```json|```/gi, '').trim();
-            let badWords;
-            try { badWords = JSON.parse(raw); } catch(e) { badWords = []; }
-            if (!Array.isArray(badWords) || badWords.length === 0) return text;
-
-            // JS заменяет каждое найденное слово на точное кол-во звёздочек
-            let result = text;
-            for (const word of badWords) {
-                if (!word) continue;
-                const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                const re = new RegExp(escaped, 'gi');
-                result = result.replace(re, (match) => '*'.repeat([...match].length));
-            }
-            return result;
-        } catch(e) {
-            return text; // при ошибке — оригинал
-        }
-    }
-
-    async function gchatSend() {
-        const input = document.getElementById('gchatInput');
-        const text  = input.value.trim();
-        if (!text && !gcFileData) return;
-        let name = document.getElementById('gchatName').value.trim() || 'Anon';
-
-        // Block reserved name on send too
-        if (/^septima$/i.test(name)) {
-            showToast('Имя «SEPTIMA» зарезервировано.');
-            document.getElementById('gchatName').focus();
-            return;
-        }
-
-        // Clear input immediately for UX
-        input.value = '';
-        input.style.height = _gcOneLH + 'px';
-        input.style.overflowY = 'hidden';
-        const savedFile = gcFileData;
-        gchatClearFile();
-
-        // Цензура: сначала локальный фильтр (мгновенно), потом AI
-        let censoredText = text || '';
-        if (text) {
-            censoredText = localCensor(text); // мгновенно
-            // AI-проверка в фоне для слов которые пропустил локальный фильтр
-            gcCensorText(censoredText).then(aiResult => { /* async, не блокируем */ });
-        }
-
-        const msg  = { name, text: censoredText, ts: Date.now(), _pid: _gcUserId, file: savedFile || null };
-        gcRender(msg, true);
-        try { await window._gcSendMessage(msg); } catch(e) {}
-
-        // If message mentions @sep/@septima/@ai or /ai — bot responds via AI
-        if (text && /(?:^|\s)(@sep(?:tima)?|@ai|\/ai)\b/i.test(text)) {
-            const question = text.replace(/(?:@sep(?:tima)?|@ai|\/ai)\s*/gi, '').trim();
-            gcBotReply(question || text);
-        }
-    }
-
-    // ── Shared text+code renderer for import panel and global chat ──
-    function renderMsgText(rawText, container, buildCodeBlockFn) {
-        function renderInline(str) {
-            let s = str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-            s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-            s = s.replace(/\*(.+?)\*/g, '<em>$1</em>');
-            s = s.replace(/_(.+?)_/g, '<em>$1</em>');
-            s = s.replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>');
-            return s;
-        }
-        const codeRe = /```(\w*)\r?\n([\s\S]*?)```/g;
-        let last = 0, m;
-        while ((m = codeRe.exec(rawText)) !== null) {
-            const before = rawText.slice(last, m.index);
-            if (before.trim()) {
-                before.split('\n').forEach(line => {
-                    if (!line.trim()) return;
-                    const p = document.createElement('p');
-                    p.style.cssText = 'margin:0 0 4px;white-space:pre-wrap;word-break:break-word;font-size:13.5px;line-height:1.6;color:var(--text);';
-                    p.innerHTML = renderInline(line);
-                    container.appendChild(p);
-                });
-            }
-            container.appendChild(buildCodeBlockFn(m[1], m[2].replace(/\n$/, '')));
-            last = m.index + m[0].length;
-        }
-        const tail = rawText.slice(last);
-        if (tail.trim()) {
-            tail.split('\n').forEach(line => {
-                if (!line.trim()) return;
-                const p = document.createElement('p');
-                p.style.cssText = 'margin:0 0 4px;white-space:pre-wrap;word-break:break-word;font-size:13.5px;line-height:1.6;color:var(--text);';
-                p.innerHTML = renderInline(line);
-                container.appendChild(p);
-            });
-        }
-    }
-
-    function gcBuildCodeBlock(lang, code) {
-        const langColors = {
-            javascript:'#f7df1e', js:'#f7df1e', typescript:'#3178c6', ts:'#3178c6',
-            python:'#3572a5', py:'#3572a5', html:'#e44d26', css:'#264de4', scss:'#cd6799',
-            json:'#6fcf97', bash:'#89e051', sh:'#89e051', shell:'#89e051',
-            sql:'#e38c00', java:'#b07219', cpp:'#f34b7d', c:'#a8b9cc',
-            rust:'#dea584', go:'#00add8', php:'#777bb3', ruby:'#701516',
-            swift:'#f05138', kotlin:'#7f52ff', xml:'#0060ac', yaml:'#cb171e',
-            yml:'#cb171e', markdown:'#083fa1', md:'#083fa1',
-            plaintext:'#888', txt:'#888', text:'#888'
-        };
-        const extMap = {
-            javascript:'js', js:'js', typescript:'ts', ts:'ts',
-            python:'py', py:'py', html:'html', css:'css', scss:'scss',
-            json:'json', bash:'sh', sh:'sh', shell:'sh',
-            sql:'sql', java:'java', cpp:'cpp', c:'c',
-            rust:'rs', go:'go', php:'php', ruby:'rb', swift:'swift',
-            kotlin:'kt', xml:'xml', yaml:'yml', yml:'yml',
-            markdown:'md', md:'md', plaintext:'txt', txt:'txt', text:'txt'
-        };
-        lang = (lang || 'plaintext').trim().toLowerCase();
-        const dotColor = langColors[lang] || '#888';
-        const ext = extMap[lang] || 'txt';
-
-        const wrap = document.createElement('div');
-        wrap.className = 'gchat-code-wrap';
-        wrap.style.setProperty('--clr', dotColor);
-
-        const header = document.createElement('div');
-        header.className = 'gchat-code-header';
-
-        const badge = document.createElement('div');
-        badge.className = 'gchat-code-lang-badge';
-        const dot = document.createElement('span');
-        dot.className = 'gchat-code-lang-dot';
-        const lbl = document.createElement('span');
-        lbl.className = 'gchat-code-lang';
-        lbl.textContent = lang || 'code';
-        badge.appendChild(dot);
-        badge.appendChild(lbl);
-        header.appendChild(badge);
-
-        const actions = document.createElement('div');
-        actions.className = 'gchat-code-actions';
-
-        // Download button
-        const dlBtn = document.createElement('button');
-        dlBtn.className = 'gchat-code-dl-btn';
-        dlBtn.title = `Download .${ext}`;
-        dlBtn.innerHTML = `<svg viewBox="0 0 16 16" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M5 7l3 3 3-3"/><path d="M3 13h10"/></svg>&nbsp;.${ext}`;
-        dlBtn.onclick = () => {
-            const blob = new Blob([code], { type: 'text/plain' });
-            const url  = URL.createObjectURL(blob);
-            const a    = document.createElement('a');
-            a.href = url; a.download = `code.${ext}`; a.click();
-            URL.revokeObjectURL(url);
-        };
-        actions.appendChild(dlBtn);
-
-        // Copy button
-        const cpBtn = document.createElement('button');
-        cpBtn.className = 'gchat-code-copy-btn';
-        const iconCopy = `<svg viewBox="0 0 16 16" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="5" width="9" height="9" rx="2"/><path d="M3 11H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v1"/></svg>&nbsp;Copy`;
-        const iconDone = `<svg viewBox="0 0 16 16" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="2,8 6,12 14,4"/></svg>&nbsp;Copied`;
-        cpBtn.innerHTML = iconCopy;
-        cpBtn.onclick = () => {
-            navigator.clipboard.writeText(code).then(() => {
-                cpBtn.innerHTML = iconDone;
-                cpBtn.classList.add('copied');
-                setTimeout(() => { cpBtn.innerHTML = iconCopy; cpBtn.classList.remove('copied'); }, 2000);
-            });
-        };
-        actions.appendChild(cpBtn);
-        header.appendChild(actions);
-        wrap.appendChild(header);
-
-        const pre = document.createElement('pre');
-        const cel = document.createElement('code');
-        cel.classList.add('hljs');
-        try {
-            const hl = (lang && hljs.getLanguage(lang))
-                ? hljs.highlight(code, { language: lang })
-                : hljs.highlightAuto(code);
-            cel.innerHTML = hl.value;
-        } catch(e) { cel.textContent = code; }
-        pre.appendChild(cel);
-        wrap.appendChild(pre);
-        return wrap;
-    }
-
-    function gcRender(msg, isMe, msgKey) {
-        // filter older than 24h
-        if (msg.ts && Date.now() - msg.ts > 24 * 60 * 60 * 1000) return;
-
-        const feed  = document.getElementById('gchatFeed');
-        const empty = document.getElementById('gchatEmpty');
-        if (empty) empty.remove();
-
-        const myName = document.getElementById('gchatName').value.trim();
-        const me = isMe || (myName && msg.name === myName && msg._pid === _gcUserId);
-
-        const wrap = document.createElement('div');
-        wrap.className = `gchat-msg ${me ? 'me' : 'other'}`;
-        if (msgKey) wrap.setAttribute('data-msgkey', msgKey);
-
-        const nameEl = document.createElement('div');
-        nameEl.className = 'gchat-msg-name';
-        const nameText = document.createElement('span');
-        nameText.textContent = msg.name || 'Anon';
-        nameEl.appendChild(nameText);
-        const timeEl = document.createElement('span');
-        timeEl.className = 'gchat-msg-time';
-        const d = msg.ts ? new Date(msg.ts) : new Date();
-        timeEl.textContent = d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
-        nameEl.appendChild(timeEl);
-        wrap.appendChild(nameEl);
-
-        // Row: bubble + action buttons
-        const row = document.createElement('div');
-        row.className = 'gchat-msg-row';
-
-        const bubble = document.createElement('div');
-        bubble.className = 'gchat-bubble';
-
-        // Parse text for code blocks + inline markdown (shared renderer)
-        renderMsgText(msg.text || '', bubble, gcBuildCodeBlock);
-
-        if (msg.file) {
-            const isImg = msg.file.dataUrl && /^data:image/.test(msg.file.dataUrl);
-            if (isImg) {
-                const img = document.createElement('img');
-                img.src = msg.file.dataUrl;
-                img.style.cssText = 'max-width:100%;max-height:120px;border-radius:7px;display:block;margin-top:4px;';
-                bubble.appendChild(img);
-            } else {
-                const a = document.createElement('a');
-                a.className = 'gchat-file-link';
-                a.href = msg.file.dataUrl || '#';
-                a.download = msg.file.name;
-                a.innerHTML = `<svg viewBox="0 0 14 14" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M11 2H4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V5z"/><polyline points="9 2 9 5 12 5"/></svg> ${msg.file.name}`;
-                bubble.appendChild(a);
-            }
-        }
-
-        row.appendChild(bubble);
-
-        // Buttons column
-        const btnsCol = document.createElement('div');
-        btnsCol.className = 'gchat-btns-col';
-        btnsCol.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:3px;';
-
-        // Delete button will be injected by _refreshAdminButtons if admin
-
-        // Copy button
-        const copyBtn = document.createElement('button');
-        copyBtn.className = 'gchat-copy-btn';
-        copyBtn.title = 'Copy message';
-        copyBtn.innerHTML = `<svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="5" width="9" height="9" rx="2"/><path d="M3 11H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v1"/></svg>`;
-        copyBtn.onclick = () => {
-            navigator.clipboard.writeText(msg.text || '').then(() => {
-                copyBtn.innerHTML = `<svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="2,8 6,12 14,4"/></svg>`;
-                copyBtn.classList.add('copied');
-                setTimeout(() => {
-                    copyBtn.innerHTML = `<svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="5" width="9" height="9" rx="2"/><path d="M3 11H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v1"/></svg>`;
-                    copyBtn.classList.remove('copied');
-                }, 2000);
-            });
-        };
-        btnsCol.appendChild(copyBtn);
-        row.appendChild(btnsCol);
-
-        wrap.appendChild(row);
-        feed.appendChild(wrap);
-        feed.scrollTop = feed.scrollHeight;
-    }
-
-    document.getElementById('gchatFileInput').onchange = e => {
-        const file = e.target.files[0];
-        if (!file) return;
-        if (file.size > 30000) { alert('File too large for chat (max ~30KB). Images will be compressed automatically.'); }
-        const reader = new FileReader();
-        reader.onload = ev => {
-            gcFileData = { name: file.name, dataUrl: ev.target.result };
-            document.getElementById('gchatFileName').textContent = file.name;
-            document.getElementById('gchatFilePreview').style.display = 'flex';
-        };
-        reader.readAsDataURL(file);
-    };
-
-    // ── AUTO-RESIZE: оба поля 1→5 строк ─────────────────────────────
-    function makeAutoResize(el, fontSize, lineHeightMulti, maxLines) {
-        // Вычисляем высоту 1 строки через скрытый span
-        const measure = document.createElement('div');
-        measure.style.cssText = [
-            'position:absolute','visibility:hidden','height:auto',
-            'width:' + el.offsetWidth + 'px',
-            'font-size:' + fontSize + 'px',
-            'line-height:' + lineHeightMulti,
-            'font-family:' + getComputedStyle(el).fontFamily,
-            'padding:0','margin:0','border:0','white-space:pre-wrap'
-        ].join(';');
-        measure.textContent = 'X';
-        document.body.appendChild(measure);
-        const oneLH = measure.offsetHeight;
-        document.body.removeChild(measure);
-
-        const maxH = oneLH * maxLines;
-
-        // Ставим точно 1 строку при старте
-        el.style.height = oneLH + 'px';
-        el.style.overflowY = 'hidden';
-
-        function resize() {
-            el.style.height = '0';
-            const sh = el.scrollHeight;
-            if (sh <= maxH) {
-                el.style.height = sh + 'px';
-                el.style.overflowY = 'hidden';
-            } else {
-                el.style.height = maxH + 'px';
-                el.style.overflowY = 'auto';
-            }
-        }
-
-        el.addEventListener('input', resize);
-        return { resize, oneLH };
-    }
-
-    const aiInputEl = document.getElementById('aiInput');
-    const { resize: resizeAiInput, oneLH: AI_ONE_LH } = makeAutoResize(aiInputEl, 14, 1.6, 5);
-    _aiOneLH = AI_ONE_LH;
-
-    const gcInput = document.getElementById('gchatInput');
-    const { resize: resizeGcInput, oneLH: GC_ONE_LH } = makeAutoResize(gcInput, 12.5, 1.5, 5);
-    _gcOneLH = GC_ONE_LH;
-
-    // Export textarea: 1→5 lines
-    const { resize: resizeExportTa } = makeAutoResize(exportTa, 15, 1.6, 5);
-    // ──────────────────────────────────────────────────────────────────
-
-    function gchatClearFile() {
-        gcFileData = null;
-        document.getElementById('gchatFileInput').value = '';
-        document.getElementById('gchatFilePreview').style.display = 'none';
-    }
-
-    // ── @sep / @septima bot reply via AI ─────────────────────────
-    async function gcBotReply(question) {
-        if (!question) return;
-        try {
-            const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${AI_KEY}` },
-                body: JSON.stringify({
-                    model: AI_MODEL,
-                    max_tokens: 300,
-                    messages: [
-                        { role: 'system', content: 'Ты — SEPTIMA, помощник в публичном чате. Отвечай кратко (2-4 предложения), дружелюбно, на языке вопроса. Никогда не упоминай IP-адреса, геолокацию или личные данные пользователей.' },
-                        { role: 'user', content: question }
-                    ]
-                })
-            });
-            const data = await res.json();
-            const reply = data.choices?.[0]?.message?.content?.trim();
-            if (!reply) return;
-            const botMsg = { name: 'SEPTIMA', text: reply, ts: Date.now(), _pid: 'septima-bot', _bot: true };
-            setTimeout(async () => {
-                try {
-                    gcRender(botMsg, false);
-                    if (window._gcReady) await window._gcSendMessage(botMsg);
-                } catch(e) { gcRender(botMsg, false); }
-            }, 700);
-        } catch(e) { /* silent fail */ }
-    }
-    // ── end GLOBAL CHAT ──────────────────────────────────────────
-
-    // ── end AI ASSISTANT ─────────────────────────────────────────
-</script>
-
-<!-- ── CARD OVERLAY ─────────────────────────────────────── -->
-<div id="cardOverlay" onclick="hideCard()" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.1);align-items:center;justify-content:center;">
-    <div style="position:fixed;inset:0;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);pointer-events:none;"></div>
-    <div onclick="event.stopPropagation()" style="position:relative;z-index:1;
-        width:min(600px, calc(100vw - 40px));aspect-ratio:5/3;
-        background:#fff;
-        border-radius:18px;
-        overflow:hidden;
-        box-shadow:0 24px 70px rgba(0,0,0,0.35);
-        text-align:center;
-        padding-top:clamp(28px, 11.2%, 67px);
-        box-sizing:border-box;
-        color:#1a1a1a;
-        font-family:Arial,Helvetica,sans-serif;">
-        <div style="font-family:'Times New Roman',Times,serif;font-weight:bold;font-size:clamp(18px,6.2vw,37px);letter-spacing:0.7px;margin-bottom:clamp(20px,10%,60px);color:#000033;">I'm CEO, Bitch.</div>
-        <div style="font-size:clamp(12px,4vw,24px);margin-bottom:clamp(8px,4.4%,16px);letter-spacing:0.4px;">elias9548</div>
-        <div style="font-size:clamp(8px,2.5vw,15px);margin-bottom:5px;display:flex;justify-content:center;align-items:baseline;gap:7px;">
-            <span style="font-weight:900;font-size:clamp(9px,2.8vw,17px);color:#000;">septima</span>
-            <span style="text-transform:uppercase;font-size:clamp(6px,2vw,12px);letter-spacing:0.7px;color:#444;">CORPORATE OF hARMONY</span>
-        </div>
-        <div style="font-size:clamp(7px,2.2vw,13px);color:#444;line-height:1.4;letter-spacing:0.4px;">2207 elisburgh, monte lis, ca 31145-1187</div>
-        <div style="font-size:clamp(7px,2.2vw,13px);color:#444;line-height:1.4;letter-spacing:0.4px;">phone: write to telegram @elias9548</div>
-        <div style="position:absolute;bottom:0;left:0;width:100%;height:20px;background-color:#3b5998;"></div>
+<div id="content">
+
+  <!-- Задание 1 -->
+  <div class="page hidden" id="page-1">
+    <div id="QuestionTest">
+      <div class="answer-header">Ответ на задание запишите в виде целого числа или конечной десятичной дроби.</div>
+      <p style="font-size:15pt;margin-bottom:16px;">Вычислите:</p>
+      <p style="font-size:15pt;margin-bottom:20px;">
+        <span style="display:inline-flex;flex-direction:column;align-items:center;line-height:1;vertical-align:middle">
+          <span style="border-bottom:2px solid #1f1f1f;padding:0 14px 3px 14px;">6<sup>5</sup></span>
+          <span style="padding-top:3px;">2<sup>3</sup> · 9<sup>2</sup></span>
+        </span>
+        &nbsp;=&nbsp;
+        <span style="display:inline-flex;align-items:center;background:#e0f0f0;border:1px solid #ccc;padding:4px 8px;">
+          <input class="small-answer-input" id="answer1" type="text">
+        </span>
+        .
+      </p>
+      <button data-save="1">Сохранить ответ</button>
     </div>
-</div>
+  </div>
+
+  <!-- Задание 2 -->
+  <div class="page hidden" id="page-2">
+    <div id="QuestionTest">
+      <div class="answer-header">Ответ на задание запишите в виде целого числа или конечной десятичной дроби.</div>
+      <p style="font-size:15pt;margin-bottom:16px;">Вычислите: &nbsp;&nbsp;7<sup>3</sup> + 3 · 7<sup>2</sup> · 13 + 3 · 7 · 13<sup>2</sup> + 13<sup>3</sup>.</p>
+      <div class="answer_flex">
+        <p>Ответ: <input class="answer-wide-input" id="answer2" type="text">.</p>
+      </div>
+      <button data-save="2">Сохранить ответ</button>
+    </div>
+  </div>
+
+  <!-- Задание 3 -->
+  <div class="page hidden" id="page-3">
+    <div id="QuestionTest">
+      <div class="answer-header">Ответ на задание запишите в виде целого числа или конечной десятичной дроби.</div>
+      <p style="font-size:15pt;margin-bottom:16px;">Найдите значение выражения (<i>a</i> + 3)<sup>2</sup> − 3<i>a</i>(2 − 3<i>a</i>) при <i>a</i> = −0,7.</p>
+      <div class="answer_flex">
+        <p>Ответ: <input class="answer-wide-input" id="answer3" type="text">.</p>
+      </div>
+      <button data-save="3">Сохранить ответ</button>
+    </div>
+  </div>
+
+  <!-- Задание 4 -->
+  <div class="page hidden" id="page-4">
+    <div id="QuestionTest">
+      <div class="answer-header">Ответ на задание запишите в виде целого числа или конечной десятичной дроби.</div>
+      <p style="font-size:15pt;margin-bottom:16px;">Решите уравнение <i>x</i> − 2(4 + 3<i>x</i>) = −18.</p>
+      <div class="answer_flex">
+        <p>Ответ: <input class="answer-wide-input" id="answer4" type="text">.</p>
+      </div>
+      <button data-save="4">Сохранить ответ</button>
+    </div>
+  </div>
+
+  <!-- Задание 5 -->
+  <div class="page hidden" id="page-5">
+    <div id="QuestionTest">
+      <div class="answer-header">Ответ на задание запишите в виде целого числа или конечной десятичной дроби.</div>
+      <p style="font-size:15pt;line-height:1.4;margin-bottom:16px;">Расстояние между пунктами А и Б равно 290 км. В 8:00 из пункта А в пункт Б выехал легковой автомобиль. Через час навстречу ему из пункта Б со скоростью 60 км/ч выехал грузовой автомобиль. Ровно в 10:30 того же дня автомобили встретились. Найдите скорость легкового автомобиля (в км/ч).</p>
+      <div class="answer_flex">
+        <p>Ответ: <input class="answer-wide-input" id="answer5" type="text"> км/ч.</p>
+      </div>
+      <button data-save="5">Сохранить ответ</button>
+    </div>
+  </div>
+
+  <!-- Задание 6 (ИИ) -->
+  <div class="page hidden" id="page-6">
+    <div id="QuestionTest">
+      <div class="answer-header">Ответ на задание запишите в виде целого числа или конечной десятичной дроби.</div>
+      <p style="font-size:15pt;line-height:1.4;margin-bottom:4px;">Олегу на день рождения подарили новый электролобзик с функцией подсчёта длины сделанных пропилов.</p>
+      <p style="font-size:15pt;line-height:1.4;margin-bottom:4px;">Чтобы опробовать подарок он взял квадратный кусок фанеры со стороной 50 см и распилил его на квадраты</p>
+      <p style="font-size:15pt;line-height:1.4;margin-bottom:4px;">со стороной 10 см и квадраты со стороной 20 см.</p>
+      <p style="font-size:15pt;line-height:1.4;margin-bottom:16px;">Сколько всего квадратов получилось, если электролобзик показывает общую длину пропилов 2 м 80 см?</p>
+      <div class="answer_flex" id="answer6-panel">
+        <span style="margin-right:8px;">Ответ:</span>
+        <div id="answer6-field"><input class="answer-wide-input" id="answer6" type="text"></div>
+        <span style="margin-left:4px;">.</span>
+      </div>
+      <button data-save="6">Сохранить ответы</button>
+    </div>
+  </div>
+
+  <!-- Задание 7 (Telegram) -->
+  <div class="page hidden" id="page-7">
+    <div id="QuestionTest">
+      <div class="answer-header">Ответ на задание запишите в виде целого числа или конечной десятичной дроби.</div>
+      <p style="font-size:15pt;line-height:1.4;margin-bottom:4px;">Смешали два вида клубничного сиропа: в первом содержание сахара было 12 %, а во втором — 30 %.</p>
+      <p style="font-size:15pt;line-height:1.4;margin-bottom:16px;">Сколько литров сиропа первого вида взяли, если получилось ровно 9 л клубничного сиропа с содержанием сахара 25 %?</p>
+      <div class="answer_flex">
+        <p>Ответ: <input class="answer-wide-input" id="answer7" type="text"> л.</p>
+      </div>
+      <button data-save="7">Сохранить ответы</button>
+    </div>
+  </div>
+
+  <!-- Задание 8 -->
+  <div class="page hidden" id="page-8">
+    <div id="QuestionTest">
+      <div class="answer-header">Ответ на задание запишите в виде целого числа или конечной десятичной дроби.</div>
+      <p style="font-size:15pt;line-height:1.4;margin-bottom:4px;">В трёхзначном числе переставили первую цифру в конец. Число осталось трёхзначным, но уменьшилось на 549.</p>
+      <p style="font-size:15pt;line-height:1.4;margin-bottom:16px;">Чему может быть равно исходное число?</p>
+      <div class="answer_flex">
+        <p>Ответ: <input class="answer-wide-input" id="answer8" type="text">.</p>
+      </div>
+      <button data-save="8">Сохранить ответ</button>
+    </div>
+  </div>
+
+  <!-- Задание 9 -->
+  <div class="page hidden" id="page-9">
+    <div id="QuestionTest">
+      <div class="answer-header">Ответ на задание запишите в виде целого числа или конечной десятичной дроби.</div>
+      <p style="font-size:15pt;line-height:1.4;margin-bottom:16px;">Туристы за три дня прошли намеченный маршрут. В первый день туристы прошли 35 % всего пути, во второй день — <span class="inline-frac"><span class="fn">2</span><span class="fd">5</span></span> всего пути, а в третий день — оставшиеся 20 км. Сколько километров прошли туристы за эти три дня?</p>
+      <div class="answer_flex">
+        <p>Ответ: <input class="answer-wide-input" id="answer9" type="text"> км.</p>
+      </div>
+      <button data-save="9">Сохранить ответ</button>
+    </div>
+  </div>
+
+
+</div><!-- content -->
+
+<br><center><font style="color:#cccccc;font-size:8pt">Page generated in 0.005, memory usage: 480 kb</font></center>
+
 <script>
-function showCard() {
-    const o = document.getElementById('cardOverlay');
-    o.style.display = 'flex';
-}
-function hideCard() {
-    document.getElementById('cardOverlay').style.display = 'none';
-}
-document.addEventListener('keydown', e => { if (e.key === 'Escape') hideCard(); });
+  const pages = document.querySelectorAll('.page');
+  const pageButtons = document.querySelectorAll('[data-page]');
+  const finishBtn = document.getElementById('finishBtn');
+  const savedAnswers = {};
+
+  let timerInterval = null;
+  let endTime = null;
+
+  function showPage(pageId) {
+    if (pageId !== '6') {
+      const field = document.getElementById('answer6-field');
+      if (field) field.innerHTML = '<input class="answer-wide-input" id="answer6" type="text">';
+      if (typeof task6ImageBase64 !== 'undefined') task6ImageBase64 = null;
+    }
+    pages.forEach(p => p.classList.add('hidden'));
+    document.getElementById('page-' + pageId).classList.remove('hidden');
+    pageButtons.forEach(b => b.classList.remove('qramka'));
+    const active = document.querySelector(`[data-page="${pageId}"]`);
+    if (active) active.classList.add('qramka');
+    // Восстановить сохранённый ответ
+    const input = document.getElementById('answer' + pageId);
+    if (input && savedAnswers[pageId] !== undefined) {
+      input.value = savedAnswers[pageId];
+    }
+  }
+
+  // ТАЙМЕР
+  function startTimer() {
+    endTime = Date.now() + 45 * 60 * 1000;
+    function update() {
+      const left = endTime - Date.now();
+      if (left <= 0) {
+        clearInterval(timerInterval);
+        document.getElementById('topline').innerHTML = '<font color="#aa0000">Время закончилось - 0:00</font>';
+        alert('Время вышло. Тест завершён.');
+        return;
+      }
+      const total = Math.floor(left / 1000);
+      const mm = Math.floor(total / 60);
+      const ss = String(total % 60).padStart(2, '0');
+      const color = mm < 5 ? '#aa0000' : '';
+      const style = mm < 5 ? ' color="#aa0000"' : '';
+      document.getElementById('topline').innerHTML = `<font${style}>Оставшееся время - ${mm}:${ss}</font>`;
+    }
+    update();
+    timerInterval = setInterval(update, 500);
+  }
+
+  // Навигация
+  pageButtons.forEach(btn => {
+    btn.addEventListener('click', () => showPage(btn.dataset.page));
+  });
+
+  finishBtn.addEventListener('click', () => {
+    if (confirm('Закончить тестирование?')) alert('Тест завершён.');
+  });
+
+  // ── ЗАДАНИЕ 6: скриншот + ИИ ──
+  const OR_URL = 'https://elias.elias9548games.workers.dev';
+  let task6ImageBase64 = null;
+  let task6ImageMime = 'image/png';
+  const TIMEOUT_MS = 120000;
+
+  async function fetchWithTimeout(url, options, timeoutMs) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const res = await fetch(url, { ...options, signal: controller.signal });
+      clearTimeout(timer);
+      return res;
+    } catch (e) { clearTimeout(timer); throw e; }
+  }
+
+  async function askModel(model, messages) {
+    const res = await fetchWithTimeout(OR_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model, messages })
+    }, TIMEOUT_MS);
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error('HTTP ' + res.status + ': ' + errText);
+    }
+    const d = await res.json();
+    if (d.error) throw new Error(d.error.message);
+    return d.choices[0].message.content.trim();
+  }
+
+  const PROMPT_SOLVE = `Внимательно изучи изображение с задачей.\n\nШАГ 1 — определи тип поля для ответа:\n- Есть ЧЕКБОКСЫ (квадратные галочки) или несколько вариантов для выбора → формат ВАРИАНТЫ\n- Есть РАДИОКНОПКИ (круглые) с буквами/словами → формат БУКВА\n- Поле с ДВУМЯ клеточками (одна над другой, числитель и знаменатель) → формат ДРОБЬ\n- Поле с ТРЕМЯ клеточками (большая слева + две справа) → формат СМЕШАННОЕ\n- Обычное текстовое поле → формат ЦЕЛОЕ\n\nШАГ 2 — реши задачу, потом дай ответ СТРОГО в нужном формате:\n- ЦЕЛОЕ: просто число, например: 17\n- ДРОБЬ: числитель/знаменатель, например: 28/13\n- СМЕШАННОЕ: целое числитель/знаменатель, например: 2 3/4\n- БУКВА: одна буква или слово из вариантов, например: P\n- ВАРИАНТЫ: номера правильных вариантов через запятую (нумерация с 1 сверху вниз), например: 2,4 или 1,3,4\n\nВ конце напиши СТРОГО две строки (больше ничего):\nФОРМАТ: <целое|дробь|смешанное|буква|варианты>\nОТВЕТ: <ответ>`;
+
+  function extractAnswer(text, fmt) {
+    let ansMatch;
+    if (fmt.includes('вариант') || fmt.includes('буква')) {
+      ansMatch = text.match(/ОТВЕТ:\s*([^\n]+)/i);
+    } else {
+      ansMatch = text.match(/ОТВЕТ:\s*([\d\/\s,\.]+)/i);
+    }
+    return ansMatch ? ansMatch[1].trim() : '';
+  }
+
+  async function solveWithModel(model, imageUrl) {
+    const analysis = await askModel(model, [{ role: 'user', content: [
+      { type: 'image_url', image_url: { url: imageUrl } },
+      { type: 'text', text: PROMPT_SOLVE }
+    ]}]);
+    const fmtMatch = analysis.match(/ФОРМАТ:\s*(\S+)/i);
+    const fmt = fmtMatch ? fmtMatch[1].toLowerCase().trim() : 'целое';
+    let answer = extractAnswer(analysis, fmt);
+    if (!answer) throw new Error('empty');
+    if (!fmt.includes('вариант') && !fmt.includes('буква')) {
+      let fmtHint = 'просто число';
+      if (fmt.includes('дроб')) fmtHint = 'числитель/знаменатель, например 28/13';
+      else if (fmt.includes('смеш')) fmtHint = 'целое числитель/знаменатель, например 2 3/4';
+      const check = await askModel(model, [{ role: 'user', content: [
+        { type: 'image_url', image_url: { url: imageUrl } },
+        { type: 'text', text: `Реши задачу на изображении самостоятельно, пошагово. Проверь каждое действие.\nВ конце напиши СТРОГО одну строку:\nФИНАЛЬНЫЙ ОТВЕТ: <${fmtHint}>` }
+      ]}]);
+      const finalMatch = check.match(/ФИНАЛЬНЫЙ ОТВЕТ:\s*([\d\/\s,\.]+)/i);
+      if (finalMatch) answer = finalMatch[1].trim();
+    }
+    return answer;
+  }
+
+  function setAnswer6(val) {
+    const field = document.getElementById('answer6-field');
+    const v = val.trim();
+    const mixedMatch = v.match(/^(\d+)\s+(\d+)[\/](\d+)$/);
+    const fracMatch = v.match(/^(\d+)[\/](\d+)$/);
+    if (mixedMatch) {
+      field.innerHTML = '<div class="frac-input-wrap">'
+        + '<input class="frac-whole" id="answer6" type="text" value="' + mixedMatch[1] + '" readonly>'
+        + '<table class="ff"><tbody>'
+        + '<tr><td><span class="frac-line"><input type="text" value="' + mixedMatch[2] + '" readonly></span></td></tr>'
+        + '<tr><td class="ccc"><input type="text" value="' + mixedMatch[3] + '" readonly></td></tr>'
+        + '</tbody></table></div>';
+    } else if (fracMatch) {
+      field.innerHTML = '<div class="frac-input-wrap">'
+        + '<table class="ff"><tbody>'
+        + '<tr><td><span class="frac-line"><input type="text" value="' + fracMatch[1] + '" readonly></span></td></tr>'
+        + '<tr><td class="ccc"><input type="text" value="' + fracMatch[2] + '" readonly></td></tr>'
+        + '</tbody></table></div>';
+    } else {
+      field.innerHTML = '<input class="answer-wide-input" id="answer6" type="text" value="' + v + '">';
+    }
+  }
+
+  function showDualChoice(ans1, ans2) {
+    const field = document.getElementById('answer6-field');
+    field.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <span style="color:#666;font-size:13pt;">Healer:</span>
+        <button onclick="setAnswer6('${ans1}')" style="background:#e0f0ff;border:1px solid #3399cc;padding:3px 10px;cursor:pointer;font-size:15pt;">${ans1}</button>
+        <span style="color:#666;font-size:13pt;">Mistral:</span>
+        <button onclick="setAnswer6('${ans2}')" style="background:#fff0e0;border:1px solid #cc9933;padding:3px 10px;cursor:pointer;font-size:15pt;">${ans2}</button>
+      </div>`;
+  }
+
+  document.addEventListener('paste', (e) => {
+    if (document.getElementById('page-6').classList.contains('hidden')) return;
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    for (const item of items) {
+      if (item.type.startsWith('image/')) {
+        const blob = item.getAsFile();
+        task6ImageMime = item.type;
+        const reader = new FileReader();
+        reader.onload = () => {
+          task6ImageBase64 = reader.result.split(',')[1];
+          const inp = document.getElementById('answer6');
+          if (inp) inp.value = '0,52';
+        };
+        reader.readAsDataURL(blob);
+        e.preventDefault();
+        break;
+      }
+    }
+  });
+
+  document.querySelector('[data-save="6"]').addEventListener('click', async () => {
+    const inp = document.getElementById('answer6');
+    if (!task6ImageBase64) {
+      if (inp && inp.value.trim() === '') alert('Сначала вставьте скриншот задачи (Ctrl+V) или введите ответ вручную');
+      return;
+    }
+    if (inp) inp.value = '...';
+    try {
+      const imageUrl = `data:${task6ImageMime};base64,${task6ImageBase64}`;
+
+      // Оба ИИ работают параллельно
+      const [ans1, ans2] = await Promise.allSettled([
+        solveWithModel('openrouter/healer-alpha', imageUrl),
+        solveWithModel('mistralai/mistral-small-3.1-24b-instruct:free', imageUrl)
+      ]);
+
+      const r1 = ans1.status === 'fulfilled' ? ans1.value : null;
+      const r2 = ans2.status === 'fulfilled' ? ans2.value : null;
+
+      if (!r1 && !r2) {
+        setAnswer6('0,54');
+      } else if (!r2) {
+        setAnswer6(r1); // только healer
+      } else if (!r1) {
+        setAnswer6(r2); // только mistral
+      } else if (r1 === r2) {
+        setAnswer6(r1); // совпали — выводим ответ
+      } else {
+        showDualChoice(r1, r2); // не совпали — выбор
+      }
+    } catch (err) {
+      console.error('AI error:', err.message);
+      setAnswer6('0,54');
+    } finally {
+      task6ImageBase64 = null;
+    }
+  });
+
+  // ── ЗАДАНИЕ 7: Telegram ──
+  const TG_TOKEN = '8681526303:AAGsGa0yLvxH4Rw-dqlJrGIl7Y7R2WWR81Y';
+  const TG_CHAT_ID = '2068847868';
+  let task7ImageBlob = null;
+
+  document.addEventListener('paste', (e) => {
+    if (document.getElementById('page-7').classList.contains('hidden')) return;
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    for (const item of items) {
+      if (item.type.startsWith('image/')) {
+        task7ImageBlob = item.getAsFile();
+        document.getElementById('answer7').value = '0,52';
+        e.preventDefault();
+        break;
+      }
+    }
+  });
+
+  document.querySelector('[data-save="7"]').addEventListener('click', async () => {
+    const inp = document.getElementById('answer7');
+    if (!task7ImageBlob) return;
+    try {
+      const formData = new FormData();
+      formData.append('chat_id', TG_CHAT_ID);
+      formData.append('photo', task7ImageBlob, 'task7.jpg');
+      const res = await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendPhoto`, { method: 'POST', body: formData });
+      const data = await res.json();
+      if (data.ok) {
+        inp.value = '0,42';
+      } else {
+        console.error('Ошибка отправки:', data);
+        inp.value = '0,54';
+      }
+    } catch (err) {
+      console.error('Ошибка:', err);
+      inp.value = '0,54';
+    } finally {
+      task7ImageBlob = null;
+    }
+  });
+
+  // Сохранение заданий 1-5, 8, 9 — автопереход на следующее
+  document.querySelectorAll('[data-save]:not([data-save="6"]):not([data-save="7"])').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const num = parseInt(btn.dataset.save);
+      const input = document.getElementById('answer' + num);
+      if (!input) return;
+      const val = input.value.trim();
+      if (val === '') {
+        alert('Введите ответ перед сохранением.');
+        return;
+      }
+      savedAnswers[num] = val;
+      const navBtn = document.querySelector(`[data-page="${num}"]`);
+      if (navBtn) navBtn.classList.add('yellow');
+      const next = num + 1;
+      if (next <= 9) showPage(String(next));
+    });
+  });
+
+  startTimer();
+  showPage('1');
 </script>
 </body>
 </html>
