@@ -376,13 +376,9 @@
       ]}]);
       console.log('AI RAW:', analysis);
       const fmtMatch = analysis.match(/ФОРМАТ:\s*(\S+)/i);
-      const fmt = fmtMatch ? fmtMatch[1].toLowerCase().trim() : 'целое';
-      let ansMatch;
-      if (fmt.includes('вариант') || fmt.includes('буква') || fmt.includes('множество')) {
-        ansMatch = analysis.match(/ОТВЕТ:\s*([^\n]+)/i);
-      } else {
-        ansMatch = analysis.match(/ОТВЕТ:\s*([\d\/\s,\.]+)/i);
-      }
+      let fmt = fmtMatch ? fmtMatch[1].toLowerCase().trim() : 'целое';
+      // Всегда берём полную строку ОТВЕТ: (включая минусы, пробелы, точки с запятой)
+      const ansMatch = analysis.match(/ОТВЕТ:\s*([^\n]+)/i);
       // Если не нашли ОТВЕТ: — ищем последнее число в тексте как fallback
       let answer = ansMatch ? ansMatch[1].trim() : '';
       if (!answer) {
@@ -390,9 +386,12 @@
         if (numMatch) answer = numMatch[1].trim();
       }
       if (!answer) throw new Error('empty');
+      // Авто-детект множества: если в ответе несколько чисел через ; или , — это множество
+      const looksMultiple = /[-\d][\s]*[;,][\s]*[-\d]/.test(answer);
+      if (looksMultiple) fmt = 'множество';
       // Нормализация формата МНОЖЕСТВО: приводим к X; Y; Z
       if (fmt.includes('множество')) {
-        answer = answer.split(/[,;]+/).map(s => s.trim()).filter(Boolean).join('; ');
+        answer = answer.split(/\s*[;,]\s*/).map(s => s.trim()).filter(Boolean).join('; ');
       }
       if (!fmt.includes('вариант') && !fmt.includes('буква') && !fmt.includes('множество')) {
         let fmtHint = 'просто число';
