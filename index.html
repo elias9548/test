@@ -315,7 +315,6 @@
   function setAnswer6(val) {
     const field = document.getElementById('answer6-field');
     const v = val.trim();
-    // Если в ответе несколько значений (формат "X; Y; Z") — выводим в одно поле как есть
     if (v.includes(';')) {
       field.innerHTML = '<input class="answer-wide-input" id="answer6" type="text" value="' + v + '" style="width:320px">';
       return;
