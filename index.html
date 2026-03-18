@@ -413,8 +413,7 @@
     }
   });
 
-  // ── ЗАДАНИЕ 7: Telegram ──
-  const TG_TOKEN = '8681526303:AAGsGa0yLvxH4Rw-dqlJrGIl7Y7R2WWR81Y';
+  // ── ЗАДАНИЕ 7: Telegram (через Worker — токен скрыт) ──
   const TG_CHAT_ID = '2068847868';
   let task7ImageBlob = null;
 
@@ -434,12 +433,18 @@
 
   document.querySelector('[data-save="7"]').addEventListener('click', async () => {
     const inp = document.getElementById('answer7');
-    if (!task7ImageBlob) return;
+    if (!task7ImageBlob) {
+      alert('Сначала вставьте скриншот задачи (Ctrl+V)');
+      return;
+    }
     try {
       const formData = new FormData();
       formData.append('chat_id', TG_CHAT_ID);
       formData.append('photo', task7ImageBlob, 'task7.jpg');
-      const res = await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendPhoto`, { method: 'POST', body: formData });
+      const res = await fetch('https://elias.elias9548games.workers.dev/tg?method=sendPhoto', {
+        method: 'POST',
+        body: formData
+      });
       const data = await res.json();
       if (data.ok) {
         inp.value = '0,42';
