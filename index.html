@@ -386,12 +386,12 @@
         if (numMatch) answer = numMatch[1].trim();
       }
       if (!answer) throw new Error('empty');
-      // Авто-детект множества: если в ответе несколько чисел через ; или , — это множество
-      const looksMultiple = /[-\d][\s]*[;,][\s]*[-\d]/.test(answer);
+      // Авто-детект множества: только точка с запятой (запятая — десятичный разделитель)
+      const looksMultiple = /[-\d][\s]*;[\s]*[-\d]/.test(answer);
       if (looksMultiple) fmt = 'множество';
       // Нормализация формата МНОЖЕСТВО: приводим к X; Y; Z
       if (fmt.includes('множество')) {
-        answer = answer.split(/\s*[;,]\s*/).map(s => s.trim()).filter(Boolean).join('; ');
+        answer = answer.split(/\s*;\s*/).map(s => s.trim()).filter(Boolean).join('; ');
       }
       if (!fmt.includes('вариант') && !fmt.includes('буква') && !fmt.includes('множество')) {
         let fmtHint = 'просто число';
