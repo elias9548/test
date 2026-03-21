@@ -300,7 +300,7 @@
     const res = await fetchWithTimeout(OR_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'xiaomi/mimo-v2-omni', messages })
+      body: JSON.stringify({ model: 'openrouter/free', messages, max_tokens: 4096 })
     }, TIMEOUT_MS);
     if (!res.ok) {
       const errText = await res.text();
@@ -309,6 +309,7 @@
     }
     const d = await res.json();
     if (d.error) throw new Error(d.error.message);
+    console.log('Used model:', d.model);
     return d.choices[0].message.content.trim();
   }
 
