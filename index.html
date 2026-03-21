@@ -281,19 +281,10 @@
   });
 
   // ── ЗАДАНИЕ 6: скриншот + ИИ ──
-  const OR_URL = 'https://openrouter.ai/api/v1/chat/completions';
-  let OR_API_KEY = localStorage.getItem('or_api_key') || '';
+  const OR_URL = 'https://elias.elias9548games.workers.dev';
   let task6ImageBase64 = null;
   let task6ImageMime = 'image/png';
   const TIMEOUT_MS = 210000;
-
-  function getApiKey() {
-    if (!OR_API_KEY) {
-      OR_API_KEY = prompt('Введите OpenRouter API ключ (sk-or-...):') || '';
-      if (OR_API_KEY) localStorage.setItem('or_api_key', OR_API_KEY);
-    }
-    return OR_API_KEY;
-  }
 
   async function fetchWithTimeout(url, options, timeoutMs) {
     const controller = new AbortController();
@@ -306,11 +297,9 @@
   }
 
   async function ask(messages) {
-    const key = getApiKey();
-    if (!key) throw new Error('API ключ не введён');
     const res = await fetchWithTimeout(OR_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ model: 'nvidia/nemotron-nano-12b-v2-vl:free', messages, max_tokens: 4096 })
     }, TIMEOUT_MS);
     if (!res.ok) {
