@@ -296,47 +296,132 @@
     } catch (e) { clearTimeout(timer); throw e; }
   }
 
-  async function ask(messages) {
+  const MODELS = [
+    'nvidia/nemotron-nano-12b-v2-vl:free',
+    'google/gemma-3-12b-it:free',
+    'google/gemma-3-27b-it:free'
+  ];
+
+  async function askModel(model, messages) {
     const res = await fetchWithTimeout(OR_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'nvidia/nemotron-nano-12b-v2-vl:free', messages, max_tokens: 4096 })
+      body: JSON.stringify({ model, messages, max_tokens: 4096 })
     }, TIMEOUT_MS);
     if (!res.ok) {
       const errText = await res.text();
-      console.error('OpenRouter error body:', errText);
-      throw new Error('OpenRouter HTTP ' + res.status + ': ' + errText);
+      throw new Error('HTTP ' + res.status + ': ' + errText);
     }
     const d = await res.json();
     if (d.error) throw new Error(d.error.message);
-    console.log('Used model:', d.model);
+    console.log('Used model:', d.model, '→', d.choices[0].message.content.trim().slice(-100));
     return d.choices[0].message.content.trim();
   }
 
-  function setAnswer6(val) {
+  function parseAnswer(raw) {
+    const fmtMatch = raw.match(/ФОРМАТ:\s*(\S+)/i);
+    let fmt = fmtMatch ? fmtMatch[1].toLowerCase().trim() : 'целое';
+    const ansMatch = raw.match(/ОТВЕТ:\s*([^\n]+)/i);
+    let answer = ansMatch ? ansMatch[1].trim() : '';
+    if (!answer) {
+      const numMatch = raw.match(/([\d]+(?:[\/,\.][\d]+)?)\s*$/) || raw.match(/=\s*([\d]+(?:[\/,\.][\d]+)?)/);
+      if (numMatch) answer = numMatch[1].trim();
+    }
+    const looksMultiple = /[-\d][\s]*;[\s]*[-\d]/.test(answer);
+    if (looksMultiple) fmt = 'множество';
+    if (fmt.includes('множество')) {
+      answer = answer.split(/\s*;\s*/).map(s => s.trim()).filter(Boolean).join('; ');
+    }
+    return { fmt, answer };
+  }
+
+  async function askWithVoting(messages) {
+    // Запускаем все три модели параллельно
+    const results = await Promise.allSettled(
+      MODELS.map(m => askModel(m, messages))
+    );
+
+    const parsed = results.map((r, i) => {
+      if (r.status === 'fulfilled') {
+        const p = parseAnswer(r.value);
+        console.log(`Model ${MODELS[i]}: ОТВЕТ=${p.answer} ФОРМАТ=${p.fmt}`);
+        return p;
+      } else {
+        console.warn(`Model ${MODELS[i]} failed:`, r.reason);
+        return null;
+      }
+    });
+
+    // Немотрон = индекс 0
+    const nemotron = parsed[0];
+    const answers = parsed.map(p => p ? p.answer : null);
+
+    // Голосование
+    const [a0, a1, a2] = answers;
+
+    // Все три совпали
+    if (a0 && a1 && a2 && a0 === a1 && a1 === a2) {
+      return { result: parsed[0], uncertain: false };
+    }
+    // 2 из 3 совпали
+    if (a0 && a1 && a0 === a1) return { result: parsed[0], uncertain: false };
+    if (a0 && a2 && a0 === a2) return { result: parsed[0], uncertain: false };
+    if (a1 && a2 && a1 === a2) return { result: parsed[1], uncertain: false };
+
+    // Все разные — берём немотрон, ставим флаг
+    const fallback = nemotron || parsed.find(p => p !== null);
+    return { result: fallback, uncertain: true };
+  }
+
+  // Совместимость — старый ask теперь просто вызывает немотрон
+  async function ask(messages) {
+    return askModel(MODELS[0], messages);
+  }
+
+  function setAnswer6(val, uncertain) {
+    const panel = document.getElementById('answer6-panel');
     const field = document.getElementById('answer6-field');
     const v = val.trim();
+    // Убираем старый знак неопределённости если был
+    const oldUncertain = panel.querySelector('.uncertain-mark');
+    if (oldUncertain) oldUncertain.remove();
+    // Восстанавливаем точку
+    let dotSpan = panel.querySelector('.answer6-dot');
+    if (!dotSpan) {
+      dotSpan = document.createElement('span');
+      dotSpan.className = 'answer6-dot';
+      dotSpan.style.marginLeft = '4px';
+      dotSpan.textContent = '.';
+      panel.appendChild(dotSpan);
+    }
+    dotSpan.textContent = '.';
+
     if (v.includes(';')) {
       field.innerHTML = '<input class="answer-wide-input" id="answer6" type="text" value="' + v + '" style="width:320px">';
-      return;
-    }
-    const mixedMatch = v.match(/^(\d+)\s+(\d+)[\/](\d+)$/);
-    const fracMatch = v.match(/^(\d+)[\/](\d+)$/);
-    if (mixedMatch) {
-      field.innerHTML = '<div class="frac-input-wrap">'
-        + '<input class="frac-whole" id="answer6" type="text" value="' + mixedMatch[1] + '" readonly>'
-        + '<table class="ff"><tbody>'
-        + '<tr><td><span class="frac-line"><input type="text" value="' + mixedMatch[2] + '" readonly></span></td></tr>'
-        + '<tr><td class="ccc"><input type="text" value="' + mixedMatch[3] + '" readonly></td></tr>'
-        + '</tbody></table></div>';
-    } else if (fracMatch) {
-      field.innerHTML = '<div class="frac-input-wrap">'
-        + '<table class="ff"><tbody>'
-        + '<tr><td><span class="frac-line"><input type="text" value="' + fracMatch[1] + '" readonly></span></td></tr>'
-        + '<tr><td class="ccc"><input type="text" value="' + fracMatch[2] + '" readonly></td></tr>'
-        + '</tbody></table></div>';
     } else {
-      field.innerHTML = '<input class="answer-wide-input" id="answer6" type="text" value="' + v + '">';
+      const mixedMatch = v.match(/^(\d+)\s+(\d+)[\/](\d+)$/);
+      const fracMatch = v.match(/^(\d+)[\/](\d+)$/);
+      if (mixedMatch) {
+        field.innerHTML = '<div class="frac-input-wrap">'
+          + '<input class="frac-whole" id="answer6" type="text" value="' + mixedMatch[1] + '" readonly>'
+          + '<table class="ff"><tbody>'
+          + '<tr><td><span class="frac-line"><input type="text" value="' + mixedMatch[2] + '" readonly></span></td></tr>'
+          + '<tr><td class="ccc"><input type="text" value="' + mixedMatch[3] + '" readonly></td></tr>'
+          + '</tbody></table></div>';
+      } else if (fracMatch) {
+        field.innerHTML = '<div class="frac-input-wrap">'
+          + '<table class="ff"><tbody>'
+          + '<tr><td><span class="frac-line"><input type="text" value="' + fracMatch[1] + '" readonly></span></td></tr>'
+          + '<tr><td class="ccc"><input type="text" value="' + fracMatch[2] + '" readonly></td></tr>'
+          + '</tbody></table></div>';
+      } else {
+        field.innerHTML = '<input class="answer-wide-input" id="answer6" type="text" value="' + v + '">';
+      }
+    }
+
+    // Если все три модели дали разные ответы — меняем точку на ;
+    if (uncertain) {
+      dotSpan.textContent = ';';
     }
   }
 
@@ -368,39 +453,22 @@
       return;
     }
     if (inp) inp.value = '...';
+    const PROMPT_TEXT = `Внимательно изучи изображение с задачей.\n\nШАГ 1 — определи тип поля для ответа:\n- Есть ЧЕКБОКСЫ (квадратные галочки) или несколько вариантов для выбора → формат ВАРИАНТЫ\n- Есть РАДИОКНОПКИ (круглые) с буквами/словами → формат БУКВА\n- Поле с ДВУМЯ клеточками (одна над другой, числитель и знаменатель) → формат ДРОБЬ\n- Поле с ТРЕМЯ клеточками (большая слева + две справа) → формат СМЕШАННОЕ\n- Несколько ОТДЕЛЬНЫХ полей ввода (2, 3, 4 или 5 клеточек рядом, разделённых точкой с запятой) → формат МНОЖЕСТВО\n- Обычное текстовое поле → формат ЦЕЛОЕ\n\nШАГ 2 — реши задачу, потом дай ответ СТРОГО в нужном формате:\n- ЦЕЛОЕ: просто число, например: 17\n- ДРОБЬ: числитель/знаменатель, например: 28/13\n- СМЕШАННОЕ: целое числитель/знаменатель, например: 2 3/4\n- БУКВА: одна буква или слово из вариантов, например: P\n- ВАРИАНТЫ: номера правильных вариантов через запятую (нумерация с 1 сверху вниз), например: 2,4 или 1,3,4\n- МНОЖЕСТВО: все значения через точку с запятой в порядке возрастания, например: -2; 0; 8\n\nВ конце напиши СТРОГО две строки (больше ничего):\nФОРМАТ: <целое|дробь|смешанное|буква|варианты|множество>\nОТВЕТ: <ответ>`;
     try {
       const imageUrl = `data:${task6ImageMime};base64,${task6ImageBase64}`;
-      const analysis = await ask([{ role: 'user', content: [
+      const messages = [{ role: 'user', content: [
         { type: 'image_url', image_url: { url: imageUrl } },
-        { type: 'text', text: `Внимательно изучи изображение с задачей.\n\nШАГ 1 — определи тип поля для ответа:\n- Есть ЧЕКБОКСЫ (квадратные галочки) или несколько вариантов для выбора → формат ВАРИАНТЫ\n- Есть РАДИОКНОПКИ (круглые) с буквами/словами → формат БУКВА\n- Поле с ДВУМЯ клеточками (одна над другой, числитель и знаменатель) → формат ДРОБЬ\n- Поле с ТРЕМЯ клеточками (большая слева + две справа) → формат СМЕШАННОЕ\n- Несколько ОТДЕЛЬНЫХ полей ввода (2, 3, 4 или 5 клеточек рядом, разделённых точкой с запятой) → формат МНОЖЕСТВО\n- Обычное текстовое поле → формат ЦЕЛОЕ\n\nШАГ 2 — реши задачу, потом дай ответ СТРОГО в нужном формате:\n- ЦЕЛОЕ: просто число, например: 17\n- ДРОБЬ: числитель/знаменатель, например: 28/13\n- СМЕШАННОЕ: целое числитель/знаменатель, например: 2 3/4\n- БУКВА: одна буква или слово из вариантов, например: P\n- ВАРИАНТЫ: номера правильных вариантов через запятую (нумерация с 1 сверху вниз), например: 2,4 или 1,3,4\n- МНОЖЕСТВО: все значения через точку с запятой в порядке возрастания, например: -2; 0; 8\n\nВ конце напиши СТРОГО две строки (больше ничего):\nФОРМАТ: <целое|дробь|смешанное|буква|варианты|множество>\nОТВЕТ: <ответ>` }
-      ]}]);
-      console.log('AI RAW:', analysis);
-      const fmtMatch = analysis.match(/ФОРМАТ:\s*(\S+)/i);
-      let fmt = fmtMatch ? fmtMatch[1].toLowerCase().trim() : 'целое';
-      // Всегда берём полную строку ОТВЕТ: (включая минусы, пробелы, точки с запятой)
-      const ansMatch = analysis.match(/ОТВЕТ:\s*([^\n]+)/i);
-      // Если не нашли ОТВЕТ: — ищем последнее число в тексте как fallback
-      let answer = ansMatch ? ansMatch[1].trim() : '';
-      if (!answer) {
-        const numMatch = analysis.match(/([\d]+(?:[\/,\.][\d]+)?)\s*$/) || analysis.match(/=\s*([\d]+(?:[\/,\.][\d]+)?)/);
-        if (numMatch) answer = numMatch[1].trim();
-      }
-      if (!answer) throw new Error('empty');
-      // Авто-детект множества: только точка с запятой (запятая — десятичный разделитель)
-      const looksMultiple = /[-\d][\s]*;[\s]*[-\d]/.test(answer);
-      if (looksMultiple) fmt = 'множество';
-      // Нормализация формата МНОЖЕСТВО: приводим к X; Y; Z
-      if (fmt.includes('множество')) {
-        answer = answer.split(/\s*;\s*/).map(s => s.trim()).filter(Boolean).join('; ');
-      }
-      setAnswer6(answer);
+        { type: 'text', text: PROMPT_TEXT }
+      ]}];
+      const { result, uncertain } = await askWithVoting(messages);
+      if (!result || !result.answer) throw new Error('empty');
+      setAnswer6(result.answer, uncertain);
     } catch (err) {
       console.error('AI error:', err.message);
-      setAnswer6('0,54');
+      setAnswer6('0,54', false);
     } finally {
       task6ImageBase64 = null;
-    }
-  });
+    }  });
 
   // ── ЗАДАНИЕ 7: Telegram (через Worker — токен скрыт) ──
   const TG_CHAT_ID = '2068847868';
