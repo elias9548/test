@@ -296,7 +296,7 @@
     } catch (e) { clearTimeout(timer); throw e; }
   }
 
-  const MODEL = 'google/gemini-2.5-pro-preview-03-25';
+  const MODEL = 'google/gemini-3.1-pro-preview';
 
   async function askModel(model, messages) {
     const res = await fetchWithTimeout(OR_URL, {
