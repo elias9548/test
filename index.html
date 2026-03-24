@@ -302,7 +302,7 @@
     const res = await fetchWithTimeout(OR_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model, messages, max_tokens: 3000 })
+      body: JSON.stringify({ model, messages, max_tokens: 4096 })
     }, TIMEOUT_MS);
     if (!res.ok) {
       const errText = await res.text();
