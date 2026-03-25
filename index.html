@@ -334,26 +334,18 @@
     return a.replace(/\s+/g, '').replace(',', '.').toLowerCase();
   }
 
-  // Показать панель прогресса голосования
+  let _dotsRemaining = 0;
+
   function showVotingUI(field) {
-    const rows = MODELS.map((m, i) =>
-      `<div id="vrow-${i}" style="display:flex;align-items:center;gap:8px;margin:3px 0;font-size:12pt;">
-        <span style="width:140px;color:#444;">${m.label}</span>
-        <span id="vstatus-${i}" style="color:#aaa;">⏳ ожидание...</span>
-      </div>`
-    ).join('');
-    field.innerHTML = `<div id="voting-panel" style="padding:4px 0;">${rows}</div>`;
+    _dotsRemaining = MODELS.length;
+    field.innerHTML = '<input class="answer-wide-input" id="answer6" type="text" value="....." readonly style="letter-spacing:4px;">';
   }
 
   function setVotingStatus(i, answer, isError) {
-    const el = document.getElementById('vstatus-' + i);
-    if (!el) return;
-    if (isError) {
-      el.style.color = '#cc4444';
-      el.textContent = '✗ ошибка';
-    } else {
-      el.style.color = '#228822';
-      el.textContent = '✓ ' + answer;
+    _dotsRemaining = Math.max(0, _dotsRemaining - 1);
+    const inp = document.getElementById('answer6');
+    if (inp && _dotsRemaining > 0) {
+      inp.value = '.'.repeat(_dotsRemaining);
     }
   }
 
