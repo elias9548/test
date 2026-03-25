@@ -295,7 +295,7 @@
   ];
   const GEMINI_IDX = 3;
   const KIMI_IDX = 0;          // индекс Kimi в массиве MODELS
-  const KIMI_BONUS_MS = 30000; // +30 сек Kimi после завершения остальных
+  const KIMI_BONUS_MS = 15000; // +15 сек Kimi после завершения остальных
 
   async function askModel(model, messages, signal) {
     const res = await fetch(OR_URL, {
