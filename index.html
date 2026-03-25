@@ -294,6 +294,8 @@
     { id: 'qwen/qwen3.5-397b-a17b',          label: 'Qwen3.5 397B' },
   ];
   const GEMINI_IDX = 3;
+  const KIMI_IDX = 0;          // индекс Kimi в массиве MODELS
+  const KIMI_BONUS_MS = 30000; // +30 сек Kimi после завершения остальных
 
   async function askModel(model, messages, signal) {
     const res = await fetch(OR_URL, {
@@ -359,8 +361,16 @@
     const results = new Array(MODELS.length).fill(null);
     let firstValidTime = null;
 
-    const promises = MODELS.map((m, i) =>
-      askModel(m.id, messages, controller.signal)
+    // Kimi запускается с отдельным AbortController, чтобы его можно было прервать отдельно
+    const kimiController = new AbortController();
+    // Если глобальный таймаут — прерываем и Kimi
+    const origAbort = controller.abort.bind(controller);
+    controller.abort = (...args) => { origAbort(...args); kimiController.abort(...args); };
+
+    // Запускаем все модели КРОМЕ Kimi
+    const otherPromises = MODELS.map((m, i) => {
+      if (i === KIMI_IDX) return Promise.resolve(); // Kimi запустим ниже
+      return askModel(m.id, messages, controller.signal)
         .then(raw => {
           const parsed = parseAnswer(raw);
           results[i] = parsed;
@@ -372,10 +382,37 @@
           results[i] = null;
           console.warn(`${m.label} failed:`, err.message || err);
           setVotingStatus(i, '', true);
-        })
-    );
+        });
+    });
 
-    await Promise.allSettled(promises);
+    // Kimi запускается одновременно, но с собственным сигналом
+    const kimiPromise = askModel(MODELS[KIMI_IDX].id, messages, kimiController.signal)
+      .then(raw => {
+        const parsed = parseAnswer(raw);
+        results[KIMI_IDX] = parsed;
+        if (firstValidTime === null) firstValidTime = Date.now();
+        console.log(`${MODELS[KIMI_IDX].label}: ОТВЕТ=${parsed.answer} ФОРМАТ=${parsed.fmt}`);
+        setVotingStatus(KIMI_IDX, parsed.answer, false);
+      })
+      .catch(err => {
+        results[KIMI_IDX] = null;
+        console.warn(`${MODELS[KIMI_IDX].label} failed:`, err.message || err);
+        setVotingStatus(KIMI_IDX, '', true);
+      });
+
+    // Ждём, когда все остальные модели завершатся (ответ или ошибка)
+    await Promise.allSettled(otherPromises);
+
+    // Если Kimi ещё не ответил — даём ему ещё KIMI_BONUS_MS (30 сек)
+    if (results[KIMI_IDX] === null) {
+      console.log(`Kimi получает бонусное время +${KIMI_BONUS_MS / 1000}с...`);
+      const bonusTimer = setTimeout(() => kimiController.abort(), KIMI_BONUS_MS);
+      await kimiPromise;
+      clearTimeout(bonusTimer);
+    } else {
+      await kimiPromise; // уже завершён, просто ждём промис
+    }
+
     clearTimeout(globalTimer);
 
     // Голосование
@@ -411,13 +448,23 @@
       return { result: majors[0].result, uncertain: false };
     }
 
-    // Все дали разный ответ (или ничья без явного большинства) → Gemini
-    const geminiResult = results[GEMINI_IDX];
-    if (geminiResult && geminiResult.answer) {
-      return { result: geminiResult, uncertain: true };
+    // Ничья (например 2:2) — приоритетная цепочка арбитра:
+    // Gemini → Mimo → GLM → Qwen → Kimi
+    const TIEBREAK_PRIORITY = [
+      GEMINI_IDX,
+      MODELS.findIndex(m => m.id.includes('mimo')),
+      MODELS.findIndex(m => m.id.includes('glm')),
+      MODELS.findIndex(m => m.id.includes('qwen')),
+      KIMI_IDX,
+    ];
+    for (const idx of TIEBREAK_PRIORITY) {
+      if (idx >= 0 && results[idx] && results[idx].answer) {
+        console.log('Nichya — arbiter: ' + MODELS[idx].label);
+        return { result: results[idx], uncertain: true };
+      }
     }
 
-    // Gemini тоже не ответил → первый валидный
+    // Совсем ничего — первый валидный
     return { result: valid[0], uncertain: true };
   }
 
