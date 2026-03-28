@@ -297,11 +297,12 @@
   const KIMI_IDX = 0;          // индекс Kimi в массиве MODELS
   const KIMI_BONUS_MS = 15000; // +15 сек Kimi после завершения остальных
 
-  async function askModel(model, messages, signal) {
+  async function askModel(model, messages, signal, extraParams = {}) {
+    const body = { model, messages, max_tokens: 4096, ...extraParams };
     const res = await fetch(OR_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model, messages, max_tokens: 4096 }),
+      body: JSON.stringify(body),
       signal
     });
     if (!res.ok) {
@@ -310,7 +311,26 @@
     }
     const d = await res.json();
     if (d.error) throw new Error(d.error.message);
-    const text = d.choices[0].message.content.trim();
+    const msg = d.choices?.[0]?.message;
+    if (!msg) throw new Error('No message in response');
+    // content может быть null если модель отказала / фильтр сработал
+    if (msg.content === null || msg.content === undefined) {
+      const reason = d.choices?.[0]?.finish_reason || 'unknown';
+      throw new Error('content is null, finish_reason: ' + reason);
+    }
+    // Qwen3 thinking: берём только финальный текст (не блок <think>)
+    let text = '';
+    if (Array.isArray(msg.content)) {
+      // structured content blocks (некоторые провайдеры)
+      text = msg.content
+        .filter(b => b.type === 'text')
+        .map(b => b.text).join('').trim();
+    } else {
+      text = (msg.content || '').trim();
+    }
+    // Убираем блок <think>...</think> если есть
+    text = text.replace(/<think>[\s\S]*?<\/think>/i, '').trim();
+    if (!text) throw new Error('Empty text after processing');
     console.log('Used model:', d.model, '→', text.slice(-100));
     return text;
   }
@@ -368,9 +388,11 @@
     controller.abort = (...args) => { origAbort(...args); kimiController.abort(...args); };
 
     // Запускаем все модели КРОМЕ Kimi
+    const QWEN_IDX = MODELS.findIndex(m => m.id.includes('qwen'));
     const otherPromises = MODELS.map((m, i) => {
       if (i === KIMI_IDX) return Promise.resolve(); // Kimi запустим ниже
-      return askModel(m.id, messages, controller.signal)
+      const extra = (i === QWEN_IDX) ? { enable_thinking: true } : {};
+      return askModel(m.id, messages, controller.signal, extra)
         .then(raw => {
           const parsed = parseAnswer(raw);
           results[i] = parsed;
