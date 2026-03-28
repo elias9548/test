@@ -291,7 +291,7 @@
     { id: 'xiaomi/mimo-v2-omni',             label: 'Mimo V2 Omni' },
     { id: 'z-ai/glm-4.6v',                  label: 'GLM 4.6V' },
     { id: 'google/gemini-3-flash-preview',   label: 'Gemini 3 Flash' },
-    { id: 'qwen/qwen3-vl-235b-a22b-instruct', label: 'Qwen3-VL 235B' },
+    { id: 'qwen/qwen3-vl-235b-a22b-thinking', label: 'Qwen3-VL 235B Thinking' },
   ];
   const GEMINI_IDX = 3;
   const KIMI_IDX = 0;          // индекс Kimi в массиве MODELS
@@ -391,7 +391,7 @@
     const QWEN_IDX = MODELS.findIndex(m => m.id.includes('qwen'));
     const otherPromises = MODELS.map((m, i) => {
       if (i === KIMI_IDX) return Promise.resolve(); // Kimi запустим ниже
-      const extra = (i === QWEN_IDX) ? { enable_thinking: true } : {};
+      const extra = {};
       return askModel(m.id, messages, controller.signal, extra)
         .then(raw => {
           const parsed = parseAnswer(raw);
