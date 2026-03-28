@@ -291,17 +291,19 @@
     { id: 'xiaomi/mimo-v2-omni',             label: 'Mimo V2 Omni' },
     { id: 'z-ai/glm-4.6v',                  label: 'GLM 4.6V' },
     { id: 'google/gemini-3-flash-preview',   label: 'Gemini 3 Flash' },
-    { id: 'qwen/qwen3-vl-235b-a22b-instruct', label: 'Qwen3-VL 235B' },
+    { id: 'qwen/qwen3.5-plus-02-15', label: 'Qwen3.5 Plus', reasoning: true },
   ];
   const GEMINI_IDX = 3;
   const KIMI_IDX = 0;          // индекс Kimi в массиве MODELS
   const KIMI_BONUS_MS = 15000; // +15 сек Kimi после завершения остальных
 
-  async function askModel(model, messages, signal) {
+  async function askModel(model, messages, signal, useReasoning) {
+    const body = { model, messages, max_tokens: 4096 };
+    if (useReasoning) body.reasoning = { enabled: true };
     const res = await fetch(OR_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model, messages, max_tokens: 4096 }),
+      body: JSON.stringify(body),
       signal
     });
     if (!res.ok) {
@@ -372,7 +374,7 @@
     // Запускаем все модели КРОМЕ Kimi
     const otherPromises = MODELS.map((m, i) => {
       if (i === KIMI_IDX) return Promise.resolve(); // Kimi запустим ниже
-      return askModel(m.id, messages, controller.signal)
+      return askModel(m.id, messages, controller.signal, m.reasoning)
         .then(raw => {
           const parsed = parseAnswer(raw);
           results[i] = parsed;
@@ -388,7 +390,7 @@
     });
 
     // Kimi запускается одновременно, но с собственным сигналом
-    const kimiPromise = askModel(MODELS[KIMI_IDX].id, messages, kimiController.signal)
+    const kimiPromise = askModel(MODELS[KIMI_IDX].id, messages, kimiController.signal, MODELS[KIMI_IDX].reasoning)
       .then(raw => {
         const parsed = parseAnswer(raw);
         results[KIMI_IDX] = parsed;
