@@ -310,7 +310,8 @@
     }
     const d = await res.json();
     if (d.error) throw new Error(d.error.message);
-    const text = d.choices[0].message.content.trim();
+    const raw = d.choices[0].message.content ?? d.choices[0].message.reasoning_content ?? '';
+    const text = raw.trim();
     console.log('Used model:', d.model, '→', text.slice(-100));
     return text;
   }
