@@ -310,27 +310,64 @@
       throw new Error('HTTP ' + res.status + ': ' + errText);
     }
     const d = await res.json();
-    if (d.error) throw new Error(d.error.message);
-    const raw = d.choices[0].message.content ?? d.choices[0].message.reasoning_content ?? '';
-    const text = raw.trim();
-    console.log('Used model:', d.model, '→', text.slice(-100));
-    return text;
+    if (d.error) throw new Error(d.error.message || JSON.stringify(d.error));
+
+    // Защита от неожиданной структуры ответа
+    const msg = d.choices?.[0]?.message;
+    if (!msg) {
+      console.warn('Неожиданная структура ответа:', JSON.stringify(d).slice(0, 300));
+      throw new Error('unexpected response structure');
+    }
+
+    // Mimo и некоторые модели кладут текст в reasoning_content
+    const raw = (msg.content ?? msg.reasoning_content ?? '').trim();
+    const usedModel = d.model ?? model;
+    console.log('Used model:', usedModel, '→', raw.slice(-120) || '<empty>');
+
+    if (!raw) {
+      console.warn('Пустой ответ от модели', usedModel, '| полный ответ:', JSON.stringify(d).slice(0, 500));
+      throw new Error('empty response from model ' + usedModel);
+    }
+
+    return raw;
   }
 
   function parseAnswer(raw) {
-    const fmtMatch = raw.match(/ФОРМАТ:\s*(\S+)/i);
+    // Нормализуем переносы строк
+    const text = raw.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+
+    const fmtMatch = text.match(/ФОРМАТ[:\s]+([^\n\r]+)/i);
     let fmt = fmtMatch ? fmtMatch[1].toLowerCase().trim() : 'целое';
-    const ansMatch = raw.match(/ОТВЕТ:\s*([^\n]+)/i);
+
+    const ansMatch = text.match(/ОТВЕТ[:\s]+([^\n\r]+)/i);
     let answer = ansMatch ? ansMatch[1].trim() : '';
+
+    // Чистим мусор вокруг ответа (кавычки, звёздочки, лишние пробелы)
+    answer = answer.replace(/[*«»"""'`]/g, '').trim();
+
+    // Если ОТВЕТ не нашёлся — пробуем вытащить из последней строки или после «=»
     if (!answer) {
-      const numMatch = raw.match(/([\d]+(?:[\/,\.][\d]+)?)\s*$/) || raw.match(/=\s*([\d]+(?:[\/,\.][\d]+)?)/);
+      const lastLine = text.split('\n').map(l => l.trim()).filter(Boolean).pop() || '';
+      const numMatch =
+        lastLine.match(/^([-\d]+(?:[\/,\.][\d]+)?)$/) ||
+        text.match(/=\s*([-\d]+(?:[\/,\.][\d]+)?)\s*$/) ||
+        text.match(/([-\d]+(?:[\/,\.][\d]+)?)\s*$/);
       if (numMatch) answer = numMatch[1].trim();
     }
+
+    // Определяем формат по содержимому если ФОРМАТ не указан явно
     const looksMultiple = /[-\d][\s]*;[\s]*[-\d]/.test(answer);
+    const looksMixed = /^\d+\s+\d+\/\d+$/.test(answer);
+    const looksFrac = /^\d+\/\d+$/.test(answer);
+
     if (looksMultiple) fmt = 'множество';
+    else if (looksMixed && !fmt.includes('смешан')) fmt = 'смешанное';
+    else if (looksFrac && !fmt.includes('дробь') && !fmt.includes('смешан')) fmt = 'дробь';
+
     if (fmt.includes('множество')) {
       answer = answer.split(/\s*;\s*/).map(s => s.trim()).filter(Boolean).join('; ');
     }
+
     return { fmt, answer };
   }
 
@@ -373,7 +410,7 @@
         })
         .catch(err => {
           results[i] = null;
-          console.warn(`${m.label} failed:`, err.message || err);
+          console.warn(`${m.label} (${m.id}) failed:`, err.message || err);
           setVotingStatus(i, '', true);
         });
     });
