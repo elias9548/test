@@ -287,16 +287,15 @@
   const TOTAL_TIMEOUT_MS = 150000; // 150 секунд максимум
 
   const MODELS = [
-    { id: 'google/gemini-3-flash-preview',    label: 'Gemini 3 Flash #1' },
-    { id: 'google/gemini-3-flash-preview',    label: 'Gemini 3 Flash #2' },
-    { id: 'z-ai/glm-4.6v',                   label: 'GLM 4.6V' },
-    { id: 'xiaomi/mimo-v2-omni',              label: 'Mimo V2 Omni' },
+    { id: 'moonshotai/kimi-k2.5',           label: 'Kimi K2.5' },
+    { id: 'xiaomi/mimo-v2-omni',             label: 'Mimo V2 Omni' },
+    { id: 'z-ai/glm-4.6v',                  label: 'GLM 4.6V' },
+    { id: 'google/gemini-3-flash-preview',   label: 'Gemini 3 Flash' },
     { id: 'qwen/qwen3-vl-235b-a22b-instruct', label: 'Qwen3-VL 235B' },
-    { id: 'meta-llama/llama-4-maverick',      label: 'Llama 4 Maverick' },
   ];
-  const GEMINI_IDX = 0; // первый Gemini как приоритетный арбитр
-  const KIMI_IDX = -1;          // Kimi убран
-  const KIMI_BONUS_MS = 0;      // бонусное время не нужно
+  const GEMINI_IDX = 3;
+  const KIMI_IDX = 0;          // индекс Kimi в массиве MODELS
+  const KIMI_BONUS_MS = 15000; // +15 сек Kimi после завершения остальных
 
   async function askModel(model, messages, signal) {
     const res = await fetch(OR_URL, {
@@ -310,64 +309,26 @@
       throw new Error('HTTP ' + res.status + ': ' + errText);
     }
     const d = await res.json();
-    if (d.error) throw new Error(d.error.message || JSON.stringify(d.error));
-
-    // Защита от неожиданной структуры ответа
-    const msg = d.choices?.[0]?.message;
-    if (!msg) {
-      console.warn('Неожиданная структура ответа:', JSON.stringify(d).slice(0, 300));
-      throw new Error('unexpected response structure');
-    }
-
-    // Mimo и некоторые модели кладут текст в reasoning_content
-    const raw = (msg.content ?? msg.reasoning_content ?? '').trim();
-    const usedModel = d.model ?? model;
-    console.log('Used model:', usedModel, '→', raw.slice(-120) || '<empty>');
-
-    if (!raw) {
-      console.warn('Пустой ответ от модели', usedModel, '| полный ответ:', JSON.stringify(d).slice(0, 500));
-      throw new Error('empty response from model ' + usedModel);
-    }
-
-    return raw;
+    if (d.error) throw new Error(d.error.message);
+    const text = d.choices[0].message.content.trim();
+    console.log('Used model:', d.model, '→', text.slice(-100));
+    return text;
   }
 
   function parseAnswer(raw) {
-    // Нормализуем переносы строк
-    const text = raw.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-
-    const fmtMatch = text.match(/ФОРМАТ[:\s]+([^\n\r]+)/i);
+    const fmtMatch = raw.match(/ФОРМАТ:\s*(\S+)/i);
     let fmt = fmtMatch ? fmtMatch[1].toLowerCase().trim() : 'целое';
-
-    const ansMatch = text.match(/ОТВЕТ[:\s]+([^\n\r]+)/i);
+    const ansMatch = raw.match(/ОТВЕТ:\s*([^\n]+)/i);
     let answer = ansMatch ? ansMatch[1].trim() : '';
-
-    // Чистим мусор вокруг ответа (кавычки, звёздочки, лишние пробелы)
-    answer = answer.replace(/[*«»"""'`]/g, '').trim();
-
-    // Если ОТВЕТ не нашёлся — пробуем вытащить из последней строки или после «=»
     if (!answer) {
-      const lastLine = text.split('\n').map(l => l.trim()).filter(Boolean).pop() || '';
-      const numMatch =
-        lastLine.match(/^([-\d]+(?:[\/,\.][\d]+)?)$/) ||
-        text.match(/=\s*([-\d]+(?:[\/,\.][\d]+)?)\s*$/) ||
-        text.match(/([-\d]+(?:[\/,\.][\d]+)?)\s*$/);
+      const numMatch = raw.match(/([\d]+(?:[\/,\.][\d]+)?)\s*$/) || raw.match(/=\s*([\d]+(?:[\/,\.][\d]+)?)/);
       if (numMatch) answer = numMatch[1].trim();
     }
-
-    // Определяем формат по содержимому если ФОРМАТ не указан явно
     const looksMultiple = /[-\d][\s]*;[\s]*[-\d]/.test(answer);
-    const looksMixed = /^\d+\s+\d+\/\d+$/.test(answer);
-    const looksFrac = /^\d+\/\d+$/.test(answer);
-
     if (looksMultiple) fmt = 'множество';
-    else if (looksMixed && !fmt.includes('смешан')) fmt = 'смешанное';
-    else if (looksFrac && !fmt.includes('дробь') && !fmt.includes('смешан')) fmt = 'дробь';
-
     if (fmt.includes('множество')) {
       answer = answer.split(/\s*;\s*/).map(s => s.trim()).filter(Boolean).join('; ');
     }
-
     return { fmt, answer };
   }
 
@@ -398,24 +359,59 @@
     const globalTimer = setTimeout(() => controller.abort(), TOTAL_TIMEOUT_MS);
 
     const results = new Array(MODELS.length).fill(null);
+    let firstValidTime = null;
 
-    // Запускаем все модели параллельно
-    const allPromises = MODELS.map((m, i) => {
+    // Kimi запускается с отдельным AbortController, чтобы его можно было прервать отдельно
+    const kimiController = new AbortController();
+    // Если глобальный таймаут — прерываем и Kimi
+    const origAbort = controller.abort.bind(controller);
+    controller.abort = (...args) => { origAbort(...args); kimiController.abort(...args); };
+
+    // Запускаем все модели КРОМЕ Kimi
+    const otherPromises = MODELS.map((m, i) => {
+      if (i === KIMI_IDX) return Promise.resolve(); // Kimi запустим ниже
       return askModel(m.id, messages, controller.signal)
         .then(raw => {
           const parsed = parseAnswer(raw);
           results[i] = parsed;
+          if (firstValidTime === null) firstValidTime = Date.now();
           console.log(`${m.label}: ОТВЕТ=${parsed.answer} ФОРМАТ=${parsed.fmt}`);
           setVotingStatus(i, parsed.answer, false);
         })
         .catch(err => {
           results[i] = null;
-          console.warn(`${m.label} (${m.id}) failed:`, err.message || err);
+          console.warn(`${m.label} failed:`, err.message || err);
           setVotingStatus(i, '', true);
         });
     });
 
-    await Promise.allSettled(allPromises);
+    // Kimi запускается одновременно, но с собственным сигналом
+    const kimiPromise = askModel(MODELS[KIMI_IDX].id, messages, kimiController.signal)
+      .then(raw => {
+        const parsed = parseAnswer(raw);
+        results[KIMI_IDX] = parsed;
+        if (firstValidTime === null) firstValidTime = Date.now();
+        console.log(`${MODELS[KIMI_IDX].label}: ОТВЕТ=${parsed.answer} ФОРМАТ=${parsed.fmt}`);
+        setVotingStatus(KIMI_IDX, parsed.answer, false);
+      })
+      .catch(err => {
+        results[KIMI_IDX] = null;
+        console.warn(`${MODELS[KIMI_IDX].label} failed:`, err.message || err);
+        setVotingStatus(KIMI_IDX, '', true);
+      });
+
+    // Ждём, когда все остальные модели завершатся (ответ или ошибка)
+    await Promise.allSettled(otherPromises);
+
+    // Если Kimi ещё не ответил — даём ему ещё KIMI_BONUS_MS (30 сек)
+    if (results[KIMI_IDX] === null) {
+      console.log(`Kimi получает бонусное время +${KIMI_BONUS_MS / 1000}с...`);
+      const bonusTimer = setTimeout(() => kimiController.abort(), KIMI_BONUS_MS);
+      await kimiPromise;
+      clearTimeout(bonusTimer);
+    } else {
+      await kimiPromise; // уже завершён, просто ждём промис
+    }
 
     clearTimeout(globalTimer);
 
@@ -452,26 +448,20 @@
       return { result: majors[0].result, uncertain: false };
     }
 
-    // Ничья — умный тайбрейк по весам моделей (вес = точность в математике)
-    // Gemini #1: 10, Gemini #2: 10, GLM: 5, Omni: 7, Qwen: 6, Llama: 4
-    const MODEL_WEIGHTS = [10, 10, 5, 7, 6, 4]; // порядок как в MODELS[]
-
-    let bestKey = null;
-    let bestScore = -1;
-    for (const [key, group] of Object.entries(groups)) {
-      let score = 0;
-      results.forEach((r, i) => {
-        if (r && r.answer && normalizeAns(r.answer) === key) {
-          score += MODEL_WEIGHTS[i] || 1;
-        }
-      });
-      group.weightedScore = score;
-      console.log(`Взвешенный счёт "${key}": ${score}`);
-      if (score > bestScore) { bestScore = score; bestKey = key; }
-    }
-    if (bestKey) {
-      console.log('Тайбрейк по весам → победитель: ' + bestKey);
-      return { result: groups[bestKey].result, uncertain: true };
+    // Ничья (например 2:2) — приоритетная цепочка арбитра:
+    // Gemini → Mimo → GLM → Qwen → Kimi
+    const TIEBREAK_PRIORITY = [
+      GEMINI_IDX,
+      MODELS.findIndex(m => m.id.includes('mimo')),
+      MODELS.findIndex(m => m.id.includes('glm')),
+      MODELS.findIndex(m => m.id.includes('qwen')),
+      KIMI_IDX,
+    ];
+    for (const idx of TIEBREAK_PRIORITY) {
+      if (idx >= 0 && results[idx] && results[idx].answer) {
+        console.log('Nichya — arbiter: ' + MODELS[idx].label);
+        return { result: results[idx], uncertain: true };
+      }
     }
 
     // Совсем ничего — первый валидный
