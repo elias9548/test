@@ -293,7 +293,7 @@
     const res = await fetch(OR_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: GEMINI_MODEL, messages, max_tokens: 16000, thinking: { type: "enabled", budget_tokens: 8000 }, reasoning: { effort: "high" } })
+      body: JSON.stringify({ model: GEMINI_MODEL, messages, max_tokens: 12000, thinking: { type: "enabled", budget_tokens: 8000 }, reasoning: { effort: "high" } })
     });
     if (!res.ok) {
       const errText = await res.text();
