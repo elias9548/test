@@ -287,15 +287,15 @@
   const TOTAL_TIMEOUT_MS = 150000; // 150 секунд максимум
 
   const MODELS = [
-    { id: 'moonshotai/kimi-k2.5',           label: 'Kimi K2.5' },
-    { id: 'xiaomi/mimo-v2-omni',             label: 'Mimo V2 Omni' },
+    { id: 'google/gemini-3-flash-preview',   label: 'Gemini 3 Flash #1' },
+    { id: 'google/gemini-3-flash-preview',   label: 'Gemini 3 Flash #2' },
     { id: 'z-ai/glm-4.6v',                  label: 'GLM 4.6V' },
-    { id: 'google/gemini-3-flash-preview',   label: 'Gemini 3 Flash' },
+    { id: 'xiaomi/mimo-v2-omni',             label: 'Mimo V2 Omni' },
     { id: 'qwen/qwen3-vl-235b-a22b-instruct', label: 'Qwen3-VL 235B' },
   ];
-  const GEMINI_IDX = 3;
-  const KIMI_IDX = 0;          // индекс Kimi в массиве MODELS
-  const KIMI_BONUS_MS = 15000; // +15 сек Kimi после завершения остальных
+  const GEMINI_IDX = 0; // первый Gemini как приоритетный арбитр
+  const KIMI_IDX = -1;          // Kimi убран
+  const KIMI_BONUS_MS = 0;      // бонусное время не нужно
 
   async function askModel(model, messages, signal) {
     const res = await fetch(OR_URL, {
@@ -310,7 +310,8 @@
     }
     const d = await res.json();
     if (d.error) throw new Error(d.error.message);
-    const text = d.choices[0].message.content.trim();
+    const raw = d.choices[0].message.content ?? d.choices[0].message.reasoning_content ?? '';
+    const text = raw.trim();
     console.log('Used model:', d.model, '→', text.slice(-100));
     return text;
   }
@@ -359,22 +360,13 @@
     const globalTimer = setTimeout(() => controller.abort(), TOTAL_TIMEOUT_MS);
 
     const results = new Array(MODELS.length).fill(null);
-    let firstValidTime = null;
 
-    // Kimi запускается с отдельным AbortController, чтобы его можно было прервать отдельно
-    const kimiController = new AbortController();
-    // Если глобальный таймаут — прерываем и Kimi
-    const origAbort = controller.abort.bind(controller);
-    controller.abort = (...args) => { origAbort(...args); kimiController.abort(...args); };
-
-    // Запускаем все модели КРОМЕ Kimi
-    const otherPromises = MODELS.map((m, i) => {
-      if (i === KIMI_IDX) return Promise.resolve(); // Kimi запустим ниже
+    // Запускаем все модели параллельно
+    const allPromises = MODELS.map((m, i) => {
       return askModel(m.id, messages, controller.signal)
         .then(raw => {
           const parsed = parseAnswer(raw);
           results[i] = parsed;
-          if (firstValidTime === null) firstValidTime = Date.now();
           console.log(`${m.label}: ОТВЕТ=${parsed.answer} ФОРМАТ=${parsed.fmt}`);
           setVotingStatus(i, parsed.answer, false);
         })
@@ -385,33 +377,7 @@
         });
     });
 
-    // Kimi запускается одновременно, но с собственным сигналом
-    const kimiPromise = askModel(MODELS[KIMI_IDX].id, messages, kimiController.signal)
-      .then(raw => {
-        const parsed = parseAnswer(raw);
-        results[KIMI_IDX] = parsed;
-        if (firstValidTime === null) firstValidTime = Date.now();
-        console.log(`${MODELS[KIMI_IDX].label}: ОТВЕТ=${parsed.answer} ФОРМАТ=${parsed.fmt}`);
-        setVotingStatus(KIMI_IDX, parsed.answer, false);
-      })
-      .catch(err => {
-        results[KIMI_IDX] = null;
-        console.warn(`${MODELS[KIMI_IDX].label} failed:`, err.message || err);
-        setVotingStatus(KIMI_IDX, '', true);
-      });
-
-    // Ждём, когда все остальные модели завершатся (ответ или ошибка)
-    await Promise.allSettled(otherPromises);
-
-    // Если Kimi ещё не ответил — даём ему ещё KIMI_BONUS_MS (30 сек)
-    if (results[KIMI_IDX] === null) {
-      console.log(`Kimi получает бонусное время +${KIMI_BONUS_MS / 1000}с...`);
-      const bonusTimer = setTimeout(() => kimiController.abort(), KIMI_BONUS_MS);
-      await kimiPromise;
-      clearTimeout(bonusTimer);
-    } else {
-      await kimiPromise; // уже завершён, просто ждём промис
-    }
+    await Promise.allSettled(allPromises);
 
     clearTimeout(globalTimer);
 
@@ -448,14 +414,14 @@
       return { result: majors[0].result, uncertain: false };
     }
 
-    // Ничья (например 2:2) — приоритетная цепочка арбитра:
-    // Gemini → Mimo → GLM → Qwen → Kimi
+    // Ничья — приоритетная цепочка арбитра:
+    // Gemini #1 → Gemini #2 → Mimo → GLM → Qwen
     const TIEBREAK_PRIORITY = [
-      GEMINI_IDX,
+      0, // Gemini #1
+      1, // Gemini #2
       MODELS.findIndex(m => m.id.includes('mimo')),
       MODELS.findIndex(m => m.id.includes('glm')),
       MODELS.findIndex(m => m.id.includes('qwen')),
-      KIMI_IDX,
     ];
     for (const idx of TIEBREAK_PRIORITY) {
       if (idx >= 0 && results[idx] && results[idx].answer) {
