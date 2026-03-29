@@ -370,6 +370,7 @@
     const globalTimer = setTimeout(() => controller.abort(), TOTAL_TIMEOUT_MS);
 
     const results = new Array(MODELS.length).fill(null);
+    const settled = new Array(MODELS.length).fill(false);
 
     // Запускаем все модели параллельно
     const allPromises = MODELS.map((m, i) =>
@@ -377,17 +378,34 @@
         .then(raw => {
           const parsed = parseAnswer(raw);
           results[i] = parsed;
+          settled[i] = true;
           console.log(`${m.label}: ОТВЕТ=${parsed.answer} ФОРМАТ=${parsed.fmt}`);
           setVotingStatus(i, parsed.answer, false);
         })
         .catch(err => {
           results[i] = null;
+          settled[i] = true;
           console.warn(`${m.label} failed:`, err.message || err);
           setVotingStatus(i, '', true);
         })
     );
 
-    await Promise.allSettled(allPromises);
+    // Ждём завершения всех, кроме Kimi
+    const nonKimiPromises = allPromises.filter((_, i) => i !== KIMI_IDX);
+    await Promise.allSettled(nonKimiPromises);
+
+    // Если Kimi ещё не ответил — даём ему максимум 15 секунд
+    if (!settled[KIMI_IDX]) {
+      console.log('Все ответили, кроме Kimi. Даём Kimi 15 сек...');
+      const kimiTimeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Kimi timeout 15s')), 15000)
+      );
+      await Promise.race([allPromises[KIMI_IDX], kimiTimeout]).catch(err => {
+        console.warn('Kimi не уложился в 15 сек:', err.message);
+        // Kimi не успел — помечаем как null (уже null по умолчанию)
+      });
+    }
+
     clearTimeout(globalTimer);
 
     // Голосование
