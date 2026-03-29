@@ -297,7 +297,7 @@
   const GEMINI25_IDX = 0; // Gemini 2.5 Flash
 
   async function askModel(model, messages, signal, useReasoning) {
-    const body = { model, messages, max_tokens: useReasoning ? 16000 : 4096 };
+    const body = { model, messages, max_tokens: useReasoning ? 8000 : 4096 };
     if (useReasoning) body.reasoning = { enabled: true };
     const res = await fetch(OR_URL, {
       method: 'POST',
