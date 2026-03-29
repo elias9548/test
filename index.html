@@ -291,10 +291,12 @@
     { id: 'xiaomi/mimo-v2-omni',             label: 'Mimo V2 Omni' },
     { id: 'z-ai/glm-4.6v',                  label: 'GLM 4.6V' },
     { id: 'google/gemini-3-flash-preview',   label: 'Gemini 3 Flash', reasoning: true },
-    { id: 'qwen/qwen3.5-397b-a17b',          label: 'Qwen3.5 397B', reasoning: true },
+    { id: 'qwen/qwen3.5-397b-a17b',          label: 'Qwen3.5 397B' },
+    { id: 'x-ai/grok-4.1-fast',             label: 'Grok 4.1 Fast', reasoning: true },
   ];
-  const GEMINI_IDX = 3; // Gemini 3 Flash — арбитр при ничьей
+  const GEMINI_IDX = 3; // Gemini 3 Flash
   const GEMINI25_IDX = 0; // Gemini 2.5 Flash
+  const GROK_IDX = 5; // Grok 4.1 Fast
 
   async function askModel(model, messages, signal, useReasoning) {
     const body = { model, messages, max_tokens: useReasoning ? 8000 : 4096 };
@@ -386,7 +388,7 @@
     const valid = results.filter(r => r && r.answer);
 
     if (valid.length === 0) {
-      return { result: null, uncertain: true };
+      return { result: null };
     }
 
     // Группировка по нормализованному ответу
@@ -403,7 +405,7 @@
 
     // Все дали одинаковый ответ
     if (entries.length === 1) {
-      return { result: entries[0].result, uncertain: false };
+      return { result: entries[0].result };
     }
 
     // Ищем большинство (4/1 или 3/2)
@@ -412,13 +414,14 @@
 
     if (majors.length === 1) {
       // Есть чёткое большинство
-      return { result: majors[0].result, uncertain: false };
+      return { result: majors[0].result };
     }
 
-    // Ничья (например 2:2) — приоритетная цепочка арбитра:
-    // Gemini 3 → Gemini 2.5 → Mimo → GLM → Qwen
+    // Ничья — приоритетная цепочка арбитра:
+    // Gemini 3 → Grok → Gemini 2.5 → Mimo → GLM → Qwen
     const TIEBREAK_PRIORITY = [
       GEMINI_IDX,
+      GROK_IDX,
       GEMINI25_IDX,
       MODELS.findIndex(m => m.id.includes('mimo')),
       MODELS.findIndex(m => m.id.includes('glm')),
@@ -426,13 +429,13 @@
     ];
     for (const idx of TIEBREAK_PRIORITY) {
       if (idx >= 0 && results[idx] && results[idx].answer) {
-        console.log('Nichya — arbiter: ' + MODELS[idx].label);
-        return { result: results[idx], uncertain: true };
+        console.log('Arbiter: ' + MODELS[idx].label);
+        return { result: results[idx] };
       }
     }
 
     // Совсем ничего — первый валидный
-    return { result: valid[0], uncertain: true };
+    return { result: valid[0] };
   }
 
   // Совместимость
@@ -440,13 +443,11 @@
     return askModel(MODELS[0].id, messages, undefined);
   }
 
-  function setAnswer6(val, uncertain, fmt) {
+  function setAnswer6(val, fmt) {
     const panel = document.getElementById('answer6-panel');
     const field = document.getElementById('answer6-field');
     const v = val.trim();
     // Убираем старый знак неопределённости если был
-    const oldUncertain = panel.querySelector('.uncertain-mark');
-    if (oldUncertain) oldUncertain.remove();
     // Восстанавливаем точку
     let dotSpan = panel.querySelector('.answer6-dot');
     if (!dotSpan) {
@@ -500,7 +501,6 @@
       }
     }
 
-    // Если модели не пришли к единому мнению — точка остаётся точкой
     dotSpan.textContent = '.';
   }
 
@@ -553,12 +553,12 @@
         { type: 'image_url', image_url: { url: imageUrl } },
         { type: 'text', text: PROMPT_TEXT }
       ]}];
-      const { result, uncertain } = await askWithVoting(messages);
+      const { result } = await askWithVoting(messages);
       if (!result || !result.answer) throw new Error('empty');
-      setAnswer6(result.answer, uncertain, result.fmt);
+      setAnswer6(result.answer, result.fmt);
     } catch (err) {
       console.error('AI error:', err.message);
-      setAnswer6('0,54', false);
+      setAnswer6('0,54');
     } finally {
       task6ImageBase64 = null;
     }  });
