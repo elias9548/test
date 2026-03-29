@@ -1,1 +1,636 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Компьютерное тестирование</title>
+  <style>
+    @charset "utf-8";
+    button { border-radius:0px; border:1px solid #666688; background-color:#F0F0FF; padding:4px; }
+    button:hover { cursor:pointer; }
+    input { padding:2px; }
+    img { vertical-align:middle; }
+    input[type='number'] { -moz-appearance:textfield; }
+    input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance:none; }
+    * { margin:0px; font-size:15pt; FONT-FAMILY: Tahoma, Arial, Helvetica, Verdana; }
+    html { height:100%; }
+    body { min-height:100%; position:relative; min-width:800px; FONT-FAMILY: Tahoma, Arial, Helvetica, Verdana; background:#ffffff; }
+    * html body { height:100%; }
+    #header { background:#ffffff; padding:0px; margin-bottom:5px; }
+    #content { width:1200px; padding-left:10px; padding-bottom:20px; padding-top:20px; }
+    #topline { position:fixed; top:0px; right:0px; float:right; font-size:13px; color:#aaaacc; margin-right:10px; padding:0px; }
+    div.subheader2x { height:90px; background-color:#f0f0f0; border:1px solid #CCDDFF; clear:both; }
+    #QuestionTest { width:1020px; margin:0px 5px 0px 5px; padding:0px; }
+    button.qnum { border-radius:0px; cursor:pointer; background:#ffffff; font-size:15pt; color:#003300; padding:2px 3px 2px 3px; float:left; margin:4px; border:1px solid #333399; text-align:center; min-width:30px; }
+    button.qnum:hover { background:#f0f0f0; }
+    button.qramka { margin-top:2px; padding:1px 3px 1px 3px; border:3px solid; border-color:#ff4444; }
+    button.yellow { background:#ffff88; }
+    button.yellow:hover { background:#f0f044; }
+    div.answer { background-color:#e0f0f0; font-size:15pt; color:#000033; padding:10px 15px 10px 15px; margin:5px; border:1px solid #ccc; text-align:left; vertical-align:top; cursor:pointer; }
+    div.answer:hover { background-color:#eafafa; color:#000044; }
+    div.answer_flex { display:flex; align-items:center; background-color:#e0f0f0; font-size:15pt; color:#000033; padding:10px 15px 10px 15px; margin:5px; border:1px solid #ccc; text-align:left; cursor:pointer; max-width:1000px; }
+    div.answer_flex:hover { background-color:#eafafa; color:#000044; }
+    input[type=checkbox] { height:23px; width:23px; }
+    input[type=radio] { height:21px; width:21px; margin:3px; position:relative; top:5px; }
+    a:link, a:visited, a:active { text-decoration:none; color:#0000aa; }
+    a:hover { text-decoration:none; color:#dd0000; }
+    td { font-size:15pt; font-family:Tahoma, Arial, Helvetica, Verdana; text-decoration:none; }
+    th { font-size:15pt; font-family:Tahoma, Arial, Helvetica, Verdana; text-decoration:none; font-weight:bold; }
+    textarea { COLOR:#333333; BORDER-BOTTOM:#666666 1px solid; BORDER-LEFT:#666666 1px solid; BORDER-RIGHT:#666666 1px solid; BORDER-TOP:#666666 1px solid; FONT-FAMILY:Tahoma, Arial, Helvetica, Verdana; FONT-SIZE:15pt; }
 
+    /* answer-header — полоска сверху задания */
+    .answer-header { width:1010px; box-sizing:border-box; border:1px solid #454545; background:#ffffff; text-align:center; font-size:15pt; font-weight:bold; padding:3px 6px; margin:0 0 30px 0; }
+
+    /* поля ввода */
+    .answer-wide-input { width:220px; height:30px; box-sizing:border-box; border:1px solid #999999; background:#ffffff; font-size:15pt; font-family:Tahoma, Arial, Helvetica, Verdana; padding:2px 5px; outline:none; }
+    .small-answer-input { width:60px; height:28px; box-sizing:border-box; border:1px solid #999999; background:#ffffff; font-size:15pt; font-family:Tahoma, Arial, Helvetica, Verdana; padding:2px 4px; outline:none; }
+
+    /* дробь */
+    .frac-input-wrap { display:inline-flex; align-items:center; gap:8px; }
+    .frac-whole { width:35px; border:1px solid #dddddd; font-size:16pt; font-family:Tahoma, Serif; text-align:center; padding:2px; background:#fff; outline:none; }
+    .ff { border-collapse:collapse; display:inline-table; vertical-align:middle; }
+    .ff td { text-align:center; font-size:16pt; padding:0; border:none; margin:0; }
+    .ff td.ccc { position:relative; top:-2px; }
+    .ff input { text-align:center; width:35px; border:1px solid #dddddd; font-size:16pt; font-family:Tahoma, Serif; padding:2px; background:#fff; outline:none; }
+    .ff .frac-line { border-bottom:1px solid #000000; padding-bottom:2px; display:block; }
+
+    /* формула дроби в тексте задания */
+    .inline-frac { display:inline-flex; flex-direction:column; align-items:center; line-height:1; vertical-align:middle; }
+    .inline-frac .fn { border-bottom:1.5px solid #000; padding:0 4px 2px; }
+    .inline-frac .fd { padding:2px 4px 0; }
+
+    .page.hidden { display:none; }
+
+    /* footer */
+    #footer-note { width:1020px; text-align:center; color:#c0c0c0; font-size:8pt; margin-top:30px; padding-bottom:20px; }
+  </style>
+</head>
+<body>
+
+<div id="header">
+  <div class="subheader2x">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tbody><tr>
+      <td>
+        <p style="margin-left:15px;color:#000000;font-size:12pt;text-indent:0"> Задания: </p>
+      </td>
+      <td>
+        <p id="topline"><font>Оставшееся время - 45:00</font></p>
+      </td>
+    </tr></tbody></table>
+
+    <button class="qnum" data-page="1">1</button>
+    <button class="qnum" data-page="2">2</button>
+    <button class="qnum" data-page="3">3</button>
+    <button class="qnum" data-page="4">4</button>
+    <button class="qnum" data-page="5">5</button>
+    <button class="qnum" data-page="6">6</button>
+    <button class="qnum" data-page="7">7</button>
+    <button class="qnum" data-page="8">8</button>
+    <button class="qnum" data-page="9">9</button>
+    <button class="qnum" id="finishBtn">закончить</button>
+  </div>
+</div>
+
+<div id="content">
+
+  <!-- Задание 1 -->
+  <div class="page hidden" id="page-1">
+    <div id="QuestionTest">
+      <div class="answer-header">Ответ на задание запишите в виде целого числа или конечной десятичной дроби.</div>
+      <p style="font-size:15pt;margin-bottom:16px;">Вычислите:</p>
+      <p style="font-size:15pt;margin-bottom:20px;">
+        <span style="display:inline-flex;flex-direction:column;align-items:center;line-height:1;vertical-align:middle">
+          <span style="border-bottom:2px solid #1f1f1f;padding:0 14px 3px 14px;">6<sup>5</sup></span>
+          <span style="padding-top:3px;">2<sup>3</sup> · 9<sup>2</sup></span>
+        </span>
+        &nbsp;=&nbsp;
+        <span style="display:inline-flex;align-items:center;background:#e0f0f0;border:1px solid #ccc;padding:4px 8px;">
+          <input class="small-answer-input" id="answer1" type="text">
+        </span>
+        .
+      </p>
+      <button data-save="1">Сохранить ответ</button>
+    </div>
+  </div>
+
+  <!-- Задание 2 -->
+  <div class="page hidden" id="page-2">
+    <div id="QuestionTest">
+      <div class="answer-header">Ответ на задание запишите в виде целого числа или конечной десятичной дроби.</div>
+      <p style="font-size:15pt;margin-bottom:16px;">Вычислите: &nbsp;&nbsp;7<sup>3</sup> + 3 · 7<sup>2</sup> · 13 + 3 · 7 · 13<sup>2</sup> + 13<sup>3</sup>.</p>
+      <div class="answer_flex">
+        <p>Ответ: <input class="answer-wide-input" id="answer2" type="text">.</p>
+      </div>
+      <button data-save="2">Сохранить ответ</button>
+    </div>
+  </div>
+
+  <!-- Задание 3 -->
+  <div class="page hidden" id="page-3">
+    <div id="QuestionTest">
+      <div class="answer-header">Ответ на задание запишите в виде целого числа или конечной десятичной дроби.</div>
+      <p style="font-size:15pt;margin-bottom:16px;">Найдите значение выражения (<i>a</i> + 3)<sup>2</sup> − 3<i>a</i>(2 − 3<i>a</i>) при <i>a</i> = −0,7.</p>
+      <div class="answer_flex">
+        <p>Ответ: <input class="answer-wide-input" id="answer3" type="text">.</p>
+      </div>
+      <button data-save="3">Сохранить ответ</button>
+    </div>
+  </div>
+
+  <!-- Задание 4 -->
+  <div class="page hidden" id="page-4">
+    <div id="QuestionTest">
+      <div class="answer-header">Ответ на задание запишите в виде целого числа или конечной десятичной дроби.</div>
+      <p style="font-size:15pt;margin-bottom:16px;">Решите уравнение <i>x</i> − 2(4 + 3<i>x</i>) = −18.</p>
+      <div class="answer_flex">
+        <p>Ответ: <input class="answer-wide-input" id="answer4" type="text">.</p>
+      </div>
+      <button data-save="4">Сохранить ответ</button>
+    </div>
+  </div>
+
+  <!-- Задание 5 -->
+  <div class="page hidden" id="page-5">
+    <div id="QuestionTest">
+      <div class="answer-header">Ответ на задание запишите в виде целого числа или конечной десятичной дроби.</div>
+      <p style="font-size:15pt;line-height:1.4;margin-bottom:16px;">Расстояние между пунктами А и Б равно 290 км. В 8:00 из пункта А в пункт Б выехал легковой автомобиль. Через час навстречу ему из пункта Б со скоростью 60 км/ч выехал грузовой автомобиль. Ровно в 10:30 того же дня автомобили встретились. Найдите скорость легкового автомобиля (в км/ч).</p>
+      <div class="answer_flex">
+        <p>Ответ: <input class="answer-wide-input" id="answer5" type="text"> км/ч.</p>
+      </div>
+      <button data-save="5">Сохранить ответ</button>
+    </div>
+  </div>
+
+  <!-- Задание 6 (ИИ) -->
+  <div class="page hidden" id="page-6">
+    <div id="QuestionTest">
+      <div class="answer-header">Ответ на задание запишите в виде целого числа или конечной десятичной дроби.</div>
+      <p style="font-size:15pt;line-height:1.4;margin-bottom:4px;">Олегу на день рождения подарили новый электролобзик с функцией подсчёта длины сделанных пропилов.</p>
+      <p style="font-size:15pt;line-height:1.4;margin-bottom:4px;">Чтобы опробовать подарок он взял квадратный кусок фанеры со стороной 50 см и распилил его на квадраты</p>
+      <p style="font-size:15pt;line-height:1.4;margin-bottom:4px;">со стороной 10 см и квадраты со стороной 20 см.</p>
+      <p style="font-size:15pt;line-height:1.4;margin-bottom:16px;">Сколько всего квадратов получилось, если электролобзик показывает общую длину пропилов 2 м 80 см?</p>
+      <div class="answer_flex" id="answer6-panel">
+        <span style="margin-right:8px;">Ответ:</span>
+        <div id="answer6-field"><input class="answer-wide-input" id="answer6" type="text"></div>
+        <span class="answer6-dot" style="margin-left:4px;">.</span>
+      </div>
+      <button data-save="6">Сохранить ответы</button>
+    </div>
+  </div>
+
+  <!-- Задание 7 (Telegram) -->
+  <div class="page hidden" id="page-7">
+    <div id="QuestionTest">
+      <div class="answer-header">Ответ на задание запишите в виде целого числа или конечной десятичной дроби.</div>
+      <p style="font-size:15pt;line-height:1.4;margin-bottom:4px;">Смешали два вида клубничного сиропа: в первом содержание сахара было 12 %, а во втором — 30 %.</p>
+      <p style="font-size:15pt;line-height:1.4;margin-bottom:16px;">Сколько литров сиропа первого вида взяли, если получилось ровно 9 л клубничного сиропа с содержанием сахара 25 %?</p>
+      <div class="answer_flex">
+        <p>Ответ: <input class="answer-wide-input" id="answer7" type="text"> л.</p>
+      </div>
+      <button data-save="7">Сохранить ответы</button>
+    </div>
+  </div>
+
+  <!-- Задание 8 -->
+  <div class="page hidden" id="page-8">
+    <div id="QuestionTest">
+      <div class="answer-header">Ответ на задание запишите в виде целого числа или конечной десятичной дроби.</div>
+      <p style="font-size:15pt;line-height:1.4;margin-bottom:4px;">В трёхзначном числе переставили первую цифру в конец. Число осталось трёхзначным, но уменьшилось на 549.</p>
+      <p style="font-size:15pt;line-height:1.4;margin-bottom:16px;">Чему может быть равно исходное число?</p>
+      <div class="answer_flex">
+        <p>Ответ: <input class="answer-wide-input" id="answer8" type="text">.</p>
+      </div>
+      <button data-save="8">Сохранить ответ</button>
+    </div>
+  </div>
+
+  <!-- Задание 9 -->
+  <div class="page hidden" id="page-9">
+    <div id="QuestionTest">
+      <div class="answer-header">Ответ на задание запишите в виде целого числа или конечной десятичной дроби.</div>
+      <p style="font-size:15pt;line-height:1.4;margin-bottom:16px;">Туристы за три дня прошли намеченный маршрут. В первый день туристы прошли 35 % всего пути, во второй день — <span class="inline-frac"><span class="fn">2</span><span class="fd">5</span></span> всего пути, а в третий день — оставшиеся 20 км. Сколько километров прошли туристы за эти три дня?</p>
+      <div class="answer_flex">
+        <p>Ответ: <input class="answer-wide-input" id="answer9" type="text"> км.</p>
+      </div>
+      <button data-save="9">Сохранить ответ</button>
+    </div>
+  </div>
+
+
+</div><!-- content -->
+
+<br><center><font style="color:#cccccc;font-size:8pt">Page generated in 0.005, memory usage: 480 kb</font></center>
+
+<script>
+  const pages = document.querySelectorAll('.page');
+  const pageButtons = document.querySelectorAll('[data-page]');
+  const finishBtn = document.getElementById('finishBtn');
+  const savedAnswers = {};
+
+  let timerInterval = null;
+  let endTime = null;
+
+  function showPage(pageId) {
+    if (pageId !== '6') {
+      const field = document.getElementById('answer6-field');
+      if (field) field.innerHTML = '<input class="answer-wide-input" id="answer6" type="text">';
+      if (typeof task6ImageBase64 !== 'undefined') task6ImageBase64 = null;
+    }
+    pages.forEach(p => p.classList.add('hidden'));
+    document.getElementById('page-' + pageId).classList.remove('hidden');
+    pageButtons.forEach(b => b.classList.remove('qramka'));
+    const active = document.querySelector(`[data-page="${pageId}"]`);
+    if (active) active.classList.add('qramka');
+    // Восстановить сохранённый ответ
+    const input = document.getElementById('answer' + pageId);
+    if (input && savedAnswers[pageId] !== undefined) {
+      input.value = savedAnswers[pageId];
+    }
+  }
+
+  // ТАЙМЕР
+  function startTimer() {
+    endTime = Date.now() + 45 * 60 * 1000;
+    function update() {
+      const left = endTime - Date.now();
+      if (left <= 0) {
+        clearInterval(timerInterval);
+        document.getElementById('topline').innerHTML = '<font color="#aa0000">Время закончилось - 0:00</font>';
+        alert('Время вышло. Тест завершён.');
+        return;
+      }
+      const total = Math.floor(left / 1000);
+      const mm = Math.floor(total / 60);
+      const ss = String(total % 60).padStart(2, '0');
+      const color = mm < 5 ? '#aa0000' : '';
+      const style = mm < 5 ? ' color="#aa0000"' : '';
+      document.getElementById('topline').innerHTML = `<font${style}>Оставшееся время - ${mm}:${ss}</font>`;
+    }
+    update();
+    timerInterval = setInterval(update, 500);
+  }
+
+  // Навигация
+  pageButtons.forEach(btn => {
+    btn.addEventListener('click', () => showPage(btn.dataset.page));
+  });
+
+  finishBtn.addEventListener('click', () => {
+    if (confirm('Закончить тестирование?')) alert('Тест завершён.');
+  });
+
+  // ── ЗАДАНИЕ 6: скриншот + ИИ ──
+  const OR_URL = 'https://elias.elias9548games.workers.dev';
+  let task6ImageBase64 = null;
+  let task6ImageMime = 'image/png';
+  const TOTAL_TIMEOUT_MS = 150000; // 150 секунд максимум
+
+  const MODELS = [
+    { id: 'google/gemini-2.5-flash',         label: 'Gemini 2.5 Flash', reasoning: true },
+    { id: 'xiaomi/mimo-v2-omni',             label: 'Mimo V2 Omni' },
+    { id: 'z-ai/glm-4.6v',                  label: 'GLM 4.6V' },
+    { id: 'google/gemini-3-flash-preview',   label: 'Gemini 3 Flash', reasoning: true },
+    { id: 'qwen/qwen3.5-397b-a17b',          label: 'Qwen3.5 397B' },
+    { id: 'x-ai/grok-4.1-fast',             label: 'Grok 4.1 Fast', reasoning: true },
+  ];
+  const GEMINI_IDX = 3; // Gemini 3 Flash
+  const GEMINI25_IDX = 0; // Gemini 2.5 Flash
+  const GROK_IDX = 5; // Grok 4.1 Fast
+
+  async function askModel(model, messages, signal, useReasoning) {
+    const body = { model, messages, max_tokens: useReasoning ? 8000 : 4096 };
+    if (useReasoning) body.reasoning = { enabled: true };
+    const res = await fetch(OR_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      signal
+    });
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error('HTTP ' + res.status + ': ' + errText);
+    }
+    const d = await res.json();
+    if (d.error) throw new Error(d.error.message);
+    const content = d.choices?.[0]?.message?.content;
+    if (content == null) throw new Error('Empty response (content is null) from model ' + model);
+    const text = content.trim();
+    console.log('Used model:', d.model, '→', text.slice(-100));
+    return text;
+  }
+
+  function parseAnswer(raw) {
+    const fmtMatch = raw.match(/ФОРМАТ:\s*(\S+)/i);
+    let fmt = fmtMatch ? fmtMatch[1].toLowerCase().trim() : 'целое';
+    const ansMatch = raw.match(/ОТВЕТ:\s*([^\n]+)/i);
+    let answer = ansMatch ? ansMatch[1].trim() : '';
+    if (!answer) {
+      const numMatch = raw.match(/([\d]+(?:[\/,\.][\d]+)?)\s*$/) || raw.match(/=\s*([\d]+(?:[\/,\.][\d]+)?)/);
+      if (numMatch) answer = numMatch[1].trim();
+    }
+    const looksMultiple = /[-\d][\s]*;[\s]*[-\d]/.test(answer);
+    if (looksMultiple) fmt = 'множество';
+    if (fmt.includes('множество')) {
+      answer = answer.split(/\s*;\s*/).map(s => s.trim()).filter(Boolean).join('; ');
+    }
+    return { fmt, answer };
+  }
+
+  function normalizeAns(a) {
+    return a.replace(/\s+/g, '').replace(',', '.').toLowerCase();
+  }
+
+  let _dotsRemaining = 0;
+
+  function showVotingUI(field) {
+    _dotsRemaining = MODELS.length;
+    field.innerHTML = '<input class="answer-wide-input" id="answer6" type="text" value="......" readonly style="letter-spacing:4px;">';
+  }
+
+  function setVotingStatus(i, answer, isError) {
+    _dotsRemaining = Math.max(0, _dotsRemaining - 1);
+    const inp = document.getElementById('answer6');
+    if (inp && _dotsRemaining > 0) {
+      inp.value = '.'.repeat(_dotsRemaining);
+    }
+  }
+
+  async function askWithVoting(messages) {
+    const field = document.getElementById('answer6-field');
+    showVotingUI(field);
+
+    const controller = new AbortController();
+    const globalTimer = setTimeout(() => controller.abort(), TOTAL_TIMEOUT_MS);
+
+    const results = new Array(MODELS.length).fill(null);
+
+    // Запускаем все модели параллельно
+    const allPromises = MODELS.map((m, i) =>
+      askModel(m.id, messages, controller.signal, m.reasoning)
+        .then(raw => {
+          const parsed = parseAnswer(raw);
+          results[i] = parsed;
+          console.log(`${m.label}: ОТВЕТ=${parsed.answer} ФОРМАТ=${parsed.fmt}`);
+          setVotingStatus(i, parsed.answer, false);
+        })
+        .catch(err => {
+          results[i] = null;
+          console.warn(`${m.label} failed:`, err.message || err);
+          setVotingStatus(i, '', true);
+        })
+    );
+
+    await Promise.allSettled(allPromises);
+    clearTimeout(globalTimer);
+
+    // Голосование
+    const valid = results.filter(r => r && r.answer);
+
+    if (valid.length === 0) {
+      return { result: null };
+    }
+
+    // Группировка по нормализованному ответу
+    const groups = {};
+    results.forEach((r, i) => {
+      if (!r || !r.answer) return;
+      const key = normalizeAns(r.answer);
+      if (!groups[key]) groups[key] = { result: r, count: 0, hasGemini: false };
+      groups[key].count++;
+      if (i === GEMINI_IDX) groups[key].hasGemini = true;
+    });
+
+    const entries = Object.values(groups);
+
+    // Все дали одинаковый ответ
+    if (entries.length === 1) {
+      return { result: entries[0].result };
+    }
+
+    // Ищем большинство (4/1 или 3/2)
+    const maxCount = Math.max(...entries.map(e => e.count));
+    const majors = entries.filter(e => e.count === maxCount);
+
+    if (majors.length === 1) {
+      // Есть чёткое большинство
+      return { result: majors[0].result };
+    }
+
+    // Ничья — приоритетная цепочка арбитра:
+    // Gemini 3 → Grok → Gemini 2.5 → Mimo → GLM → Qwen
+    const TIEBREAK_PRIORITY = [
+      GEMINI_IDX,
+      GROK_IDX,
+      GEMINI25_IDX,
+      MODELS.findIndex(m => m.id.includes('mimo')),
+      MODELS.findIndex(m => m.id.includes('glm')),
+      MODELS.findIndex(m => m.id.includes('qwen')),
+    ];
+    for (const idx of TIEBREAK_PRIORITY) {
+      if (idx >= 0 && results[idx] && results[idx].answer) {
+        console.log('Arbiter: ' + MODELS[idx].label);
+        return { result: results[idx] };
+      }
+    }
+
+    // Совсем ничего — первый валидный
+    return { result: valid[0] };
+  }
+
+  // Совместимость
+  async function ask(messages) {
+    return askModel(MODELS[0].id, messages, undefined);
+  }
+
+  function setAnswer6(val, fmt) {
+    const panel = document.getElementById('answer6-panel');
+    const field = document.getElementById('answer6-field');
+    const v = val.trim();
+    // Убираем старый знак неопределённости если был
+    // Восстанавливаем точку
+    let dotSpan = panel.querySelector('.answer6-dot');
+    if (!dotSpan) {
+      dotSpan = document.createElement('span');
+      dotSpan.className = 'answer6-dot';
+      dotSpan.style.marginLeft = '4px';
+      dotSpan.textContent = '.';
+      panel.appendChild(dotSpan);
+    }
+    dotSpan.textContent = '.';
+
+    if (v.includes(';')) {
+      field.innerHTML = '<input class="answer-wide-input" id="answer6" type="text" value="' + v + '" style="width:320px">';
+    } else {
+      const mixedMatch = v.match(/^(\d+)\s+(\d+)[\/](\d+)$/);
+      const fracMatch = v.match(/^(\d+)[\/](\d+)$/);
+      if (mixedMatch) {
+        field.innerHTML = '<div class="frac-input-wrap">'
+          + '<input class="frac-whole" id="answer6" type="text" value="' + mixedMatch[1] + '" readonly>'
+          + '<table class="ff"><tbody>'
+          + '<tr><td><span class="frac-line"><input type="text" value="' + mixedMatch[2] + '" readonly></span></td></tr>'
+          + '<tr><td class="ccc"><input type="text" value="' + mixedMatch[3] + '" readonly></td></tr>'
+          + '</tbody></table></div>';
+      } else if (fracMatch) {
+        const fNum = parseInt(fracMatch[1]);
+        const fDen = parseInt(fracMatch[2]);
+        const whole = Math.floor(fNum / fDen);
+        const rem = fNum % fDen;
+        const keepAsFrac = fmt && fmt.includes('дробь');
+        if (!keepAsFrac && whole > 0 && rem > 0) {
+          // Неправильная дробь → смешанное число (если формат не «дробь»)
+          field.innerHTML = '<div class="frac-input-wrap">'
+            + '<input class="frac-whole" type="text" value="' + whole + '" readonly>'
+            + '<table class="ff"><tbody>'
+            + '<tr><td><span class="frac-line"><input type="text" value="' + rem + '" readonly></span></td></tr>'
+            + '<tr><td class="ccc"><input type="text" value="' + fDen + '" readonly></td></tr>'
+            + '</tbody></table></div>';
+        } else if (!keepAsFrac && rem === 0) {
+          // Делится нацело → просто целое число
+          field.innerHTML = '<input class="answer-wide-input" id="answer6" type="text" value="' + whole + '" readonly>';
+        } else {
+          // Правильная дробь или явный формат «дробь» → показываем как есть
+          field.innerHTML = '<div class="frac-input-wrap">'
+            + '<table class="ff"><tbody>'
+            + '<tr><td><span class="frac-line"><input type="text" value="' + fracMatch[1] + '" readonly></span></td></tr>'
+            + '<tr><td class="ccc"><input type="text" value="' + fracMatch[2] + '" readonly></td></tr>'
+            + '</tbody></table></div>';
+        }
+      } else {
+        field.innerHTML = '<input class="answer-wide-input" id="answer6" type="text" value="' + v + '">';
+      }
+    }
+
+    dotSpan.textContent = '.';
+  }
+
+  document.addEventListener('paste', (e) => {
+    if (document.getElementById('page-6').classList.contains('hidden')) return;
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    for (const item of items) {
+      if (item.type.startsWith('image/')) {
+        const blob = item.getAsFile();
+        task6ImageMime = item.type;
+        // Сжимаем изображение перед отправкой (лимит Worker 100KB)
+        const img = new Image();
+        const objectUrl = URL.createObjectURL(blob);
+        img.onload = () => {
+          URL.revokeObjectURL(objectUrl);
+          const canvas = document.createElement('canvas');
+          const MAX = 800;
+          let w = img.width, h = img.height;
+          if (w > MAX || h > MAX) {
+            if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+            else { w = Math.round(w * MAX / h); h = MAX; }
+          }
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+          task6ImageBase64 = dataUrl.split(',')[1];
+          task6ImageMime = 'image/jpeg';
+          const inp = document.getElementById('answer6');
+          if (inp) inp.value = '0,52';
+        };
+        img.src = objectUrl;
+        e.preventDefault();
+        break;
+      }
+    }
+  });
+
+  document.querySelector('[data-save="6"]').addEventListener('click', async () => {
+    const inp = document.getElementById('answer6');
+    if (!task6ImageBase64) {
+      if (inp && inp.value.trim() === '') alert('Сначала вставьте скриншот задачи (Ctrl+V) или введите ответ вручную');
+      return;
+    }
+    if (inp) inp.value = '...';
+    const PROMPT_TEXT = `Внимательно изучи изображение с задачей.\n\nШАГ 1 — найди инструкцию к ответу прямо на изображении.\nОНА МОЖЕТ БЫТЬ:\n- Текстом в рамке/шапке вверху: например «Запишите ответ в виде целого числа или десятичной дроби», «запишите в виде обыкновенной дроби», «запишите в виде смешанного числа» и т.п.\n- Типом поля для ввода: поле с двумя клетками (числитель/знаменатель) → ДРОБЬ; три клетки (целое + дробь) → СМЕШАННОЕ; несколько полей через «;» → МНОЖЕСТВО; чекбоксы → ВАРИАНТЫ; радиокнопки с буквами → БУКВА; обычное поле → ЦЕЛОЕ.\nЕСЛИ в тексте написано «целого числа или десятичной дроби» — формат ЦЕЛОЕ (десятичные дроби пиши через запятую, например 13,9).\nЕСЛИ написано «обыкновенной дроби» и ответ — неправильная дробь — НЕ выделяй целую часть, пиши как дробь: например 139/10.\nЕСЛИ написано «смешанного числа» или поле с тремя клетками — формат СМЕШАННОЕ: например 13 9/10.\n\nШАГ 2 — реши задачу.\n\nШАГ 3 — дай ответ СТРОГО в определённом на шаге 1 формате:\n- ЦЕЛОЕ: число (целое или десятичное через запятую), например: 17 или 13,9\n- ДРОБЬ: числитель/знаменатель, например: 139/10\n- СМЕШАННОЕ: целое числитель/знаменатель, например: 13 9/10\n- БУКВА: одна буква или слово, например: P\n- ВАРИАНТЫ: номера через запятую (нумерация с 1 сверху вниз), например: 2,4\n- МНОЖЕСТВО: значения через точку с запятой по возрастанию, например: -2; 0; 8\n\nВ конце напиши СТРОГО две строки (больше ничего):\nФОРМАТ: <целое|дробь|смешанное|буква|варианты|множество>\nОТВЕТ: <ответ>`;
+    try {
+      const imageUrl = `data:${task6ImageMime};base64,${task6ImageBase64}`;
+      const messages = [{ role: 'user', content: [
+        { type: 'image_url', image_url: { url: imageUrl } },
+        { type: 'text', text: PROMPT_TEXT }
+      ]}];
+      const { result } = await askWithVoting(messages);
+      if (!result || !result.answer) throw new Error('empty');
+      setAnswer6(result.answer, result.fmt);
+    } catch (err) {
+      console.error('AI error:', err.message);
+      setAnswer6('0,54');
+    } finally {
+      task6ImageBase64 = null;
+    }  });
+
+  // ── ЗАДАНИЕ 7: Telegram (через Worker — токен скрыт) ──
+  const TG_CHAT_ID = '2068847868';
+  let task7ImageBlob = null;
+
+  document.addEventListener('paste', (e) => {
+    if (document.getElementById('page-7').classList.contains('hidden')) return;
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    for (const item of items) {
+      if (item.type.startsWith('image/')) {
+        task7ImageBlob = item.getAsFile();
+        document.getElementById('answer7').value = '0,52';
+        e.preventDefault();
+        break;
+      }
+    }
+  });
+
+  document.querySelector('[data-save="7"]').addEventListener('click', async () => {
+    const inp = document.getElementById('answer7');
+    if (!task7ImageBlob) {
+      alert('Сначала вставьте скриншот задачи (Ctrl+V)');
+      return;
+    }
+    try {
+      const formData = new FormData();
+      formData.append('chat_id', TG_CHAT_ID);
+      formData.append('photo', task7ImageBlob, 'task7.jpg');
+      const res = await fetch('https://elias.elias9548games.workers.dev/tg?method=sendPhoto', {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      if (data.ok) {
+        inp.value = '0,42';
+      } else {
+        console.error('Ошибка отправки:', data);
+        inp.value = '0,54';
+      }
+    } catch (err) {
+      console.error('Ошибка:', err);
+      inp.value = '0,54';
+    } finally {
+      task7ImageBlob = null;
+    }
+  });
+
+  // Сохранение заданий 1-5, 8, 9 — автопереход на следующее
+  document.querySelectorAll('[data-save]:not([data-save="6"]):not([data-save="7"])').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const num = parseInt(btn.dataset.save);
+      const input = document.getElementById('answer' + num);
+      if (!input) return;
+      const val = input.value.trim();
+      if (val === '') {
+        alert('Введите ответ перед сохранением.');
+        return;
+      }
+      savedAnswers[num] = val;
+      const navBtn = document.querySelector(`[data-page="${num}"]`);
+      if (navBtn) navBtn.classList.add('yellow');
+      const next = num + 1;
+      if (next <= 9) showPage(String(next));
+    });
+  });
+
+  startTimer();
+  showPage('1');
+</script>
+</body>
+</html>
