@@ -313,7 +313,11 @@
     }
     const d = await res.json();
     if (d.error) throw new Error(d.error.message);
-    const content = d.choices?.[0]?.message?.content;
+    const msg = d.choices?.[0]?.message;
+    let content = msg?.content;
+    if (content == null) {
+      content = msg?.reasoning_content ?? msg?.thinking ?? null;
+    }
     if (content == null) throw new Error('Empty response (content is null) from model ' + model);
     const text = content.trim();
     console.log('Used model:', d.model, '→', text.slice(-100));
