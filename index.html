@@ -432,23 +432,19 @@
         })
     );
 
-    // Ждём завершения всех, кроме Kimi и Qwen3.6 Plus (могут быть медленными)
-    const SLOW_IDXS = [KIMI_IDX, QWEN36_IDX];
-    const fastPromises = allPromises.filter((_, i) => !SLOW_IDXS.includes(i));
+    // Ждём завершения всех, кроме Kimi (может быть медленным)
+    const fastPromises = allPromises.filter((_, i) => i !== KIMI_IDX);
     await Promise.allSettled(fastPromises);
 
-    // Если Kimi или Qwen3.6 ещё не ответили — даём им максимум 15 секунд
-    for (const idx of SLOW_IDXS) {
-      if (!settled[idx]) {
-        const label = MODELS[idx].label;
-        console.log(`Все ответили, кроме ${label}. Даём 15 сек...`);
-        const slowTimeout = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error(`${label} timeout 15s`)), 15000)
-        );
-        await Promise.race([allPromises[idx], slowTimeout]).catch(err => {
-          console.warn(`${label} не уложился в 15 сек:`, err.message);
-        });
-      }
+    // Если Kimi ещё не ответил — даём ему максимум 15 секунд
+    if (!settled[KIMI_IDX]) {
+      console.log('Все ответили, кроме Kimi. Даём Kimi 15 сек...');
+      const kimiTimeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Kimi timeout 15s')), 15000)
+      );
+      await Promise.race([allPromises[KIMI_IDX], kimiTimeout]).catch(err => {
+        console.warn('Kimi не уложился в 15 сек:', err.message);
+      });
     }
 
     clearTimeout(globalTimer);
