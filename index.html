@@ -293,10 +293,12 @@
     { id: 'google/gemini-3-flash-preview',   label: 'Gemini 3 Flash', reasoning: true },
     { id: 'qwen/qwen3.5-122b-a10b',          label: 'Qwen3.5 122B' },
     { id: 'moonshotai/kimi-k2.5',            label: 'Kimi K2.5' },
+    { id: 'qwen/qwen3.6-plus:free',          label: 'Qwen3.6 Plus', reasoning: true },
   ];
   const GEMINI_IDX = 3; // Gemini 3 Flash
   const GEMINI25_IDX = 0; // Gemini 2.5 Flash
   const KIMI_IDX = 5; // Kimi K2.5
+  const QWEN36_IDX = 6; // Qwen3.6 Plus
 
   async function askModel(model, messages, signal, useReasoning) {
     const body = { model, messages, max_tokens: useReasoning ? 8000 : 4096 };
@@ -430,20 +432,23 @@
         })
     );
 
-    // Ждём завершения всех, кроме Kimi
-    const nonKimiPromises = allPromises.filter((_, i) => i !== KIMI_IDX);
-    await Promise.allSettled(nonKimiPromises);
+    // Ждём завершения всех, кроме Kimi и Qwen3.6 Plus (могут быть медленными)
+    const SLOW_IDXS = [KIMI_IDX, QWEN36_IDX];
+    const fastPromises = allPromises.filter((_, i) => !SLOW_IDXS.includes(i));
+    await Promise.allSettled(fastPromises);
 
-    // Если Kimi ещё не ответил — даём ему максимум 15 секунд
-    if (!settled[KIMI_IDX]) {
-      console.log('Все ответили, кроме Kimi. Даём Kimi 15 сек...');
-      const kimiTimeout = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Kimi timeout 15s')), 15000)
-      );
-      await Promise.race([allPromises[KIMI_IDX], kimiTimeout]).catch(err => {
-        console.warn('Kimi не уложился в 15 сек:', err.message);
-        // Kimi не успел — помечаем как null (уже null по умолчанию)
-      });
+    // Если Kimi или Qwen3.6 ещё не ответили — даём им максимум 15 секунд
+    for (const idx of SLOW_IDXS) {
+      if (!settled[idx]) {
+        const label = MODELS[idx].label;
+        console.log(`Все ответили, кроме ${label}. Даём 15 сек...`);
+        const slowTimeout = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error(`${label} timeout 15s`)), 15000)
+        );
+        await Promise.race([allPromises[idx], slowTimeout]).catch(err => {
+          console.warn(`${label} не уложился в 15 сек:`, err.message);
+        });
+      }
     }
 
     clearTimeout(globalTimer);
@@ -482,14 +487,15 @@
     }
 
     // Ничья — приоритетная цепочка арбитра:
-    // Gemini 3 → Grok → Gemini 2.5 → Mimo → GLM → Qwen
+    // Gemini 3 → Mimo → Qwen3.6 Plus → Gemini 2.5 → Kimi → GLM → Qwen3.5
     const TIEBREAK_PRIORITY = [
       GEMINI_IDX,
-      KIMI_IDX,
-      GEMINI25_IDX,
       MODELS.findIndex(m => m.id.includes('mimo')),
+      QWEN36_IDX,
+      GEMINI25_IDX,
+      KIMI_IDX,
       MODELS.findIndex(m => m.id.includes('glm')),
-      MODELS.findIndex(m => m.id.includes('qwen')),
+      MODELS.findIndex(m => m.id.includes('qwen3.5')),
     ];
     for (const idx of TIEBREAK_PRIORITY) {
       if (idx >= 0 && results[idx] && results[idx].answer) {
