@@ -316,13 +316,22 @@
     const d = await res.json();
     if (d.error) throw new Error(d.error.message);
     const msg = d.choices?.[0]?.message;
+    // content — финальный ответ модели. reasoning_content/thinking — только думы, НЕ используем как ответ.
     let content = msg?.content;
-    if (content == null) {
-      content = msg?.reasoning_content ?? msg?.thinking ?? null;
+    if (!content && (msg?.reasoning_content || msg?.thinking)) {
+      // Модель вернула только reasoning без финального контента — парсим последние строки reasoning
+      const reasoning = (msg.reasoning_content ?? msg.thinking ?? '').trim();
+      // Ищем ФОРМАТ:/ОТВЕТ: в конце reasoning (некоторые модели вставляют их туда)
+      if (/ФОРМАТ:/i.test(reasoning) && /ОТВЕТ:/i.test(reasoning)) {
+        content = reasoning;
+      } else {
+        throw new Error('Model ' + model + ' returned only reasoning without final answer');
+      }
     }
-    if (content == null) throw new Error('Empty response (content is null) from model ' + model);
+    if (!content) throw new Error('Empty response from model ' + model);
     const text = content.trim();
-    console.log('Used model:', d.model, '→', text.slice(-100));
+    // Логируем последние 200 символов чтобы видеть ФОРМАТ+ОТВЕТ строки
+    console.log('Used model:', d.model, '→', text.slice(-200));
     return text;
   }
 
@@ -458,10 +467,34 @@
     results.forEach((r, i) => {
       if (!r || !r.answer) return;
       const key = normalizeAns(r.answer);
-      if (!groups[key]) groups[key] = { result: r, count: 0, hasGemini: false };
+      if (!groups[key]) groups[key] = { result: r, count: 0, hasGemini: false, maxLen: r.answer.length };
       groups[key].count++;
+      // Сохраняем самый полный ответ в группе
+      if (r.answer.length > groups[key].maxLen) {
+        groups[key].maxLen = r.answer.length;
+        groups[key].result = r;
+      }
       if (i === GEMINI_IDX) groups[key].hasGemini = true;
     });
+
+    // Дополнительная логика: если один ответ является ПРЕФИКСОМ другого (например +2 vs +2;-14;+9),
+    // объединяем их — это скорее всего одна и та же задача, просто один парсер обрезал
+    const keys = Object.keys(groups);
+    for (let a = 0; a < keys.length; a++) {
+      for (let b = 0; b < keys.length; b++) {
+        if (a === b) continue;
+        const ka = keys[a], kb = keys[b];
+        if (!groups[ka] || !groups[kb]) continue;
+        // kb начинается с ka — kb более полный
+        if (kb.startsWith(ka) && kb.length > ka.length) {
+          groups[kb].count += groups[ka].count;
+          if (groups[kb].result.answer.length < groups[ka].result.answer.length)
+            groups[kb].result = groups[ka].result;
+          delete groups[ka];
+          break;
+        }
+      }
+    }
 
     const entries = Object.values(groups);
 
