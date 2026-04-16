@@ -1,777 +1,399 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Компьютерное тестирование</title>
-  <style>
-    @charset "utf-8";
-    button { border-radius:0px; border:1px solid #666688; background-color:#F0F0FF; padding:4px; }
-    button:hover { cursor:pointer; }
-    input { padding:2px; }
-    img { vertical-align:middle; }
-    input[type='number'] { -moz-appearance:textfield; }
-    input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance:none; }
-    * { margin:0px; font-size:15pt; FONT-FAMILY: Tahoma, Arial, Helvetica, Verdana; }
-    html { height:100%; }
-    body { min-height:100%; position:relative; min-width:800px; FONT-FAMILY: Tahoma, Arial, Helvetica, Verdana; background:#ffffff; }
-    * html body { height:100%; }
-    #header { background:#ffffff; padding:0px; margin-bottom:5px; }
-    #content { width:1200px; padding-left:10px; padding-bottom:20px; padding-top:20px; }
-    #topline { position:fixed; top:0px; right:0px; float:right; font-size:13px; color:#aaaacc; margin-right:10px; padding:0px; }
-    div.subheader2x { height:90px; background-color:#f0f0f0; border:1px solid #CCDDFF; clear:both; }
-    #QuestionTest { width:1020px; margin:0px 5px 0px 5px; padding:0px; }
-    button.qnum { border-radius:0px; cursor:pointer; background:#ffffff; font-size:15pt; color:#003300; padding:2px 3px 2px 3px; float:left; margin:4px; border:1px solid #333399; text-align:center; min-width:30px; }
-    button.qnum:hover { background:#f0f0f0; }
-    button.qramka { margin-top:2px; padding:1px 3px 1px 3px; border:3px solid; border-color:#ff4444; }
-    button.yellow { background:#ffff88; }
-    button.yellow:hover { background:#f0f044; }
-    div.answer { background-color:#e0f0f0; font-size:15pt; color:#000033; padding:10px 15px 10px 15px; margin:5px; border:1px solid #ccc; text-align:left; vertical-align:top; cursor:pointer; }
-    div.answer:hover { background-color:#eafafa; color:#000044; }
-    div.answer_flex { display:flex; align-items:center; background-color:#e0f0f0; font-size:15pt; color:#000033; padding:10px 15px 10px 15px; margin:5px; border:1px solid #ccc; text-align:left; cursor:pointer; max-width:1000px; }
-    div.answer_flex:hover { background-color:#eafafa; color:#000044; }
-    input[type=checkbox] { height:23px; width:23px; }
-    input[type=radio] { height:21px; width:21px; margin:3px; position:relative; top:5px; }
-    a:link, a:visited, a:active { text-decoration:none; color:#0000aa; }
-    a:hover { text-decoration:none; color:#dd0000; }
-    td { font-size:15pt; font-family:Tahoma, Arial, Helvetica, Verdana; text-decoration:none; }
-    th { font-size:15pt; font-family:Tahoma, Arial, Helvetica, Verdana; text-decoration:none; font-weight:bold; }
-    textarea { COLOR:#333333; BORDER-BOTTOM:#666666 1px solid; BORDER-LEFT:#666666 1px solid; BORDER-RIGHT:#666666 1px solid; BORDER-TOP:#666666 1px solid; FONT-FAMILY:Tahoma, Arial, Helvetica, Verdana; FONT-SIZE:15pt; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Россия в XVII веке — конспект по истории</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    /* answer-header — полоска сверху задания */
-    .answer-header { width:1010px; box-sizing:border-box; border:1px solid #454545; background:#ffffff; text-align:center; font-size:15pt; font-weight:bold; padding:3px 6px; margin:0 0 30px 0; }
+        body {
+            background: #e9edf2;
+            font-family: 'Inter', sans-serif;
+            color: #1e2a3e;
+            padding: 40px 20px;
+            line-height: 1.5;
+        }
 
-    /* поля ввода */
-    .answer-wide-input { width:220px; height:30px; box-sizing:border-box; border:1px solid #999999; background:#ffffff; font-size:15pt; font-family:Tahoma, Arial, Helvetica, Verdana; padding:2px 5px; outline:none; }
-    .small-answer-input { width:60px; height:28px; box-sizing:border-box; border:1px solid #999999; background:#ffffff; font-size:15pt; font-family:Tahoma, Arial, Helvetica, Verdana; padding:2px 4px; outline:none; }
+        .document-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            padding: 48px 56px;
+            transition: all 0.2s;
+        }
 
-    /* дробь */
-    .frac-input-wrap { display:inline-flex; align-items:center; gap:8px; }
-    .frac-whole { width:35px; border:1px solid #dddddd; font-size:16pt; font-family:Tahoma, Serif; text-align:center; padding:2px; background:#fff; outline:none; }
-    .ff { border-collapse:collapse; display:inline-table; vertical-align:middle; }
-    .ff td { text-align:center; font-size:16pt; padding:0; border:none; margin:0; }
-    .ff td.ccc { position:relative; top:-2px; }
-    .ff input { text-align:center; width:35px; border:1px solid #dddddd; font-size:16pt; font-family:Tahoma, Serif; padding:2px; background:#fff; outline:none; }
-    .ff .frac-line { border-bottom:1px solid #000000; padding-bottom:2px; display:block; }
+        /* типографика */
+        h1 {
+            font-size: 2.6rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            background: linear-gradient(135deg, #1e3c4c, #2b5c6f);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 0.3rem;
+            border-left: 6px solid #b63e2c;
+            padding-left: 24px;
+        }
 
-    /* формула дроби в тексте задания */
-    .inline-frac { display:inline-flex; flex-direction:column; align-items:center; line-height:1; vertical-align:middle; }
-    .inline-frac .fn { border-bottom:1.5px solid #000; padding:0 4px 2px; }
-    .inline-frac .fd { padding:2px 4px 0; }
+        .subhead {
+            font-size: 1rem;
+            color: #5e7a93;
+            margin-bottom: 2.2rem;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 1rem;
+            margin-top: -0.2rem;
+            padding-left: 30px;
+        }
 
-    .page.hidden { display:none; }
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-top: 2.2rem;
+            margin-bottom: 1rem;
+            color: #1f4e6e;
+            border-left: 4px solid #c2412c;
+            padding-left: 20px;
+            letter-spacing: -0.2px;
+        }
 
-    /* footer */
-    #footer-note { width:1020px; text-align:center; color:#c0c0c0; font-size:8pt; margin-top:30px; padding-bottom:20px; }
-  </style>
+        h3 {
+            font-size: 1.35rem;
+            font-weight: 600;
+            margin: 1.5rem 0 0.75rem 0;
+            color: #2c3e50;
+            display: inline-block;
+            background: #f1f5f9;
+            padding: 0.2rem 0.8rem;
+            border-radius: 40px;
+        }
+
+        .date-badge {
+            font-family: monospace;
+            font-weight: 500;
+            background: #f0f2f5;
+            display: inline-block;
+            padding: 0.2rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #a53f2c;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            color: #1f2f3c;
+        }
+
+        /* таблицы */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 1.6rem 0;
+            border-radius: 18px;
+            border: 1px solid #e2edf2;
+            background: #ffffff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: #eef3fa;
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #1e4a6b;
+            border-bottom: 1px solid #cbdde6;
+        }
+
+        td {
+            padding: 10px 16px;
+            border-bottom: 1px solid #e9edf2;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .highlight {
+            background-color: #fff7e5;
+            border-left: 3px solid #e6a017;
+            padding: 0.2rem 0.4rem;
+            font-weight: 500;
+        }
+
+        /* карточки для личностей */
+        .person-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .person-card {
+            background: #fafcff;
+            border: 1px solid #e2edf2;
+            border-radius: 20px;
+            padding: 1rem 1.2rem;
+            transition: 0.1s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        }
+
+        .person-card strong {
+            font-size: 1.1rem;
+            color: #b1422e;
+            display: block;
+            border-left: 3px solid #b1422e;
+            padding-left: 10px;
+            margin-bottom: 8px;
+        }
+
+        /* --- ХРОНОЛОГИЯ: даты жирные + увеличены, но аккуратно (уменьшены на 30% от предыдущей версии) --- */
+        .timeline-list {
+            list-style: none;
+            padding: 0;
+            margin: 1.5rem 0;
+        }
+
+        .timeline-list li {
+            padding: 12px 0;
+            border-bottom: 1px dashed #e2e8f0;
+            display: flex;
+            gap: 20px;
+            align-items: baseline;
+            flex-wrap: wrap;
+        }
+
+        /* Размер дат: 1.4rem (было 2rem → уменьшили на 30%, при этом остаются жирными и читаемыми) */
+        .timeline-year {
+            font-weight: 800;
+            font-size: 1.4rem;
+            line-height: 1.3;
+            color: #b1422e;
+            background: #fef5ef;
+            padding: 0.1rem 0.7rem;
+            border-radius: 24px;
+            display: inline-block;
+            min-width: 110px;
+            text-align: center;
+            letter-spacing: 0.3px;
+            font-family: 'Inter', monospace;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+            transition: all 0.1s;
+        }
+
+        .timeline-desc {
+            font-size: 1rem;
+            color: #1f2f3c;
+            flex: 1;
+            padding-top: 4px;
+            font-weight: 450;
+        }
+
+        @media (max-width: 680px) {
+            .timeline-year {
+                font-size: 1.2rem;
+                min-width: 90px;
+                padding: 0.1rem 0.5rem;
+            }
+            .timeline-list li {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+
+        .footer-note {
+            margin-top: 3rem;
+            background: #f1f6fa;
+            padding: 1.2rem 2rem;
+            border-radius: 28px;
+            font-size: 0.85rem;
+            text-align: center;
+            color: #2c5f7a;
+            border: 1px solid #dae9f2;
+        }
+
+        hr {
+            margin: 2rem 0;
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, #cbdde6, transparent);
+        }
+
+        @media (max-width: 700px) {
+            .document-container {
+                padding: 24px 20px;
+            }
+            h1 {
+                font-size: 1.9rem;
+                padding-left: 16px;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+        .small-caps {
+            font-weight: 500;
+            color: #2b5f6f;
+        }
+        .badge-icon {
+            background: #c2412c10;
+            color: #b1422e;
+            border-radius: 20px;
+            padding: 2px 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+    </style>
 </head>
 <body>
+<div class="document-container">
+    <h1>Россия в XVII веке</h1>
+    <div class="subhead">1598–1689 · Смута, раскол, бунташный век и первые Романовы</div>
 
-<div id="header">
-  <div class="subheader2x">
-    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-    <tbody><tr>
-      <td>
-        <p style="margin-left:15px;color:#000000;font-size:12pt;text-indent:0"> Задания: </p>
-      </td>
-      <td>
-        <p id="topline"><font>Оставшееся время - 45:00</font></p>
-      </td>
-    </tr></tbody></table>
+    <!-- 1. Смутное время -->
+    <h2>📜 1. Смутное время (1598–1613)</h2>
+    <p>Пресечение династии Рюриковичей со смертью Фёдора Иоанновича (1598). За 15 лет сменилось несколько претендентов на трон, польская и шведская интервенции. <strong>Итог:</strong> Земский собор 1613 г. и избрание Михаила Романова — основателя новой династии.</p>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr><th>Дата</th><th>Событие</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>1598</td><td>Смерть Фёдора Иоанновича. Власть взял Борис Годунов</td></tr>
+                <tr><td>1605</td><td>Смерть Годунова. Появление Лжедмитрия I</td></tr>
+                <tr><td>1606–1610</td><td>Правление Василия Шуйского. Восстание Болотникова</td></tr>
+                <tr><td>1610–1612</td><td>«Семибоярщина». Польские войска в Москве</td></tr>
+                <tr><td>1611–1612</td><td>Первое и Второе ополчения. Минин и Пожарский освобождают Москву</td></tr>
+                <tr><td>1613</td><td>Земский собор. Избрание Михаила Романова царём</td></tr>
+            </tbody>
+        </table>
+    </div>
 
-    <button class="qnum" data-page="1">1</button>
-    <button class="qnum" data-page="2">2</button>
-    <button class="qnum" data-page="3">3</button>
-    <button class="qnum" data-page="4">4</button>
-    <button class="qnum" data-page="5">5</button>
-    <button class="qnum" data-page="6">6</button>
-    <button class="qnum" data-page="7">7</button>
-    <button class="qnum" data-page="8">8</button>
-    <button class="qnum" data-page="9">9</button>
-    <button class="qnum" id="finishBtn">закончить</button>
-  </div>
+    <!-- 2. Церковный раскол -->
+    <h2>⛪ 2. Церковный раскол и патриарх Никон</h2>
+    <p><strong>Причина:</strong> унификация церковных книг и обрядов по греческим образцам. <strong>Цели:</strong> укрепить авторитет церкви и подготовить объединение с Украиной.</p>
+    <h3>Реформы Никона (1653–1656)</h3>
+    <ul style="margin-left: 1.8rem; margin-bottom: 1rem;">
+        <li>Крещение тремя перстами вместо двух</li>
+        <li>Поясные поклоны вместо земных</li>
+        <li>Троекратное «аллилуйя» вместо двукратного</li>
+        <li>Крестный ход против солнца (против часовой стрелки)</li>
+        <li>Исправление богослужебных книг по греческим образцам</li>
+    </ul>
+    <p><span class="badge-icon">⚔️ Соловецкое сидение (1668–1676)</span> — монастырь 8 лет держал осаду царских войск, отказавшись принять новые книги; крупнейшее вооружённое сопротивление старообрядцев.</p>
+    <div class="table-wrapper">
+        <table>
+            <thead><tr><th>Никон</th><th>Аввакум</th></tr></thead>
+            <tbody><tr><td>Осуждён на Большом Московском соборе (1666–1667). Сослан в Ферапонтов монастырь, лишён патриаршества.</td><td>Фанатичный защитник «старины». Сослан в Пустозерск, 14 лет в земляной тюрьме. В 1682 г. сожжён в срубе.</td></tr></tbody>
+        </table>
+    </div>
+
+    <!-- 3. Бунташный век -->
+    <h2>🔥 3. «Бунташный век» — восстания XVII века</h2>
+    <div class="table-wrapper">
+        <table>
+            <thead><tr><th>Восстание</th><th>Год</th><th>Причина</th><th>Итог</th></tr></thead>
+            <tbody>
+                <tr><td>Соляной бунт</td><td>1648</td><td>Налог на соль, произвол бояр</td><td>Земский собор → Соборное уложение 1649 г.</td></tr>
+                <tr><td>Медный бунт</td><td>1662</td><td>Обесценивание медных денег (инфляция)</td><td>Медные деньги отменены</td></tr>
+                <tr><td>Псковское восстание</td><td>1650</td><td>Дороговизна хлеба</td><td>Подавлено переговорами</td></tr>
+                <tr><td>Восстание Степана Разина</td><td>1670–1671</td><td>Крепостнический гнёт, казацкая вольница</td><td>Казнён в 1671 г.</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <p><strong>Соборное уложение 1649 г.</strong> (при Алексее Михайловиче) — окончательно закрепостило крестьян, установив бессрочный сыск беглых. Действовало до 1832 г.</p>
+
+    <!-- 4. Внешняя политика -->
+    <h2>⚔️ 4. Внешняя политика XVII века</h2>
+    <h3>Смоленская война (1632–1634)</h3>
+    <p>Командующий Михаил Шеин. <strong>Поляновский мир (1634):</strong> Россия не вернула Смоленск, но польский король Владислав IV отказался от претензий на русский престол — легитимизация Романовых.</p>
+    <h3>Русско-польская война (1654–1667)</h3>
+    <p><strong>Повод:</strong> Переяславская Рада 1654 г. — решение Гетманщины перейти под протекторат России.<br>
+    <strong>Андрусовское перемирие 1667 г.:</strong> Россия получила Смоленск и Левобережную Украину. Киев временно (позже выкуплен по «Вечному миру» 1686 г.)</p>
+    <h3>Русско-шведская война (1656–1658)</h3>
+    <p>Попытка выхода к Балтийскому морю. <strong>Кардисский мир (1661):</strong> Россия вернула все захваченные территории. Выход к Балтике будет достигнут лишь при Петре I.</p>
+    <h3>Русско-турецкая война (1676–1681)</h3>
+    <p>Чигиринские походы (1677, 1678) — две кампании за контроль над Правобережной Украиной.</p>
+
+    <!-- 5. Ключевые личности -->
+    <h2>👤 5. Ключевые личности эпохи</h2>
+    <div class="person-grid">
+        <div class="person-card"><strong>Михаил Романов (1613–1645)</strong> Первый царь из династии Романовых. Восстановил государство после Смуты.</div>
+        <div class="person-card"><strong>Алексей Михайлович «Тишайший» (1645–1676)</strong> Соборное уложение 1649 г., церковный раскол, русско-польская война.</div>
+        <div class="person-card"><strong>Фёдор Алексеевич (1676–1682)</strong> Отменил местничество (1682) — важная реформа, позволившая назначать людей по способностям.</div>
+        <div class="person-card"><strong>Патриарх Никон</strong> Провёл церковную реформу, претендовал на равенство церковной и светской власти.</div>
+        <div class="person-card"><strong>А. Л. Ордин-Нащокин</strong> Глава Посольского приказа. Автор Новоторгового устава 1667 г. — политика протекционизма.</div>
+        <div class="person-card"><strong>Богдан Хмельницкий</strong> Гетман Войска Запорожского. Восстание против Речи Посполитой (1648). Переяславская Рада.</div>
+        <div class="person-card"><strong>Протопоп Аввакум</strong> Лидер старообрядчества. Автор «Жития» — первой русской автобиографии.</div>
+        <div class="person-card"><strong>Семён Дежнёв</strong> Казачий атаман. В 1648 г. прошёл пролив между Азией и Америкой.</div>
+        <div class="person-card"><strong>Ерофей Хабаров</strong> Землепроходец, освоивший Приамурье (1649–1653). Основал ряд острогов.</div>
+    </div>
+
+    <!-- 6. Культура, наука, экономика, Сибирь -->
+    <h2>🎨 6. Культура, экономика и освоение Сибири</h2>
+    <h3>Культура</h3>
+    <p>• <strong>Симон Ушаков</strong> — главный иконописец века, переход к «живоподобию» (икона «Спас Нерукотворный»).<br>
+    • <strong>Парсуна</strong> — портрет в иконописной технике, переход к новому искусству.<br>
+    • Первый придворный театр (1672, Алексей Михайлович).<br>
+    • Протопоп Аввакум написал «Житие» в Пустозерской ссылке.</p>
+    <h3>Экономика</h3>
+    <p>• Первые мануфактуры — Николо-Павловский и Тульский железоделательные заводы.<br>
+    • Всероссийский рынок, ярмарки (Макарьевская, Ирбитская).<br>
+    • <strong>Новоторговый устав 1667 г.</strong> (Ордин-Нащокин) — протекционизм: иностранцы не могли торговать в розницу внутри страны.</p>
+    <h3>Освоение Сибири</h3>
+    <p>• 1648 — Дежнёв проходит пролив между Азией и Америкой.<br>
+    • 1649–1653 — Хабаров исследует Приамурье.<br>
+    • Основание Иркутска (1661), Нерчинска (1658).<br>
+    • <strong>Нерчинский договор 1689 г.</strong> с Китаем — первый международный договор России с восточным государством.</p>
+
+    <!-- 7. Россия в контексте мировой истории -->
+    <h2>🌍 7. Россия в контексте мировой истории</h2>
+    <p>• <strong>1618–1648</strong> — Тридцатилетняя война, ослабила Польшу и Швецию — конкурентов России.<br>
+    • <strong>1649</strong> — Россия прекратила торговлю с Англией в знак протеста («убили своего короля»).<br>
+    • <strong>1660–1680-е</strong> — Турция наступает на Польшу и Украину → Чигиринские походы 1677–1678 гг.<br>
+    • <strong>1686</strong> — «Вечный мир» с Польшей: Россия окончательно получает Киев.</p>
+
+    <!-- 8. Хронологическая шпаргалка — даты жирные и увеличены на комфортные 40% (1.4rem против 1rem) -->
+    <h2>📅 8. Хронологическая шпаргалка</h2>
+    <ul class="timeline-list">
+        <li><span class="timeline-year">1613</span><span class="timeline-desc">Земский собор. Избрание Михаила Романова — начало династии Романовых</span></li>
+        <li><span class="timeline-year">1632–1634</span><span class="timeline-desc">Смоленская война. Поляновский мир: Владислав IV отказался от претензий</span></li>
+        <li><span class="timeline-year">1645</span><span class="timeline-desc">На престол вступает Алексей Михайлович «Тишайший»</span></li>
+        <li><span class="timeline-year">1648</span><span class="timeline-desc">Соляной бунт. Начало восстания Хмельницкого. Дежнёв открывает пролив</span></li>
+        <li><span class="timeline-year">1649</span><span class="timeline-desc">Соборное уложение — окончательное закрепощение крестьян</span></li>
+        <li><span class="timeline-year">1653–1656</span><span class="timeline-desc">Реформы патриарха Никона → начало церковного раскола</span></li>
+        <li><span class="timeline-year">1654</span><span class="timeline-desc">Переяславская Рада — Гетманщина под протекторат России</span></li>
+        <li><span class="timeline-year">1654–1667</span><span class="timeline-desc">Русско-польская война. Андрусовское перемирие: Смоленск и Левобережная Украина</span></li>
+        <li><span class="timeline-year">1662</span><span class="timeline-desc">Медный бунт</span></li>
+        <li><span class="timeline-year">1666–1667</span><span class="timeline-desc">Большой Московский собор — осуждение Никона, раскол закреплён</span></li>
+        <li><span class="timeline-year">1667</span><span class="timeline-desc">Новоторговый устав Ордина-Нащокина</span></li>
+        <li><span class="timeline-year">1668–1676</span><span class="timeline-desc">Соловецкое сидение — 8-летняя осада монастыря</span></li>
+        <li><span class="timeline-year">1670–1671</span><span class="timeline-desc">Восстание Степана Разина</span></li>
+        <li><span class="timeline-year">1672</span><span class="timeline-desc">Основание придворного театра при Алексее Михайловиче</span></li>
+        <li><span class="timeline-year">1676–1681</span><span class="timeline-desc">Русско-турецкая война. Чигиринские походы</span></li>
+        <li><span class="timeline-year">1682</span><span class="timeline-desc">Сожжение Аввакума. Отмена местничества. Начало правления Петра I (совместно с Иваном V)</span></li>
+        <li><span class="timeline-year">1686</span><span class="timeline-desc">«Вечный мир» с Польшей — Россия окончательно получает Киев</span></li>
+    </ul>
+
+    <hr>
+    <div class="footer-note">
+        📖 Конспект охватывает период от Смутного времени до конца XVII века.<br>
+        Ключевые темы: церковный раскол, внешняя политика, народные восстания, экономические реформы, освоение Сибири и культурные изменения.
+    </div>
 </div>
-
-<div id="content">
-
-  <!-- Задание 1 -->
-  <div class="page hidden" id="page-1">
-    <div id="QuestionTest">
-      <div class="answer-header">Ответ на задание запишите в виде целого числа или конечной десятичной дроби.</div>
-      <p style="font-size:15pt;margin-bottom:16px;">Вычислите:</p>
-      <p style="font-size:15pt;margin-bottom:20px;">
-        <span style="display:inline-flex;flex-direction:column;align-items:center;line-height:1;vertical-align:middle">
-          <span style="border-bottom:2px solid #1f1f1f;padding:0 14px 3px 14px;">6<sup>5</sup></span>
-          <span style="padding-top:3px;">2<sup>3</sup> · 9<sup>2</sup></span>
-        </span>
-        &nbsp;=&nbsp;
-        <span style="display:inline-flex;align-items:center;background:#e0f0f0;border:1px solid #ccc;padding:4px 8px;">
-          <input class="small-answer-input" id="answer1" type="text">
-        </span>
-        .
-      </p>
-      <button data-save="1">Сохранить ответ</button>
-    </div>
-  </div>
-
-  <!-- Задание 2 -->
-  <div class="page hidden" id="page-2">
-    <div id="QuestionTest">
-      <div class="answer-header">Ответ на задание запишите в виде целого числа или конечной десятичной дроби.</div>
-      <p style="font-size:15pt;margin-bottom:16px;">Вычислите: &nbsp;&nbsp;7<sup>3</sup> + 3 · 7<sup>2</sup> · 13 + 3 · 7 · 13<sup>2</sup> + 13<sup>3</sup>.</p>
-      <div class="answer_flex">
-        <p>Ответ: <input class="answer-wide-input" id="answer2" type="text">.</p>
-      </div>
-      <button data-save="2">Сохранить ответ</button>
-    </div>
-  </div>
-
-  <!-- Задание 3 -->
-  <div class="page hidden" id="page-3">
-    <div id="QuestionTest">
-      <div class="answer-header">Ответ на задание запишите в виде целого числа или конечной десятичной дроби.</div>
-      <p style="font-size:15pt;margin-bottom:16px;">Найдите значение выражения (<i>a</i> + 3)<sup>2</sup> − 3<i>a</i>(2 − 3<i>a</i>) при <i>a</i> = −0,7.</p>
-      <div class="answer_flex">
-        <p>Ответ: <input class="answer-wide-input" id="answer3" type="text">.</p>
-      </div>
-      <button data-save="3">Сохранить ответ</button>
-    </div>
-  </div>
-
-  <!-- Задание 4 -->
-  <div class="page hidden" id="page-4">
-    <div id="QuestionTest">
-      <div class="answer-header">Ответ на задание запишите в виде целого числа или конечной десятичной дроби.</div>
-      <p style="font-size:15pt;margin-bottom:16px;">Решите уравнение <i>x</i> − 2(4 + 3<i>x</i>) = −18.</p>
-      <div class="answer_flex">
-        <p>Ответ: <input class="answer-wide-input" id="answer4" type="text">.</p>
-      </div>
-      <button data-save="4">Сохранить ответ</button>
-    </div>
-  </div>
-
-  <!-- Задание 5 -->
-  <div class="page hidden" id="page-5">
-    <div id="QuestionTest">
-      <div class="answer-header">Ответ на задание запишите в виде целого числа или конечной десятичной дроби.</div>
-      <p style="font-size:15pt;line-height:1.4;margin-bottom:16px;">Расстояние между пунктами А и Б равно 290 км. В 8:00 из пункта А в пункт Б выехал легковой автомобиль. Через час навстречу ему из пункта Б со скоростью 60 км/ч выехал грузовой автомобиль. Ровно в 10:30 того же дня автомобили встретились. Найдите скорость легкового автомобиля (в км/ч).</p>
-      <div class="answer_flex">
-        <p>Ответ: <input class="answer-wide-input" id="answer5" type="text"> км/ч.</p>
-      </div>
-      <button data-save="5">Сохранить ответ</button>
-    </div>
-  </div>
-
-  <!-- Задание 6 (ИИ) -->
-  <div class="page hidden" id="page-6">
-    <div id="QuestionTest">
-      <div class="answer-header">Ответ на задание запишите в виде целого числа или конечной десятичной дроби.</div>
-      <p style="font-size:15pt;line-height:1.4;margin-bottom:4px;">Олегу на день рождения подарили новый электролобзик с функцией подсчёта длины сделанных пропилов.</p>
-      <p style="font-size:15pt;line-height:1.4;margin-bottom:4px;">Чтобы опробовать подарок он взял квадратный кусок фанеры со стороной 50 см и распилил его на квадраты</p>
-      <p style="font-size:15pt;line-height:1.4;margin-bottom:4px;">со стороной 10 см и квадраты со стороной 20 см.</p>
-      <p style="font-size:15pt;line-height:1.4;margin-bottom:16px;">Сколько всего квадратов получилось, если электролобзик показывает общую длину пропилов 2 м 80 см?</p>
-      <div class="answer_flex" id="answer6-panel">
-        <span style="margin-right:8px;">Ответ:</span>
-        <div id="answer6-field"><input class="answer-wide-input" id="answer6" type="text"></div>
-        <span class="answer6-dot" style="margin-left:4px;">.</span>
-      </div>
-      <button data-save="6">Сохранить ответы</button>
-    </div>
-  </div>
-
-  <!-- Задание 7 (Telegram) -->
-  <div class="page hidden" id="page-7">
-    <div id="QuestionTest">
-      <div class="answer-header">Ответ на задание запишите в виде целого числа или конечной десятичной дроби.</div>
-      <p style="font-size:15pt;line-height:1.4;margin-bottom:4px;">Смешали два вида клубничного сиропа: в первом содержание сахара было 12 %, а во втором — 30 %.</p>
-      <p style="font-size:15pt;line-height:1.4;margin-bottom:16px;">Сколько литров сиропа первого вида взяли, если получилось ровно 9 л клубничного сиропа с содержанием сахара 25 %?</p>
-      <div class="answer_flex">
-        <p>Ответ: <input class="answer-wide-input" id="answer7" type="text"> л.</p>
-      </div>
-      <button data-save="7">Сохранить ответы</button>
-    </div>
-  </div>
-
-  <!-- Задание 8 -->
-  <div class="page hidden" id="page-8">
-    <div id="QuestionTest">
-      <div class="answer-header">Ответ на задание запишите в виде целого числа или конечной десятичной дроби.</div>
-      <p style="font-size:15pt;line-height:1.4;margin-bottom:4px;">В трёхзначном числе переставили первую цифру в конец. Число осталось трёхзначным, но уменьшилось на 549.</p>
-      <p style="font-size:15pt;line-height:1.4;margin-bottom:16px;">Чему может быть равно исходное число?</p>
-      <div class="answer_flex">
-        <p>Ответ: <input class="answer-wide-input" id="answer8" type="text">.</p>
-      </div>
-      <button data-save="8">Сохранить ответ</button>
-    </div>
-  </div>
-
-  <!-- Задание 9 -->
-  <div class="page hidden" id="page-9">
-    <div id="QuestionTest">
-      <div class="answer-header">Ответ на задание запишите в виде целого числа или конечной десятичной дроби.</div>
-      <p style="font-size:15pt;line-height:1.4;margin-bottom:16px;">Туристы за три дня прошли намеченный маршрут. В первый день туристы прошли 35 % всего пути, во второй день — <span class="inline-frac"><span class="fn">2</span><span class="fd">5</span></span> всего пути, а в третий день — оставшиеся 20 км. Сколько километров прошли туристы за эти три дня?</p>
-      <div class="answer_flex">
-        <p>Ответ: <input class="answer-wide-input" id="answer9" type="text"> км.</p>
-      </div>
-      <button data-save="9">Сохранить ответ</button>
-    </div>
-  </div>
-
-
-</div><!-- content -->
-
-<br><center><font style="color:#cccccc;font-size:8pt">Page generated in 0.005, memory usage: 480 kb</font></center>
-
-<script>
-  const pages = document.querySelectorAll('.page');
-  const pageButtons = document.querySelectorAll('[data-page]');
-  const finishBtn = document.getElementById('finishBtn');
-  const savedAnswers = {};
-
-  let timerInterval = null;
-  let endTime = null;
-
-  function showPage(pageId) {
-    if (pageId !== '6') {
-      const field = document.getElementById('answer6-field');
-      if (field) field.innerHTML = '<input class="answer-wide-input" id="answer6" type="text">';
-      if (typeof task6ImageBase64 !== 'undefined') task6ImageBase64 = null;
-    }
-    pages.forEach(p => p.classList.add('hidden'));
-    document.getElementById('page-' + pageId).classList.remove('hidden');
-    pageButtons.forEach(b => b.classList.remove('qramka'));
-    const active = document.querySelector(`[data-page="${pageId}"]`);
-    if (active) active.classList.add('qramka');
-    // Восстановить сохранённый ответ
-    const input = document.getElementById('answer' + pageId);
-    if (input && savedAnswers[pageId] !== undefined) {
-      input.value = savedAnswers[pageId];
-    }
-  }
-
-  // ТАЙМЕР
-  function startTimer() {
-    endTime = Date.now() + 45 * 60 * 1000;
-    function update() {
-      const left = endTime - Date.now();
-      if (left <= 0) {
-        clearInterval(timerInterval);
-        document.getElementById('topline').innerHTML = '<font color="#aa0000">Время закончилось - 0:00</font>';
-        alert('Время вышло. Тест завершён.');
-        return;
-      }
-      const total = Math.floor(left / 1000);
-      const mm = Math.floor(total / 60);
-      const ss = String(total % 60).padStart(2, '0');
-      const color = mm < 5 ? '#aa0000' : '';
-      const style = mm < 5 ? ' color="#aa0000"' : '';
-      document.getElementById('topline').innerHTML = `<font${style}>Оставшееся время - ${mm}:${ss}</font>`;
-    }
-    update();
-    timerInterval = setInterval(update, 500);
-  }
-
-  // Навигация
-  pageButtons.forEach(btn => {
-    btn.addEventListener('click', () => showPage(btn.dataset.page));
-  });
-
-  finishBtn.addEventListener('click', () => {
-    if (confirm('Закончить тестирование?')) alert('Тест завершён.');
-  });
-
-  // ── ЗАДАНИЕ 6: скриншот + ИИ ──
-  const OR_URL = 'https://elias.elias9548games.workers.dev';
-  let task6ImageBase64 = null;
-  let task6ImageMime = 'image/png';
-  const TOTAL_TIMEOUT_MS = 150000; // 150 секунд максимум
-
-  const MODELS = [
-    { id: 'google/gemini-2.5-flash',         label: 'Gemini 2.5 Flash', reasoning: true },
-    { id: 'xiaomi/mimo-v2-omni',             label: 'Mimo V2 Omni' },
-    { id: 'z-ai/glm-4.6v',                  label: 'GLM 4.6V' },
-    { id: 'google/gemini-3-flash-preview',   label: 'Gemini 3 Flash', reasoning: true },
-    { id: 'qwen/qwen3.5-122b-a10b',          label: 'Qwen3.5 122B' },
-    { id: 'moonshotai/kimi-k2.5',            label: 'Kimi K2.5' },
-    { id: 'qwen/qwen3.6-plus:free',          label: 'Qwen3.6 Plus', reasoning: true },
-  ];
-  const GEMINI_IDX = 3; // Gemini 3 Flash
-  const GEMINI25_IDX = 0; // Gemini 2.5 Flash
-  const KIMI_IDX = 5; // Kimi K2.5
-  const QWEN36_IDX = 6; // Qwen3.6 Plus
-
-  async function askModel(model, messages, signal, useReasoning) {
-    const body = { model, messages, max_tokens: useReasoning ? 8000 : 4096 };
-    if (useReasoning) body.reasoning = { enabled: true };
-    const res = await fetch(OR_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-      signal
-    });
-    if (!res.ok) {
-      const errText = await res.text();
-      throw new Error('HTTP ' + res.status + ': ' + errText);
-    }
-    const d = await res.json();
-    if (d.error) throw new Error(d.error.message);
-    const msg = d.choices?.[0]?.message;
-    // content — финальный ответ модели. reasoning_content/thinking — только думы, НЕ используем как ответ.
-    let content = msg?.content;
-    if (!content && (msg?.reasoning_content || msg?.thinking)) {
-      // Модель вернула только reasoning без финального контента — парсим последние строки reasoning
-      const reasoning = (msg.reasoning_content ?? msg.thinking ?? '').trim();
-      // Ищем ФОРМАТ:/ОТВЕТ: в конце reasoning (некоторые модели вставляют их туда)
-      if (/ФОРМАТ:/i.test(reasoning) && /ОТВЕТ:/i.test(reasoning)) {
-        content = reasoning;
-      } else {
-        throw new Error('Model ' + model + ' returned only reasoning without final answer');
-      }
-    }
-    if (!content) throw new Error('Empty response from model ' + model);
-    const text = content.trim();
-    // Логируем последние 200 символов чтобы видеть ФОРМАТ+ОТВЕТ строки
-    console.log('Used model:', d.model, '→', text.slice(-200));
-    return text;
-  }
-
-  function parseAnswer(raw) {
-    const fmtMatch = raw.match(/ФОРМАТ:\s*(\S+)/i);
-    let fmt = fmtMatch ? fmtMatch[1].toLowerCase().trim() : 'целое';
-    // Берём только первую строку после ОТВЕТ: (до переноса строки или конца)
-    const ansMatch = raw.match(/ОТВЕТ:\s*([^\r\n]*)/i);
-    const ansRaw = ansMatch ? ansMatch[1].trim() : '';
-    // Извлекаем числовые токены напрямую, игнорируя любой мусор (буквы, двоеточия, спецсимволы)
-    // Сначала ищем множество (несколько чисел через ; или ,)
-    const multiMatch = ansRaw.match(/[+\u2212\-]?\s*\d+(?:[,.]\d+)?(?:\s*[;,]\s*[+\u2212\-]?\s*\d+(?:[,.]\d+)?)+/);
-    // Если нет множества — берём одно число (целое, десятичное, или дробь через слэш)
-    const singleMatch = ansRaw.match(/[+\u2212\-]?\s*\d+(?:[,.]\d+)?(?:\s*\/\s*\d+)?/);
-    let answer = ((multiMatch || singleMatch) || [''])[0].replace(/\s/g, '');
-
-    // Если формат — множество (коэффициенты многочлена со знаками)
-    if (fmt.includes('множество')) {
-      // Извлечь все токены вида [знак]число через ; или ,
-      const tokens = answer.match(/[+−\-]?\s*\d+(?:[,.]\d+)?/g);
-      if (tokens && tokens.length > 0) {
-        answer = tokens.map(s => {
-          s = s.replace(/\s/g, '').replace('−', '-');
-          if (s && s[0] !== '-') s = '+' + s.replace(/^\+/, '');
-          return s;
-        }).filter(Boolean).join('; ');
-      }
-      return { fmt, answer };
-    }
-
-    // Если ответ содержит мусор (буквы, лишние слова) — вытащить только число/дробь/множество
-    if (answer && !/^[\d\s\/,\.\-;+]+$/.test(answer)) {
-      // Сначала проверим на множество со знаками
-      const signedSet = answer.match(/([+−\-]?\d+(?:[,\.]\d+)?)(?:\s*[;,]\s*([+−\-]?\d+(?:[,\.]\d+)?)){1,}/);
-      if (signedSet) {
-        fmt = 'множество';
-        answer = signedSet[0];
-        answer = answer.split(/\s*[;,]\s*/).map(s => {
-          s = s.trim().replace('−', '-');
-          if (s && s[0] !== '-') s = '+' + s.replace(/^\+/, '');
-          return s;
-        }).filter(Boolean).join('; ');
-        return { fmt, answer };
-      }
-      const fallback = answer.match(/([\-\d]+(?:[,\.][\d]+)?(?:\s*;\s*[\-\d]+(?:[,\.][\d]+)?)*)/);
-      answer = fallback ? fallback[1].trim() : '';
-    }
-    if (!answer) {
-      const numMatch = raw.match(/([\d]+(?:[\/,\.][\d]+)?)\s*$/) || raw.match(/=\s*([\d]+(?:[\/,\.][\d]+)?)/);
-      if (numMatch) answer = numMatch[1].trim();
-    }
-    const looksMultiple = /[+\-−]?\d[\s]*;[\s]*[+\-−]?\d/.test(answer);
-    if (looksMultiple) fmt = 'множество';
-    if (fmt.includes('множество')) {
-      answer = answer.split(/\s*;\s*/).map(s => {
-        s = s.trim().replace('−', '-');
-        if (s && s[0] !== '-' && s[0] !== '+') s = '+' + s;
-        return s;
-      }).filter(Boolean).join('; ');
-    }
-    return { fmt, answer };
-  }
-
-  function normalizeAns(a) {
-    return a.replace(/\s+/g, '').replace(',', '.').toLowerCase();
-  }
-
-  let _dotsRemaining = 0;
-
-  function showVotingUI(field) {
-    _dotsRemaining = MODELS.length;
-    field.innerHTML = '<input class="answer-wide-input" id="answer6" type="text" value="......." readonly style="letter-spacing:4px;">';
-  }
-
-  function setVotingStatus(i, answer, isError) {
-    _dotsRemaining = Math.max(0, _dotsRemaining - 1);
-    const inp = document.getElementById('answer6');
-    if (inp && _dotsRemaining > 0) {
-      inp.value = '.'.repeat(_dotsRemaining);
-    }
-  }
-
-  async function askWithVoting(messages) {
-    const field = document.getElementById('answer6-field');
-    showVotingUI(field);
-
-    const controller = new AbortController();
-    const globalTimer = setTimeout(() => controller.abort(), TOTAL_TIMEOUT_MS);
-
-    const results = new Array(MODELS.length).fill(null);
-    const settled = new Array(MODELS.length).fill(false);
-
-    // Запускаем все модели параллельно
-    const allPromises = MODELS.map((m, i) =>
-      askModel(m.id, messages, controller.signal, m.reasoning)
-        .then(raw => {
-          const parsed = parseAnswer(raw);
-          results[i] = parsed;
-          settled[i] = true;
-          console.log(`${m.label}: ОТВЕТ=${parsed.answer} ФОРМАТ=${parsed.fmt}`);
-          setVotingStatus(i, parsed.answer, false);
-        })
-        .catch(err => {
-          results[i] = null;
-          settled[i] = true;
-          console.warn(`${m.label} failed:`, err.message || err);
-          setVotingStatus(i, '', true);
-        })
-    );
-
-    // Ждём завершения всех, кроме Kimi (может быть медленным)
-    const fastPromises = allPromises.filter((_, i) => i !== KIMI_IDX);
-    await Promise.allSettled(fastPromises);
-
-    // Если Kimi ещё не ответил — даём ему максимум 15 секунд
-    if (!settled[KIMI_IDX]) {
-      console.log('Все ответили, кроме Kimi. Даём Kimi 15 сек...');
-      const kimiTimeout = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Kimi timeout 15s')), 15000)
-      );
-      await Promise.race([allPromises[KIMI_IDX], kimiTimeout]).catch(err => {
-        console.warn('Kimi не уложился в 15 сек:', err.message);
-      });
-    }
-
-    clearTimeout(globalTimer);
-
-    // Голосование
-    const valid = results.filter(r => r && r.answer);
-
-    if (valid.length === 0) {
-      return { result: null };
-    }
-
-    // Группировка по нормализованному ответу
-    const groups = {};
-    results.forEach((r, i) => {
-      if (!r || !r.answer) return;
-      const key = normalizeAns(r.answer);
-      if (!groups[key]) groups[key] = { result: r, count: 0, hasGemini: false, maxLen: r.answer.length };
-      groups[key].count++;
-      // Сохраняем самый полный ответ в группе
-      if (r.answer.length > groups[key].maxLen) {
-        groups[key].maxLen = r.answer.length;
-        groups[key].result = r;
-      }
-      if (i === GEMINI_IDX) groups[key].hasGemini = true;
-    });
-
-    // Дополнительная логика: если один ответ является ПРЕФИКСОМ другого (например +2 vs +2;-14;+9),
-    // объединяем их — это скорее всего одна и та же задача, просто один парсер обрезал
-    const keys = Object.keys(groups);
-    for (let a = 0; a < keys.length; a++) {
-      for (let b = 0; b < keys.length; b++) {
-        if (a === b) continue;
-        const ka = keys[a], kb = keys[b];
-        if (!groups[ka] || !groups[kb]) continue;
-        // kb начинается с ka — kb более полный
-        if (kb.startsWith(ka) && kb.length > ka.length) {
-          groups[kb].count += groups[ka].count;
-          if (groups[kb].result.answer.length < groups[ka].result.answer.length)
-            groups[kb].result = groups[ka].result;
-          delete groups[ka];
-          break;
-        }
-      }
-    }
-
-    const entries = Object.values(groups);
-
-    // Все дали одинаковый ответ
-    if (entries.length === 1) {
-      return { result: entries[0].result };
-    }
-
-    // Ищем большинство (4/1 или 3/2)
-    const maxCount = Math.max(...entries.map(e => e.count));
-    const majors = entries.filter(e => e.count === maxCount);
-
-    if (majors.length === 1) {
-      // Есть чёткое большинство
-      return { result: majors[0].result };
-    }
-
-    // Ничья — приоритетная цепочка арбитра:
-    // Gemini 3 → Mimo → Qwen3.6 Plus → Gemini 2.5 → Kimi → GLM → Qwen3.5
-    const TIEBREAK_PRIORITY = [
-      GEMINI_IDX,
-      MODELS.findIndex(m => m.id.includes('mimo')),
-      QWEN36_IDX,
-      GEMINI25_IDX,
-      KIMI_IDX,
-      MODELS.findIndex(m => m.id.includes('glm')),
-      MODELS.findIndex(m => m.id.includes('qwen3.5')),
-    ];
-    for (const idx of TIEBREAK_PRIORITY) {
-      if (idx >= 0 && results[idx] && results[idx].answer) {
-        console.log('Arbiter: ' + MODELS[idx].label);
-        return { result: results[idx] };
-      }
-    }
-
-    // Совсем ничего — первый валидный
-    return { result: valid[0] };
-  }
-
-  // Совместимость
-  async function ask(messages) {
-    return askModel(MODELS[0].id, messages, undefined);
-  }
-
-  function setAnswer6(val, fmt) {
-    const panel = document.getElementById('answer6-panel');
-    const field = document.getElementById('answer6-field');
-    const v = val.trim();
-    // Убираем старый знак неопределённости если был
-    // Восстанавливаем точку
-    let dotSpan = panel.querySelector('.answer6-dot');
-    if (!dotSpan) {
-      dotSpan = document.createElement('span');
-      dotSpan.className = 'answer6-dot';
-      dotSpan.style.marginLeft = '4px';
-      dotSpan.textContent = '.';
-      panel.appendChild(dotSpan);
-    }
-    dotSpan.textContent = '.';
-
-    if (v.includes(';')) {
-      field.innerHTML = '<input class="answer-wide-input" id="answer6" type="text" value="' + v + '" style="width:320px">';
-    } else {
-      const mixedMatch = v.match(/^(\d+)\s+(\d+)[\/](\d+)$/);
-      const fracMatch = v.match(/^(\d+)[\/](\d+)$/);
-      if (mixedMatch) {
-        field.innerHTML = '<div class="frac-input-wrap">'
-          + '<input class="frac-whole" id="answer6" type="text" value="' + mixedMatch[1] + '" readonly>'
-          + '<table class="ff"><tbody>'
-          + '<tr><td><span class="frac-line"><input type="text" value="' + mixedMatch[2] + '" readonly></span></td></tr>'
-          + '<tr><td class="ccc"><input type="text" value="' + mixedMatch[3] + '" readonly></td></tr>'
-          + '</tbody></table></div>';
-      } else if (fracMatch) {
-        const fNum = parseInt(fracMatch[1]);
-        const fDen = parseInt(fracMatch[2]);
-        const whole = Math.floor(fNum / fDen);
-        const rem = fNum % fDen;
-        const keepAsFrac = fmt && fmt.includes('дробь');
-        if (!keepAsFrac && whole > 0 && rem > 0) {
-          // Неправильная дробь → смешанное число (если формат не «дробь»)
-          field.innerHTML = '<div class="frac-input-wrap">'
-            + '<input class="frac-whole" type="text" value="' + whole + '" readonly>'
-            + '<table class="ff"><tbody>'
-            + '<tr><td><span class="frac-line"><input type="text" value="' + rem + '" readonly></span></td></tr>'
-            + '<tr><td class="ccc"><input type="text" value="' + fDen + '" readonly></td></tr>'
-            + '</tbody></table></div>';
-        } else if (!keepAsFrac && rem === 0) {
-          // Делится нацело → просто целое число
-          field.innerHTML = '<input class="answer-wide-input" id="answer6" type="text" value="' + whole + '" readonly>';
-        } else {
-          // Правильная дробь или явный формат «дробь» → показываем как есть
-          field.innerHTML = '<div class="frac-input-wrap">'
-            + '<table class="ff"><tbody>'
-            + '<tr><td><span class="frac-line"><input type="text" value="' + fracMatch[1] + '" readonly></span></td></tr>'
-            + '<tr><td class="ccc"><input type="text" value="' + fracMatch[2] + '" readonly></td></tr>'
-            + '</tbody></table></div>';
-        }
-      } else {
-        field.innerHTML = '<input class="answer-wide-input" id="answer6" type="text" value="' + v + '">';
-      }
-    }
-
-    dotSpan.textContent = '.';
-  }
-
-  document.addEventListener('paste', (e) => {
-    if (document.getElementById('page-6').classList.contains('hidden')) return;
-    const items = e.clipboardData?.items;
-    if (!items) return;
-    for (const item of items) {
-      if (item.type.startsWith('image/')) {
-        const blob = item.getAsFile();
-        task6ImageMime = item.type;
-        // Сжимаем изображение перед отправкой (лимит Worker 100KB)
-        const img = new Image();
-        const objectUrl = URL.createObjectURL(blob);
-        img.onload = () => {
-          URL.revokeObjectURL(objectUrl);
-          const canvas = document.createElement('canvas');
-          const MAX = 800;
-          let w = img.width, h = img.height;
-          if (w > MAX || h > MAX) {
-            if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
-            else { w = Math.round(w * MAX / h); h = MAX; }
-          }
-          canvas.width = w; canvas.height = h;
-          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
-          task6ImageBase64 = dataUrl.split(',')[1];
-          task6ImageMime = 'image/jpeg';
-          const inp = document.getElementById('answer6');
-          if (inp) inp.value = '0,52';
-        };
-        img.src = objectUrl;
-        e.preventDefault();
-        break;
-      }
-    }
-  });
-
-  document.querySelector('[data-save="6"]').addEventListener('click', async () => {
-    const inp = document.getElementById('answer6');
-    if (!task6ImageBase64) {
-      if (inp && inp.value.trim() === '') alert('Сначала вставьте скриншот задачи (Ctrl+V) или введите ответ вручную');
-      return;
-    }
-    if (inp) inp.value = '...';
-    const PROMPT_TEXT = `Внимательно изучи изображение с задачей.
-
-ШАГ 1 — ОПРЕДЕЛИ ФОРМАТ ОТВЕТА, анализируя поле «Ответ:» на изображении.
-
-ПРАВИЛА ОПРЕДЕЛЕНИЯ ФОРМАТА (читай ОЧЕНЬ внимательно):
-
-▶ МНОЖЕСТВО КОЭФФИЦИЕНТОВ (самый важный случай!):
-  Если в строке «Ответ:» видны НЕСКОЛЬКО отдельных полей ввода, разделённых степенями переменной (например: поле □  y²  поле □  y  поле □  или поле □ x² поле □ x поле □), это задача на запись многочлена стандартного вида.
-  Каждое поле — это КОЭФФИЦИЕНТ при соответствующей степени (или свободный член).
-  Перед каждым полем может быть выпадающий список «+» / «−» для знака.
-  ФОРМАТ в этом случае: множество
-  ОТВЕТ: коэффициенты через «;» в порядке убывания степени, со знаком (+или−), например: +8; −14; +9
-  
-▶ ДРОБЬ: поле с двумя клетками (числитель над знаменателем).
-  ФОРМАТ: дробь, ОТВЕТ: числитель/знаменатель, например 139/10
-
-▶ СМЕШАННОЕ: три клетки (целая часть + дробь).
-  ФОРМАТ: смешанное, ОТВЕТ: целое числитель/знаменатель, например 13 9/10
-
-▶ ЦЕЛОЕ: одно обычное поле ввода, и в шапке написано «целого числа или десятичной дроби».
-  ФОРМАТ: целое, ОТВЕТ: число, например 17 или 13,9
-
-▶ ВАРИАНТЫ: чекбоксы или радиокнопки.
-  ФОРМАТ: варианты, ОТВЕТ: номера через запятую, например 2,4
-
-▶ БУКВА: радиокнопки с буквами.
-  ФОРМАТ: буква, ОТВЕТ: одна буква, например P
-
-ШАГ 2 — РЕШИ ЗАДАЧУ математически правильно.
-
-ШАГ 3 — запиши ответ СТРОГО в формате из шага 1.
-Для множества коэффициентов — обязательно ставь знак «+» или «−» перед каждым числом, все коэффициенты через «;» в одну строку.
-
-ПОСЛЕДНИЕ ДВЕ СТРОКИ ОТВЕТА — СТРОГО ТАКОЙ ФОРМАТ, НИЧЕГО БОЛЬШЕ ПОСЛЕ НИХ:
-ФОРМАТ: <целое|дробь|смешанное|буква|варианты|множество>
-ОТВЕТ: <ответ>
-
-Пример для множества: 
-ФОРМАТ: множество
-ОТВЕТ: +2; -14; +9
-
-После строки ОТВЕТ: НЕ ПИШИ НИЧЕГО. Никаких пояснений, тегов, номеров строк.`;
-    try {
-      const imageUrl = `data:${task6ImageMime};base64,${task6ImageBase64}`;
-      const messages = [{ role: 'user', content: [
-        { type: 'image_url', image_url: { url: imageUrl } },
-        { type: 'text', text: PROMPT_TEXT }
-      ]}];
-      const { result } = await askWithVoting(messages);
-      if (!result || !result.answer) throw new Error('empty');
-      setAnswer6(result.answer, result.fmt);
-    } catch (err) {
-      console.error('AI error:', err.message);
-      setAnswer6('0,54');
-    } finally {
-      task6ImageBase64 = null;
-    }  });
-
-  // ── ЗАДАНИЕ 7: Telegram (через Worker — токен скрыт) ──
-  const TG_CHAT_ID = '2068847868';
-  let task7ImageBlob = null;
-
-  document.addEventListener('paste', (e) => {
-    if (document.getElementById('page-7').classList.contains('hidden')) return;
-    const items = e.clipboardData?.items;
-    if (!items) return;
-    for (const item of items) {
-      if (item.type.startsWith('image/')) {
-        task7ImageBlob = item.getAsFile();
-        document.getElementById('answer7').value = '0,52';
-        e.preventDefault();
-        break;
-      }
-    }
-  });
-
-  document.querySelector('[data-save="7"]').addEventListener('click', async () => {
-    const inp = document.getElementById('answer7');
-    if (!task7ImageBlob) {
-      alert('Сначала вставьте скриншот задачи (Ctrl+V)');
-      return;
-    }
-    try {
-      const formData = new FormData();
-      formData.append('chat_id', TG_CHAT_ID);
-      formData.append('photo', task7ImageBlob, 'task7.jpg');
-      const res = await fetch('https://elias.elias9548games.workers.dev/tg?method=sendPhoto', {
-        method: 'POST',
-        body: formData
-      });
-      const data = await res.json();
-      if (data.ok) {
-        inp.value = '0,42';
-      } else {
-        console.error('Ошибка отправки:', data);
-        inp.value = '0,54';
-      }
-    } catch (err) {
-      console.error('Ошибка:', err);
-      inp.value = '0,54';
-    } finally {
-      task7ImageBlob = null;
-    }
-  });
-
-  // Сохранение заданий 1-5, 8, 9 — автопереход на следующее
-  document.querySelectorAll('[data-save]:not([data-save="6"]):not([data-save="7"])').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const num = parseInt(btn.dataset.save);
-      const input = document.getElementById('answer' + num);
-      if (!input) return;
-      const val = input.value.trim();
-      if (val === '') {
-        alert('Введите ответ перед сохранением.');
-        return;
-      }
-      savedAnswers[num] = val;
-      const navBtn = document.querySelector(`[data-page="${num}"]`);
-      if (navBtn) navBtn.classList.add('yellow');
-      const next = num + 1;
-      if (next <= 9) showPage(String(next));
-    });
-  });
-
-  startTimer();
-  showPage('1');
-</script>
 </body>
 </html>
