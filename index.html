@@ -1,399 +1,200 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Россия в XVII веке — конспект по истории</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<title>Контрольная работа по литературе</title>
 
-        body {
-            background: #e9edf2;
-            font-family: 'Inter', sans-serif;
-            color: #1e2a3e;
-            padding: 40px 20px;
-            line-height: 1.5;
-        }
+<style>
+body{
+    background:#fff;
+    color:#000;
+    font-family:Arial,sans-serif;
+    font-size:20pt;
+    line-height:1.6;
+    padding:25px;
+}
 
-        .document-container {
-            max-width: 1100px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 32px;
-            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.15);
-            overflow: hidden;
-            padding: 48px 56px;
-            transition: all 0.2s;
-        }
+.question{
+    font-size:24pt; /* +20% */
+    font-weight:normal;
+    margin-top:28px;
+    margin-bottom:12px;
+}
 
-        /* типографика */
-        h1 {
-            font-size: 2.6rem;
-            font-weight: 700;
-            letter-spacing: -0.01em;
-            background: linear-gradient(135deg, #1e3c4c, #2b5c6f);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            margin-bottom: 0.3rem;
-            border-left: 6px solid #b63e2c;
-            padding-left: 24px;
-        }
+.answer{
+    margin-left:28px;
+    font-size:20pt;
+    font-weight:normal;
+}
 
-        .subhead {
-            font-size: 1rem;
-            color: #5e7a93;
-            margin-bottom: 2.2rem;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 1rem;
-            margin-top: -0.2rem;
-            padding-left: 30px;
-        }
-
-        h2 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin-top: 2.2rem;
-            margin-bottom: 1rem;
-            color: #1f4e6e;
-            border-left: 4px solid #c2412c;
-            padding-left: 20px;
-            letter-spacing: -0.2px;
-        }
-
-        h3 {
-            font-size: 1.35rem;
-            font-weight: 600;
-            margin: 1.5rem 0 0.75rem 0;
-            color: #2c3e50;
-            display: inline-block;
-            background: #f1f5f9;
-            padding: 0.2rem 0.8rem;
-            border-radius: 40px;
-        }
-
-        .date-badge {
-            font-family: monospace;
-            font-weight: 500;
-            background: #f0f2f5;
-            display: inline-block;
-            padding: 0.2rem 0.7rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            color: #a53f2c;
-        }
-
-        p {
-            margin-bottom: 1rem;
-            font-size: 1rem;
-            color: #1f2f3c;
-        }
-
-        /* таблицы */
-        .table-wrapper {
-            overflow-x: auto;
-            margin: 1.6rem 0;
-            border-radius: 18px;
-            border: 1px solid #e2edf2;
-            background: #ffffff;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-        }
-
-        th {
-            background: #eef3fa;
-            padding: 12px 16px;
-            text-align: left;
-            font-weight: 600;
-            color: #1e4a6b;
-            border-bottom: 1px solid #cbdde6;
-        }
-
-        td {
-            padding: 10px 16px;
-            border-bottom: 1px solid #e9edf2;
-            vertical-align: top;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        .highlight {
-            background-color: #fff7e5;
-            border-left: 3px solid #e6a017;
-            padding: 0.2rem 0.4rem;
-            font-weight: 500;
-        }
-
-        /* карточки для личностей */
-        .person-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-
-        .person-card {
-            background: #fafcff;
-            border: 1px solid #e2edf2;
-            border-radius: 20px;
-            padding: 1rem 1.2rem;
-            transition: 0.1s;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
-        }
-
-        .person-card strong {
-            font-size: 1.1rem;
-            color: #b1422e;
-            display: block;
-            border-left: 3px solid #b1422e;
-            padding-left: 10px;
-            margin-bottom: 8px;
-        }
-
-        /* --- ХРОНОЛОГИЯ: даты жирные + увеличены, но аккуратно (уменьшены на 30% от предыдущей версии) --- */
-        .timeline-list {
-            list-style: none;
-            padding: 0;
-            margin: 1.5rem 0;
-        }
-
-        .timeline-list li {
-            padding: 12px 0;
-            border-bottom: 1px dashed #e2e8f0;
-            display: flex;
-            gap: 20px;
-            align-items: baseline;
-            flex-wrap: wrap;
-        }
-
-        /* Размер дат: 1.4rem (было 2rem → уменьшили на 30%, при этом остаются жирными и читаемыми) */
-        .timeline-year {
-            font-weight: 800;
-            font-size: 1.4rem;
-            line-height: 1.3;
-            color: #b1422e;
-            background: #fef5ef;
-            padding: 0.1rem 0.7rem;
-            border-radius: 24px;
-            display: inline-block;
-            min-width: 110px;
-            text-align: center;
-            letter-spacing: 0.3px;
-            font-family: 'Inter', monospace;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-            transition: all 0.1s;
-        }
-
-        .timeline-desc {
-            font-size: 1rem;
-            color: #1f2f3c;
-            flex: 1;
-            padding-top: 4px;
-            font-weight: 450;
-        }
-
-        @media (max-width: 680px) {
-            .timeline-year {
-                font-size: 1.2rem;
-                min-width: 90px;
-                padding: 0.1rem 0.5rem;
-            }
-            .timeline-list li {
-                flex-direction: column;
-                gap: 8px;
-            }
-        }
-
-        .footer-note {
-            margin-top: 3rem;
-            background: #f1f6fa;
-            padding: 1.2rem 2rem;
-            border-radius: 28px;
-            font-size: 0.85rem;
-            text-align: center;
-            color: #2c5f7a;
-            border: 1px solid #dae9f2;
-        }
-
-        hr {
-            margin: 2rem 0;
-            border: none;
-            height: 2px;
-            background: linear-gradient(90deg, #cbdde6, transparent);
-        }
-
-        @media (max-width: 700px) {
-            .document-container {
-                padding: 24px 20px;
-            }
-            h1 {
-                font-size: 1.9rem;
-                padding-left: 16px;
-            }
-            h2 {
-                font-size: 1.5rem;
-            }
-        }
-        .small-caps {
-            font-weight: 500;
-            color: #2b5f6f;
-        }
-        .badge-icon {
-            background: #c2412c10;
-            color: #b1422e;
-            border-radius: 20px;
-            padding: 2px 8px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-    </style>
+.correct{
+    font-weight:bold;
+    font-size:20pt;
+}
+</style>
 </head>
+
 <body>
-<div class="document-container">
-    <h1>Россия в XVII веке</h1>
-    <div class="subhead">1598–1689 · Смута, раскол, бунташный век и первые Романовы</div>
 
-    <!-- 1. Смутное время -->
-    <h2>📜 1. Смутное время (1598–1613)</h2>
-    <p>Пресечение династии Рюриковичей со смертью Фёдора Иоанновича (1598). За 15 лет сменилось несколько претендентов на трон, польская и шведская интервенции. <strong>Итог:</strong> Земский собор 1613 г. и избрание Михаила Романова — основателя новой династии.</p>
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr><th>Дата</th><th>Событие</th></tr>
-            </thead>
-            <tbody>
-                <tr><td>1598</td><td>Смерть Фёдора Иоанновича. Власть взял Борис Годунов</td></tr>
-                <tr><td>1605</td><td>Смерть Годунова. Появление Лжедмитрия I</td></tr>
-                <tr><td>1606–1610</td><td>Правление Василия Шуйского. Восстание Болотникова</td></tr>
-                <tr><td>1610–1612</td><td>«Семибоярщина». Польские войска в Москве</td></tr>
-                <tr><td>1611–1612</td><td>Первое и Второе ополчения. Минин и Пожарский освобождают Москву</td></tr>
-                <tr><td>1613</td><td>Земский собор. Избрание Михаила Романова царём</td></tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- 2. Церковный раскол -->
-    <h2>⛪ 2. Церковный раскол и патриарх Никон</h2>
-    <p><strong>Причина:</strong> унификация церковных книг и обрядов по греческим образцам. <strong>Цели:</strong> укрепить авторитет церкви и подготовить объединение с Украиной.</p>
-    <h3>Реформы Никона (1653–1656)</h3>
-    <ul style="margin-left: 1.8rem; margin-bottom: 1rem;">
-        <li>Крещение тремя перстами вместо двух</li>
-        <li>Поясные поклоны вместо земных</li>
-        <li>Троекратное «аллилуйя» вместо двукратного</li>
-        <li>Крестный ход против солнца (против часовой стрелки)</li>
-        <li>Исправление богослужебных книг по греческим образцам</li>
-    </ul>
-    <p><span class="badge-icon">⚔️ Соловецкое сидение (1668–1676)</span> — монастырь 8 лет держал осаду царских войск, отказавшись принять новые книги; крупнейшее вооружённое сопротивление старообрядцев.</p>
-    <div class="table-wrapper">
-        <table>
-            <thead><tr><th>Никон</th><th>Аввакум</th></tr></thead>
-            <tbody><tr><td>Осуждён на Большом Московском соборе (1666–1667). Сослан в Ферапонтов монастырь, лишён патриаршества.</td><td>Фанатичный защитник «старины». Сослан в Пустозерск, 14 лет в земляной тюрьме. В 1682 г. сожжён в срубе.</td></tr></tbody>
-        </table>
-    </div>
-
-    <!-- 3. Бунташный век -->
-    <h2>🔥 3. «Бунташный век» — восстания XVII века</h2>
-    <div class="table-wrapper">
-        <table>
-            <thead><tr><th>Восстание</th><th>Год</th><th>Причина</th><th>Итог</th></tr></thead>
-            <tbody>
-                <tr><td>Соляной бунт</td><td>1648</td><td>Налог на соль, произвол бояр</td><td>Земский собор → Соборное уложение 1649 г.</td></tr>
-                <tr><td>Медный бунт</td><td>1662</td><td>Обесценивание медных денег (инфляция)</td><td>Медные деньги отменены</td></tr>
-                <tr><td>Псковское восстание</td><td>1650</td><td>Дороговизна хлеба</td><td>Подавлено переговорами</td></tr>
-                <tr><td>Восстание Степана Разина</td><td>1670–1671</td><td>Крепостнический гнёт, казацкая вольница</td><td>Казнён в 1671 г.</td></tr>
-            </tbody>
-        </table>
-    </div>
-    <p><strong>Соборное уложение 1649 г.</strong> (при Алексее Михайловиче) — окончательно закрепостило крестьян, установив бессрочный сыск беглых. Действовало до 1832 г.</p>
-
-    <!-- 4. Внешняя политика -->
-    <h2>⚔️ 4. Внешняя политика XVII века</h2>
-    <h3>Смоленская война (1632–1634)</h3>
-    <p>Командующий Михаил Шеин. <strong>Поляновский мир (1634):</strong> Россия не вернула Смоленск, но польский король Владислав IV отказался от претензий на русский престол — легитимизация Романовых.</p>
-    <h3>Русско-польская война (1654–1667)</h3>
-    <p><strong>Повод:</strong> Переяславская Рада 1654 г. — решение Гетманщины перейти под протекторат России.<br>
-    <strong>Андрусовское перемирие 1667 г.:</strong> Россия получила Смоленск и Левобережную Украину. Киев временно (позже выкуплен по «Вечному миру» 1686 г.)</p>
-    <h3>Русско-шведская война (1656–1658)</h3>
-    <p>Попытка выхода к Балтийскому морю. <strong>Кардисский мир (1661):</strong> Россия вернула все захваченные территории. Выход к Балтике будет достигнут лишь при Петре I.</p>
-    <h3>Русско-турецкая война (1676–1681)</h3>
-    <p>Чигиринские походы (1677, 1678) — две кампании за контроль над Правобережной Украиной.</p>
-
-    <!-- 5. Ключевые личности -->
-    <h2>👤 5. Ключевые личности эпохи</h2>
-    <div class="person-grid">
-        <div class="person-card"><strong>Михаил Романов (1613–1645)</strong> Первый царь из династии Романовых. Восстановил государство после Смуты.</div>
-        <div class="person-card"><strong>Алексей Михайлович «Тишайший» (1645–1676)</strong> Соборное уложение 1649 г., церковный раскол, русско-польская война.</div>
-        <div class="person-card"><strong>Фёдор Алексеевич (1676–1682)</strong> Отменил местничество (1682) — важная реформа, позволившая назначать людей по способностям.</div>
-        <div class="person-card"><strong>Патриарх Никон</strong> Провёл церковную реформу, претендовал на равенство церковной и светской власти.</div>
-        <div class="person-card"><strong>А. Л. Ордин-Нащокин</strong> Глава Посольского приказа. Автор Новоторгового устава 1667 г. — политика протекционизма.</div>
-        <div class="person-card"><strong>Богдан Хмельницкий</strong> Гетман Войска Запорожского. Восстание против Речи Посполитой (1648). Переяславская Рада.</div>
-        <div class="person-card"><strong>Протопоп Аввакум</strong> Лидер старообрядчества. Автор «Жития» — первой русской автобиографии.</div>
-        <div class="person-card"><strong>Семён Дежнёв</strong> Казачий атаман. В 1648 г. прошёл пролив между Азией и Америкой.</div>
-        <div class="person-card"><strong>Ерофей Хабаров</strong> Землепроходец, освоивший Приамурье (1649–1653). Основал ряд острогов.</div>
-    </div>
-
-    <!-- 6. Культура, наука, экономика, Сибирь -->
-    <h2>🎨 6. Культура, экономика и освоение Сибири</h2>
-    <h3>Культура</h3>
-    <p>• <strong>Симон Ушаков</strong> — главный иконописец века, переход к «живоподобию» (икона «Спас Нерукотворный»).<br>
-    • <strong>Парсуна</strong> — портрет в иконописной технике, переход к новому искусству.<br>
-    • Первый придворный театр (1672, Алексей Михайлович).<br>
-    • Протопоп Аввакум написал «Житие» в Пустозерской ссылке.</p>
-    <h3>Экономика</h3>
-    <p>• Первые мануфактуры — Николо-Павловский и Тульский железоделательные заводы.<br>
-    • Всероссийский рынок, ярмарки (Макарьевская, Ирбитская).<br>
-    • <strong>Новоторговый устав 1667 г.</strong> (Ордин-Нащокин) — протекционизм: иностранцы не могли торговать в розницу внутри страны.</p>
-    <h3>Освоение Сибири</h3>
-    <p>• 1648 — Дежнёв проходит пролив между Азией и Америкой.<br>
-    • 1649–1653 — Хабаров исследует Приамурье.<br>
-    • Основание Иркутска (1661), Нерчинска (1658).<br>
-    • <strong>Нерчинский договор 1689 г.</strong> с Китаем — первый международный договор России с восточным государством.</p>
-
-    <!-- 7. Россия в контексте мировой истории -->
-    <h2>🌍 7. Россия в контексте мировой истории</h2>
-    <p>• <strong>1618–1648</strong> — Тридцатилетняя война, ослабила Польшу и Швецию — конкурентов России.<br>
-    • <strong>1649</strong> — Россия прекратила торговлю с Англией в знак протеста («убили своего короля»).<br>
-    • <strong>1660–1680-е</strong> — Турция наступает на Польшу и Украину → Чигиринские походы 1677–1678 гг.<br>
-    • <strong>1686</strong> — «Вечный мир» с Польшей: Россия окончательно получает Киев.</p>
-
-    <!-- 8. Хронологическая шпаргалка — даты жирные и увеличены на комфортные 40% (1.4rem против 1rem) -->
-    <h2>📅 8. Хронологическая шпаргалка</h2>
-    <ul class="timeline-list">
-        <li><span class="timeline-year">1613</span><span class="timeline-desc">Земский собор. Избрание Михаила Романова — начало династии Романовых</span></li>
-        <li><span class="timeline-year">1632–1634</span><span class="timeline-desc">Смоленская война. Поляновский мир: Владислав IV отказался от претензий</span></li>
-        <li><span class="timeline-year">1645</span><span class="timeline-desc">На престол вступает Алексей Михайлович «Тишайший»</span></li>
-        <li><span class="timeline-year">1648</span><span class="timeline-desc">Соляной бунт. Начало восстания Хмельницкого. Дежнёв открывает пролив</span></li>
-        <li><span class="timeline-year">1649</span><span class="timeline-desc">Соборное уложение — окончательное закрепощение крестьян</span></li>
-        <li><span class="timeline-year">1653–1656</span><span class="timeline-desc">Реформы патриарха Никона → начало церковного раскола</span></li>
-        <li><span class="timeline-year">1654</span><span class="timeline-desc">Переяславская Рада — Гетманщина под протекторат России</span></li>
-        <li><span class="timeline-year">1654–1667</span><span class="timeline-desc">Русско-польская война. Андрусовское перемирие: Смоленск и Левобережная Украина</span></li>
-        <li><span class="timeline-year">1662</span><span class="timeline-desc">Медный бунт</span></li>
-        <li><span class="timeline-year">1666–1667</span><span class="timeline-desc">Большой Московский собор — осуждение Никона, раскол закреплён</span></li>
-        <li><span class="timeline-year">1667</span><span class="timeline-desc">Новоторговый устав Ордина-Нащокина</span></li>
-        <li><span class="timeline-year">1668–1676</span><span class="timeline-desc">Соловецкое сидение — 8-летняя осада монастыря</span></li>
-        <li><span class="timeline-year">1670–1671</span><span class="timeline-desc">Восстание Степана Разина</span></li>
-        <li><span class="timeline-year">1672</span><span class="timeline-desc">Основание придворного театра при Алексее Михайловиче</span></li>
-        <li><span class="timeline-year">1676–1681</span><span class="timeline-desc">Русско-турецкая война. Чигиринские походы</span></li>
-        <li><span class="timeline-year">1682</span><span class="timeline-desc">Сожжение Аввакума. Отмена местничества. Начало правления Петра I (совместно с Иваном V)</span></li>
-        <li><span class="timeline-year">1686</span><span class="timeline-desc">«Вечный мир» с Польшей — Россия окончательно получает Киев</span></li>
-    </ul>
-
-    <hr>
-    <div class="footer-note">
-        📖 Конспект охватывает период от Смутного времени до конца XVII века.<br>
-        Ключевые темы: церковный раскол, внешняя политика, народные восстания, экономические реформы, освоение Сибири и культурные изменения.
-    </div>
+<div class="question">
+1. Выберите (два) правильных утверждения. Рассказ – это…
 </div>
+<div class="answer"><span class="correct">а) эпическое произведение небольшого объёма;</span></div>
+<div class="answer">б) драматическое произведение;</div>
+<div class="answer"><span class="correct">в) для рассказа характерна одна сюжетная линия, небольшой объём;</span></div>
+<div class="answer">г) в рассказе много действующих лиц, много событий.</div>
+
+<div class="question">
+2. К какому жанру относится произведение А. П. Чехова «Злоумышленник»?
+</div>
+<div class="answer">а) новелла</div>
+<div class="answer"><span class="correct">б) рассказ</span></div>
+<div class="answer">в) стихотворение</div>
+<div class="answer">г) роман</div>
+
+<div class="question">
+3. Какие темы поднимаются в рассказе А. П. Платонова «Юшка»?
+</div>
+<div class="answer"><span class="correct">а) добро и зло</span></div>
+<div class="answer"><span class="correct">б) милосердие</span></div>
+<div class="answer">в) отношение к железному</div>
+<div class="answer"><span class="correct">г) смысл жизни</span></div>
+
+<div class="question">
+4. Кем Дмитрий приходится Чудику в произведении В.М. Шукшина «Чудик»:
+</div>
+<div class="answer"><span class="correct">а) братом</span></div>
+<div class="answer">б) племянником</div>
+<div class="answer">в) отцом</div>
+<div class="answer">г) дядей</div>
+
+<div class="question">
+5. У героя рассказа В.М. Шукшина «Чудик» были особенности:
+</div>
+<div class="answer"><span class="correct">а) он любил чудачить</span></div>
+<div class="answer">б) он много пил</div>
+<div class="answer"><span class="correct">в) с ним постоянно что-нибудь случалось</span></div>
+<div class="answer">г) любит посмеяться</div>
+
+<div class="question">
+6. Что означает слово «огорчить»?
+</div>
+<div class="answer">а) рассмеяться</div>
+<div class="answer"><span class="correct">б) опечалить</span></div>
+<div class="answer">в) сильно озадачить, поставить в тупик</div>
+
+<div class="question">
+7. Сопоставьте тропы и примеры
+</div>
+<div class="answer">а) метафора — <span class="correct">4. О тебе мне шептали кусты…</span></div>
+<div class="answer">б) эпитет — <span class="correct">3. В белоснежных полях под Москвой.</span></div>
+<div class="answer">в) сравнение — <span class="correct">1. На полях смола, как слеза…</span></div>
+<div class="answer">г) олицетворение — <span class="correct">2. И поёт мне в землянке гармонь.</span></div>
+
+<div class="question">
+8. Фантастическим в произведении Ф. А. Абрамова «О чём плачут лошади» является…
+</div>
+<div class="answer"><span class="correct">а) умение лошадей говорить</span></div>
+<div class="answer">б) место действия</div>
+<div class="answer">в) время, в котором живут герои</div>
+<div class="answer">г) суперсила рассказчика</div>
+
+<div class="question">
+9. Что такое сатира:
+</div>
+<div class="answer"><span class="correct">А) Это художественное произведение, в котором осуждаются пороки общества и человека.</span></div>
+<div class="answer">Б) Это произведение, в которых отражается комическое, смешное в жизни.</div>
+<div class="answer">В) Это произведение, в котором изображается судьба человека.</div>
+
+<div class="question">
+10. Лирические произведения – это произведения
+</div>
+<div class="answer">а) для постановки на сцене</div>
+<div class="answer">б) о событиях, происходящих с героями</div>
+<div class="answer"><span class="correct">в) о чувствах, мыслях, переживаниях</span></div>
+
+<div class="question">
+11. Соотнесите автора и его произведение
+</div>
+<div class="answer">1. А.А. Сурков — <span class="correct">б) "Бьётся в тесной печурке огонь…"</span></div>
+<div class="answer">2. М.В. Исаковский — <span class="correct">а) "Катюша", "Враги сожгли родную хату"</span></div>
+<div class="answer">3. Б.Ш. Окуджава — <span class="correct">г) "Песенка о пехоте"</span></div>
+<div class="answer">4. К.М. Симонов — <span class="correct">в) "Жди меня, и я вернусь…"</span></div>
+
+<div class="question">
+12. Когда происходят события, описанные в рассказе В.П. Астафьева "Фотография, на которой меня нет"?
+</div>
+<div class="answer">а) в годы Октябрьской революции</div>
+<div class="answer"><span class="correct">б) в предвоенные годы</span></div>
+<div class="answer">в) в годы Великой Отечественной войны</div>
+<div class="answer">г) в послевоенные годы</div>
+
+<div class="question">
+13. Какие лексические средства языка использует В.В. Маяковский?
+</div>
+<div class="answer"><span class="correct">Олицетворение, неологизмы, разговорная лексика</span></div>
+
+<div class="question">
+14. Назовите автора, художественное произведение, героя.
+</div>
+<div class="answer"><span class="correct">Ф. А. Абрамов, «О чём плачут лошади», Рыжуха</span></div>
+
+<div class="question">
+15. Назовите автора, художественное произведение, героя.
+</div>
+<div class="answer"><span class="correct">В. М. Шукшин, «Чудик», Чудик (Василий Князев)</span></div>
+
+<div class="question">
+16. Назовите автора, художественное произведение, героя.
+</div>
+<div class="answer"><span class="correct">В. М. Шукшин, «Чудик», Чудик</span></div>
+
+<div class="question">
+17. К какому жанру отнёс А. Грин «Алые паруса»?
+</div>
+<div class="answer">а) волшебная сказка</div>
+<div class="answer">б) сказка-быль</div>
+<div class="answer">в) сказочная история</div>
+<div class="answer"><span class="correct">г) повесть-феерия</span></div>
+<div class="answer">д) роман</div>
+
+<div class="question">
+18. Кто предсказал Ассоль судьбу?
+</div>
+<div class="answer">а) гадалка</div>
+<div class="answer">б) отец</div>
+<div class="answer"><span class="correct">в) старик Эгль</span></div>
+<div class="answer">г) увидела во сне</div>
+<div class="answer">д) соседка</div>
+
+<div class="question">
+19. Что отвечал Лонгрен на вопрос Ассоль о том, почему их не любят?
+</div>
+<div class="answer">а) «Они ничего не понимают»</div>
+<div class="answer">б) «Они не знают правды»</div>
+<div class="answer"><span class="correct">в) «Надо уметь любить, а этого-то они и не умеют»</span></div>
+
+<div class="question">
+20. К какому жанру можно отнести отрывок из рассказа «Старуха Изергиль» «Данко»?
+</div>
+<div class="answer">а) сказка</div>
+<div class="answer"><span class="correct">б) легенда</span></div>
+<div class="answer">в) повесть</div>
+<div class="answer">г) басня</div>
+
+<div class="question">
+21. Как поступил человек, заметивший смерть Данко:
+</div>
+<div class="answer"><span class="correct">а) наступил ногой на его сердце</span></div>
+<div class="answer">б) упал на колени и расплакался</div>
+<div class="answer">в) закричал, чтобы все узнали об этом</div>
+
+<div class="question">
+22. Что произошло после того, как весёлый прохожий, знавший Юшку, посмеялся над ним:
+</div>
+<div class="answer">а) Юшка промолчал</div>
+<div class="answer"><span class="correct">б) Юшка впервые осерчал</span></div>
+<div class="answer">в) Юшка рассмеялся</div>
+
 </body>
 </html>
