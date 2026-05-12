@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Домашняя работа – теория вероятностей</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+    background-color: #f5f7fa;
+    color: #1e1e1e;
+  }
+  h1 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 30px;
+  }
+  .task {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  .task h3 {
+    margin-top: 0;
+    color: #2c3e50;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 10px;
+  }
+  table {
+    border-collapse: collapse;
+    margin: 15px auto;
+    font-size: 16px;
+    text-align: center;
+  }
+  td, th {
+    width: 36px;
+    height: 36px;
+    border: 1px solid #aaa;
+  }
+  th {
+    background-color: #ecf0f1;
+    font-weight: bold;
+  }
+  .highlight {
+    background-color: #ffe0b2;
+  }
+  .highlight2 {
+    background-color: #c8e6c9;
+  }
+  .highlight3 {
+    background-color: #bbdefb;
+  }
+  .win {
+    background-color: #a5d6a7;
+  }
+  .lose {
+    background-color: #ef9a9a;
+  }
+  .draw {
+    background-color: #ffe082;
+  }
+  .grid {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .total-row {
+    font-weight: bold;
+  }
+  .answer {
+    font-weight: bold;
+    color: #d35400;
+    font-size: 18px;
+    margin-top: 10px;
+  }
+  .explanation {
+    margin: 10px 0;
+  }
+  .pair-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin: 10px 0;
+  }
+  .pair {
+    background: #f0f0f0;
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-family: monospace;
+    border: 1px solid #ccc;
+  }
+  .pair.fav {
+    background: #c8e6c9;
+    border-color: #388e3c;
+  }
+</style>
+</head>
+<body>
+<h1>🎲 Домашняя работа по теории вероятностей 🎲</h1>
+<p>Решения подготовлены с подробными таблицами и объяснениями.</p>
+
+<!-- Задача 1 -->
+<div class="task">
+  <h3>1. Две игральные кости. Вероятность, что сумма равна 6 (округлить до сотых).</h3>
+  <p>Всего возможных исходов: 6 × 6 = 36. Построим таблицу сумм двух костей.</p>
+  <div class="grid">
+    <table>
+      <tr><th>+</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr>
+      <tr><th>1</th><td>2</td><td>3</td><td>4</td><td>5</td><td class="highlight">6</td><td>7</td></tr>
+      <tr><th>2</th><td>3</td><td>4</td><td>5</td><td class="highlight">6</td><td>7</td><td>8</td></tr>
+      <tr><th>3</th><td>4</td><td>5</td><td class="highlight">6</td><td>7</td><td>8</td><td>9</td></tr>
+      <tr><th>4</th><td>5</td><td class="highlight">6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr>
+      <tr><th>5</th><td class="highlight">6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td></tr>
+      <tr><th>6</th><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td></tr>
+    </table>
+  </div>
+  <p class="explanation">Жёлтым выделены ячейки, где сумма равна 6. Всего таких ячеек: 5. <br>Сами пары: (1,5), (2,4), (3,3), (4,2), (5,1).</p>
+  <p>Вероятность = 5 / 36 ≈ 0,13888... ≈ <span class="answer">0,14</span></p>
+</div>
+
+<!-- Задача 2 -->
+<div class="task">
+  <h3>2. Вероятность, что сумма равна 3 (округлить до сотых).</h3>
+  <p>Снова используем таблицу сумм, но выделим сумму 3.</p>
+  <div class="grid">
+    <table>
+      <tr><th>+</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr>
+      <tr><th>1</th><td>2</td><td class="highlight2">3</td><td>4</td><td>5</td><td>6</td><td>7</td></tr>
+      <tr><th>2</th><td class="highlight2">3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td></tr>
+      <tr><th>3</th><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>
+      <tr><th>4</th><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr>
+      <tr><th>5</th><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td></tr>
+      <tr><th>6</th><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td></tr>
+    </table>
+  </div>
+  <p class="explanation">Зелёные ячейки – сумма 3. Их две: (1,2) и (2,1).</p>
+  <p>Вероятность = 2 / 36 = 1/18 ≈ 0,05555... ≈ <span class="answer">0,06</span></p>
+</div>
+
+<!-- Задача 3 -->
+<div class="task">
+  <h3>3. Вероятность, что сумма более 10 очков (округлить до сотых).</h3>
+  <p>Более 10 – это 11 или 12. Выделим их в таблице.</p>
+  <div class="grid">
+    <table>
+      <tr><th>+</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr>
+      <tr><th>1</th><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td></tr>
+      <tr><th>2</th><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td></tr>
+      <tr><th>3</th><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>
+      <tr><th>4</th><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr>
+      <tr><th>5</th><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td class="highlight3">11</td></tr>
+      <tr><th>6</th><td>7</td><td>8</td><td>9</td><td>10</td><td class="highlight3">11</td><td class="highlight3">12</td></tr>
+    </table>
+  </div>
+  <p class="explanation">Голубые ячейки с суммой 11 или 12. Их три: (5,6), (6,5), (6,6).</p>
+  <p>Вероятность = 3 / 36 = 1/12 ≈ 0,08333... ≈ <span class="answer">0,08</span></p>
+</div>
+
+<!-- Задача 4 -->
+<div class="task">
+  <h3>4. Люда дважды бросает кубик. Сумма = 9. Вероятность, что при одном из бросков выпало 5.</h3>
+  <p>Сначала выпишем все пары бросков, дающие сумму 9. Их всего 4:</p>
+  <div class="pair-list">
+    <span class="pair">(3,6)</span>
+    <span class="pair fav">(4,5)</span>
+    <span class="pair fav">(5,4)</span>
+    <span class="pair">(6,3)</span>
+  </div>
+  <p>Зелёным выделены пары, где есть хотя бы одна пятёрка. Их две. <br>Всего возможных исходов при условии "сумма = 9" – 4. Благоприятных – 2.</p>
+  <p>Вероятность = 2 / 4 = 0,5 = <span class="answer">0,5</span> (или 0,50, если округлять до сотых, но 0,5 достаточно).</p>
+</div>
+
+<!-- Задача 5 -->
+<div class="task">
+  <h3>5. Саша дважды бросает кубик. Сумма = 6. Вероятность, что при одном из бросков выпало 1.</h3>
+  <p>Все пары с суммой 6:</p>
+  <div class="pair-list">
+    <span class="pair fav">(1,5)</span>
+    <span class="pair">(2,4)</span>
+    <span class="pair">(3,3)</span>
+    <span class="pair">(4,2)</span>
+    <span class="pair fav">(5,1)</span>
+  </div>
+  <p>Всего 5 исходов. Благоприятных (есть единица) – 2: (1,5) и (5,1).</p>
+  <p>Вероятность = 2 / 5 = 0,4 = <span class="answer">0,4</span></p>
+</div>
+
+<!-- Задача 6 -->
+<div class="task">
+  <h3>6. Аня дважды бросает кубик. Сумма = 5. Вероятность, что при первом броске выпало 3.</h3>
+  <p>Пары с суммой 5:</p>
+  <div class="pair-list">
+    <span class="pair">(1,4)</span>
+    <span class="pair">(2,3)</span>
+    <span class="pair fav">(3,2)</span>
+    <span class="pair">(4,1)</span>
+  </div>
+  <p>Всего 4 исхода. Условие «первый бросок = 3» выполняется только для пары (3,2).</p>
+  <p>Вероятность = 1 / 4 = 0,25 = <span class="answer">0,25</span></p>
+</div>
+
+<!-- Задача 7 -->
+<div class="task">
+  <h3>7. Наташа и Вика бросают по одной кости. Сумма = 8. Вероятность, что Наташа выиграла (т.е. у неё больше).</h3>
+  <p>Будем считать, что первое число – очки Наташи, второе – очки Вики. Выпишем все пары, дающие сумму 8:</p>
+  <div class="pair-list">
+    <span class="pair">(2,6)</span>
+    <span class="pair">(3,5)</span>
+    <span class="pair draw">(4,4)</span>
+    <span class="pair win">(5,3)</span>
+    <span class="pair win">(6,2)</span>
+  </div>
+  <p>Зелёный – Наташа выиграла (первое число > второго), жёлтый – ничья, красного нет (проигрыш). <br>Всего исходов: 5. Выигрыш Наташи: (5,3) и (6,2) — 2 исхода.</p>
+  <p>Вероятность = 2 / 5 = 0,4 = <span class="answer">0,4</span></p>
+</div>
+
+<!-- Задача 8 -->
+<div class="task">
+  <h3>8. Тоня и Нина бросают по одной кости. Сумма = 6. Вероятность, что Тоня проиграла (т.е. у Тони меньше).</h3>
+  <p>Аналогично: первое число – Тоня, второе – Нина. Пары с суммой 6:</p>
+  <div class="pair-list">
+    <span class="pair lose">(1,5)</span>
+    <span class="pair lose">(2,4)</span>
+    <span class="pair draw">(3,3)</span>
+    <span class="pair win">(4,2)</span>
+    <span class="pair win">(5,1)</span>
+  </div>
+  <p>Красный – Тоня проиграла (её число меньше). Это пары (1,5) и (2,4). Зелёный – выигрыш, жёлтый – ничья. <br>Всего исходов: 5. Проигрыш Тони – 2 исхода.</p>
+  <p>Вероятность = 2 / 5 = 0,4 = <span class="answer">0,4</span></p>
+</div>
+
+</body>
+</html>
