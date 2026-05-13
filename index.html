@@ -1,240 +1,712 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Домашняя работа – теория вероятностей</title>
-<style>
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    max-width: 900px;
-    margin: auto;
-    padding: 20px;
-    background-color: #f5f7fa;
-    color: #1e1e1e;
-  }
-  h1 {
-    text-align: center;
-    color: #2c3e50;
-    margin-bottom: 30px;
-  }
-  .task {
-    background: white;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 25px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  }
-  .task h3 {
-    margin-top: 0;
-    color: #2c3e50;
-    border-bottom: 1px solid #e0e0e0;
-    padding-bottom: 10px;
-  }
-  table {
-    border-collapse: collapse;
-    margin: 15px auto;
-    font-size: 16px;
-    text-align: center;
-  }
-  td, th {
-    width: 36px;
-    height: 36px;
-    border: 1px solid #aaa;
-  }
-  th {
-    background-color: #ecf0f1;
-    font-weight: bold;
-  }
-  .highlight {
-    background-color: #ffe0b2;
-  }
-  .highlight2 {
-    background-color: #c8e6c9;
-  }
-  .highlight3 {
-    background-color: #bbdefb;
-  }
-  .win {
-    background-color: #a5d6a7;
-  }
-  .lose {
-    background-color: #ef9a9a;
-  }
-  .draw {
-    background-color: #ffe082;
-  }
-  .grid {
-    display: flex;
-    gap: 30px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .total-row {
-    font-weight: bold;
-  }
-  .answer {
-    font-weight: bold;
-    color: #d35400;
-    font-size: 18px;
-    margin-top: 10px;
-  }
-  .explanation {
-    margin: 10px 0;
-  }
-  .pair-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    margin: 10px 0;
-  }
-  .pair {
-    background: #f0f0f0;
-    border-radius: 6px;
-    padding: 4px 12px;
-    font-family: monospace;
-    border: 1px solid #ccc;
-  }
-  .pair.fav {
-    background: #c8e6c9;
-    border-color: #388e3c;
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>География 7 класс · Годовая контрольная</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #fafafa;
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      line-height: 1.55;
+      color: #1a1a1a;
+      padding: 20px 14px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      max-width: 520px;
+      width: 100%;
+    }
+
+    /* заголовок */
+    .header {
+      margin-bottom: 6px;
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      font-weight: 650;
+      letter-spacing: -0.4px;
+      color: #0f0f0f;
+      line-height: 1.2;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header h1 .dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: #2c2c2c;
+      border-radius: 10px;
+      margin-right: 2px;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      font-weight: 450;
+      color: #4a4a4a;
+      letter-spacing: 0.2px;
+      margin-bottom: 28px;
+      padding-left: 4px;
+      border-bottom: 1.5px solid #dcdcdc;
+      padding-bottom: 14px;
+    }
+
+    /* карточка */
+    .card {
+      background: #ffffff;
+      border: 1px solid #e2e2e2;
+      border-radius: 22px;
+      padding: 16px 18px 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.02), 0 1px 3px rgba(0,0,0,0.03);
+      transition: all 0.15s ease;
+    }
+
+    .card:active {
+      background: #f3f3f3;
+      border-color: #c7c7c7;
+    }
+
+    .num-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      background: #e8e8e8;
+      color: #1a1a1a;
+      border-radius: 30px;
+      padding: 3px 12px;
+      font-size: 0.8rem;
+      font-weight: 550;
+      letter-spacing: 0.2px;
+      display: inline-block;
+      border: 1px solid #d4d4d4;
+    }
+
+    .question {
+      font-weight: 550;
+      font-size: 1.02rem;
+      color: #111;
+      margin-bottom: 10px;
+      line-height: 1.4;
+      letter-spacing: -0.1px;
+    }
+
+    .answer {
+      font-size: 0.94rem;
+      color: #2a2a2a;
+      background: #f6f6f6;
+      border: 1px solid #dbdbdb;
+      border-radius: 16px;
+      padding: 12px 15px;
+      word-break: break-word;
+      line-height: 1.5;
+      font-weight: 430;
+      position: relative;
+    }
+
+    .answer::before {
+      content: "▹";
+      font-size: 0.9rem;
+      color: #4a4a4a;
+      margin-right: 6px;
+      font-weight: 500;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #d6d6d6;
+      margin: 28px 0 16px;
+      opacity: 0.6;
+    }
+
+    .footer-note {
+      font-size: 0.82rem;
+      color: #5e5e5e;
+      text-align: center;
+      margin-top: 6px;
+      letter-spacing: 0.3px;
+      font-weight: 450;
+    }
+
+    /* разделитель с номерами для удобства */
+    .section-gap {
+      margin-top: 4px;
+    }
+
+    @media (max-width: 400px) {
+      body {
+        padding: 14px 10px 30px;
+      }
+      .card {
+        padding: 14px 14px 14px;
+      }
+      .header h1 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
 </head>
 <body>
-<h1>🎲 Домашняя работа по теории вероятностей 🎲</h1>
-<p>Решения подготовлены с подробными таблицами и объяснениями.</p>
+  <div class="container">
+    <div class="header">
+      <h1>
+        <span class="dot"></span> География · 7 класс
+      </h1>
+      <div class="subtitle">Годовая контрольная работа</div>
+    </div>
 
-<!-- Задача 1 -->
-<div class="task">
-  <h3>1. Две игральные кости. Вероятность, что сумма равна 6 (округлить до сотых).</h3>
-  <p>Всего возможных исходов: 6 × 6 = 36. Построим таблицу сумм двух костей.</p>
-  <div class="grid">
-    <table>
-      <tr><th>+</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr>
-      <tr><th>1</th><td>2</td><td>3</td><td>4</td><td>5</td><td class="highlight">6</td><td>7</td></tr>
-      <tr><th>2</th><td>3</td><td>4</td><td>5</td><td class="highlight">6</td><td>7</td><td>8</td></tr>
-      <tr><th>3</th><td>4</td><td>5</td><td class="highlight">6</td><td>7</td><td>8</td><td>9</td></tr>
-      <tr><th>4</th><td>5</td><td class="highlight">6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr>
-      <tr><th>5</th><td class="highlight">6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td></tr>
-      <tr><th>6</th><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td></tr>
-    </table>
+    <!-- Вопросы 1–86 (те же) -->
+    <!-- 1 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">1</span></div>
+      <div class="question">С помощью чего связаны воедино все компоненты географической оболочки?</div>
+      <div class="answer">С помощью круговорота веществ и энергии (биологического, водного, воздушного).</div>
+    </div>
+    <!-- 2 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">2</span></div>
+      <div class="question">Какие бывают типы ритмов в географической оболочке?</div>
+      <div class="answer">Суточные и годовые (сезонные) ритмы.</div>
+    </div>
+    <!-- 3 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">3</span></div>
+      <div class="question">Что такое высотная поясность?</div>
+      <div class="answer">Закономерная смена природных зон с подъёмом в горы.</div>
+    </div>
+    <!-- 4 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">4</span></div>
+      <div class="question">Возраст Вселенной.</div>
+      <div class="answer">Около 13,8 миллиарда лет.</div>
+    </div>
+    <!-- 5 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">5</span></div>
+      <div class="question">Сколько геологических эр выделяют?</div>
+      <div class="answer">5 эр: Архейская, Протерозойская, Палеозойская, Мезозойская, Кайнозойская.</div>
+    </div>
+    <!-- 6 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">6</span></div>
+      <div class="question">Какая эра является самой первой?</div>
+      <div class="answer">Архейская.</div>
+    </div>
+    <!-- 7 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">7</span></div>
+      <div class="question">В какой геологической эре мы живём?</div>
+      <div class="answer">В Кайнозойской эре.</div>
+    </div>
+    <!-- 8 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">8</span></div>
+      <div class="question">Кто такой Альфред Вегенер?</div>
+      <div class="answer">Немецкий учёный, выдвинувший теорию дрейфа материков в начале XX века.</div>
+    </div>
+    <!-- 9 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">9</span></div>
+      <div class="question">Что такое литосферные плиты?</div>
+      <div class="answer">Огромные блоки земной коры, медленно движущиеся по поверхности астеносферы.</div>
+    </div>
+    <!-- 10 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">10</span></div>
+      <div class="question">Какие есть два типа литосферной коры?</div>
+      <div class="answer">Континентальная и океаническая.</div>
+    </div>
+    <!-- 11 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">11</span></div>
+      <div class="question">Что такое сейсмические пояса?</div>
+      <div class="answer">Зоны на границах литосферных плит, где чаще всего происходят землетрясения и извержения вулканов.</div>
+    </div>
+    <!-- 12 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">12</span></div>
+      <div class="question">Как переводится слово «сейсмос»?</div>
+      <div class="answer">«Землетрясение» (с греческого).</div>
+    </div>
+    <!-- 13 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">13</span></div>
+      <div class="question">В какой шкале измеряется энергия землетрясений?</div>
+      <div class="answer">По шкале Рихтера.</div>
+    </div>
+    <!-- 14 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">14</span></div>
+      <div class="question">Что располагается по периметру Тихого океана на границах литосферных плит?</div>
+      <div class="answer">«Огненное кольцо» — цепь вулканов и зон высокой сейсмической активности.</div>
+    </div>
+    <!-- 15 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">15</span></div>
+      <div class="question">Что такое платформа?</div>
+      <div class="answer">Древний устойчивый выровненный участок земной коры с кристаллическим фундаментом и осадочным чехлом.</div>
+    </div>
+    <!-- 16 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">16</span></div>
+      <div class="question">Что такое плита?</div>
+      <div class="answer">Платформа, покрытая мощным осадочным чехлом (фундамент скрыт).</div>
+    </div>
+    <!-- 17 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">17</span></div>
+      <div class="question">Что такое щит?</div>
+      <div class="answer">Участок платформы, где кристаллический фундамент выходит на поверхность.</div>
+    </div>
+    <!-- 18 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">18</span></div>
+      <div class="question">Что такое складчатые области?</div>
+      <div class="answer">Подвижные участки земной коры, где в результате столкновения плит образуются горы.</div>
+    </div>
+    <!-- 19 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">19</span></div>
+      <div class="question">Что такое рельеф?</div>
+      <div class="answer">Совокупность неровностей земной поверхности (горы, равнины, впадины).</div>
+    </div>
+    <!-- 20 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">20</span></div>
+      <div class="question">Как по-другому называются внутренние силы Земли?</div>
+      <div class="answer">Эндогенные силы.</div>
+    </div>
+    <!-- 21 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">21</span></div>
+      <div class="question">Как по-другому называются внешние силы Земли?</div>
+      <div class="answer">Экзогенные силы.</div>
+    </div>
+    <!-- 22 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">22</span></div>
+      <div class="question">Что относится к внешним силам?</div>
+      <div class="answer">Ветер, вода, ледники, выветривание, деятельность человека.</div>
+    </div>
+    <!-- 23 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">23</span></div>
+      <div class="question">Что относится к внутренним силам?</div>
+      <div class="answer">Землетрясения, вулканизм, движение литосферных плит.</div>
+    </div>
+    <!-- 24 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">24</span></div>
+      <div class="question">Что такое эрозия?</div>
+      <div class="answer">Разрушение горных пород и почвы под действием воды или ветра.</div>
+    </div>
+    <!-- 25 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">25</span></div>
+      <div class="question">Что такое выветривание?</div>
+      <div class="answer">Разрушение горных пород под воздействием температур, воды, ветра и живых организмов.</div>
+    </div>
+    <!-- 26 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">26</span></div>
+      <div class="question">Главный фактор, от которого зависит климат?</div>
+      <div class="answer">Географическая широта (угол падения солнечных лучей).</div>
+    </div>
+    <!-- 27 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">27</span></div>
+      <div class="question">Что происходит с радиацией с продвижением от экватора к полюсам?</div>
+      <div class="answer">Количество солнечной радиации уменьшается.</div>
+    </div>
+    <!-- 28 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">28</span></div>
+      <div class="question">От чего нагревается атмосфера?</div>
+      <div class="answer">От земной поверхности, которая нагревается солнечными лучами.</div>
+    </div>
+    <!-- 29 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">29</span></div>
+      <div class="question">На сколько опускается температура с подъёмом на каждый км?</div>
+      <div class="answer">На 6°C на каждый км.</div>
+    </div>
+    <!-- 30 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">30</span></div>
+      <div class="question">Линии, соединяющие одинаковую температуру на карте.</div>
+      <div class="answer">Изотермы.</div>
+    </div>
+    <!-- 31 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">31</span></div>
+      <div class="question">Линии, соединяющие одинаковое давление на карте.</div>
+      <div class="answer">Изобары.</div>
+    </div>
+    <!-- 32 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">32</span></div>
+      <div class="question">Линии, соединяющие одинаковую солёность на карте.</div>
+      <div class="answer">Изогалины.</div>
+    </div>
+    <!-- 33 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">33</span></div>
+      <div class="question">Что такое атмосферное давление?</div>
+      <div class="answer">Давление воздуха на земную поверхность (норма — 760 мм рт. ст.).</div>
+    </div>
+    <!-- 34 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">34</span></div>
+      <div class="question">На сколько понижается давление каждые 100 метров высоты?</div>
+      <div class="answer">На 10 мм рт. ст.</div>
+    </div>
+    <!-- 35 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">35</span></div>
+      <div class="question">Что такое ветер?</div>
+      <div class="answer">Горизонтальное движение воздуха из области высокого давления в область низкого.</div>
+    </div>
+    <!-- 36 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">36</span></div>
+      <div class="question">Из области какого давления в какое всегда дует ветер?</div>
+      <div class="answer">Из области высокого давления в область низкого.</div>
+    </div>
+    <!-- 37 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">37</span></div>
+      <div class="question">Как называются ветры, дующие от тропиков к экватору?</div>
+      <div class="answer">Пассаты.</div>
+    </div>
+    <!-- 38 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">38</span></div>
+      <div class="question">Как называются ветры Арктики и Антарктиды?</div>
+      <div class="answer">Полярные восточные ветры.</div>
+    </div>
+    <!-- 39 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">39</span></div>
+      <div class="question">Как называются ветры, дующие летом с океана на сушу, а зимой наоборот?</div>
+      <div class="answer">Муссоны.</div>
+    </div>
+    <!-- 40 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">40</span></div>
+      <div class="question">Как называются ветры морских побережий?</div>
+      <div class="answer">Бризы.</div>
+    </div>
+    <!-- 41 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">41</span></div>
+      <div class="question">Какие климаты относятся к основным климатическим поясам?</div>
+      <div class="answer">Экваториальный, тропический, умеренный, арктический (антарктический).</div>
+    </div>
+    <!-- 42 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">42</span></div>
+      <div class="question">Какие климаты относятся к переходным климатическим поясам?</div>
+      <div class="answer">Субэкваториальный, субтропический, субарктический (субантарктический).</div>
+    </div>
+    <!-- 43 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">43</span></div>
+      <div class="question">Что сделали Крузенштерн и Лисянский?</div>
+      <div class="answer">Совершили первое русское кругосветное плавание (1803–1806 гг.).</div>
+    </div>
+    <!-- 44 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">44</span></div>
+      <div class="question">Что возникает в местах расхождения литосферных плит на дне океана?</div>
+      <div class="answer">Срединно-океанические хребты.</div>
+    </div>
+    <!-- 45 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">45</span></div>
+      <div class="question">Что возникает в местах погружения одной плиты под другую?</div>
+      <div class="answer">Глубоководные желоба.</div>
+    </div>
+    <!-- 46 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">46</span></div>
+      <div class="question">Что занимает главное пространство океана?</div>
+      <div class="answer">Ложе океана (абиссальные равнины).</div>
+    </div>
+    <!-- 47 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">47</span></div>
+      <div class="question">Какие течения называются холодными?</div>
+      <div class="answer">Течения, температура воды которых ниже температуры окружающей воды.</div>
+    </div>
+    <!-- 48 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">48</span></div>
+      <div class="question">Какие течения называются тёплыми?</div>
+      <div class="answer">Течения, температура воды которых выше температуры окружающей воды.</div>
+    </div>
+    <!-- 49 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">49</span></div>
+      <div class="question">Какова главная причина образования течений?</div>
+      <div class="answer">Постоянные ветры (пассаты и западные ветры).</div>
+    </div>
+    <!-- 50 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">50</span></div>
+      <div class="question">В чём измеряется солёность?</div>
+      <div class="answer">В промилле (‰).</div>
+    </div>
+    <!-- 51 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">51</span></div>
+      <div class="question">Назовите самое солёное море мира.</div>
+      <div class="answer">Красное море (около 42‰).</div>
+    </div>
+    <!-- 52 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">52</span></div>
+      <div class="question">Что такое атолл?</div>
+      <div class="answer">Коралловый остров кольцеобразной формы с лагуной внутри.</div>
+    </div>
+    <!-- 53 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">53</span></div>
+      <div class="question">Напишите два названия разрушительных тропических циклонов.</div>
+      <div class="answer">Ураган и тайфун.</div>
+    </div>
+    <!-- 54 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">54</span></div>
+      <div class="question">Напишите название и глубину самой глубокой впадины мира.</div>
+      <div class="answer">Марианская впадина — около 11 022 м.</div>
+    </div>
+    <!-- 55 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">55</span></div>
+      <div class="question">Что такое Муррей и Дарлинг?</div>
+      <div class="answer">Главные реки Австралии (Муррей — самая длинная, Дарлинг — её приток).</div>
+    </div>
+    <!-- 56 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">56</span></div>
+      <div class="question">Назовите самую полноводную реку мира.</div>
+      <div class="answer">Амазонка.</div>
+    </div>
+    <!-- 57 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">57</span></div>
+      <div class="question">Назовите самую длинную реку Африки и вторую в мире.</div>
+      <div class="answer">Нил.</div>
+    </div>
+    <!-- 58 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">58</span></div>
+      <div class="question">Какую реку дважды пересекает экватор?</div>
+      <div class="answer">Конго.</div>
+    </div>
+    <!-- 59 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">59</span></div>
+      <div class="question">Что сделали Беллинсгаузен и Лазарев?</div>
+      <div class="answer">Открыли Антарктиду в 1820 году.</div>
+    </div>
+    <!-- 60 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">60</span></div>
+      <div class="question">Как называется станция в Антарктиде, под которой обнаружено озеро?</div>
+      <div class="answer">Станция «Восток» (подлёдное озеро Восток).</div>
+    </div>
+    <!-- 61 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">61</span></div>
+      <div class="question">Самый высокий водопад в мире.</div>
+      <div class="answer">Анхель (Венесуэла, 979 м).</div>
+    </div>
+    <!-- 62 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">62</span></div>
+      <div class="question">Что такое крик?</div>
+      <div class="answer">Пересыхающая река в Австралии.</div>
+    </div>
+    <!-- 63 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">63</span></div>
+      <div class="question">В какой части Африки располагается Великий Африканский разлом?</div>
+      <div class="answer">В Восточной Африке.</div>
+    </div>
+    <!-- 64 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">64</span></div>
+      <div class="question">Какие по свойству воды большинство озёр Австралии?</div>
+      <div class="answer">Солёные.</div>
+    </div>
+    <!-- 65 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">65</span></div>
+      <div class="question">Кто открыл Австралию?</div>
+      <div class="answer">Виллем Янсзон (1606 г.), позднее — Джеймс Кук (1770 г.).</div>
+    </div>
+    <!-- 66 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">66</span></div>
+      <div class="question">Самая большая пустыня мира.</div>
+      <div class="answer">Сахара.</div>
+    </div>
+    <!-- 67 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">67</span></div>
+      <div class="question">Кто первым покорил Южный полюс?</div>
+      <div class="answer">Руаль Амундсен (1911 г.).</div>
+    </div>
+    <!-- 68 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">68</span></div>
+      <div class="question">Что такое Маражо?</div>
+      <div class="answer">Крупный речной остров в дельте Амазонки (Бразилия).</div>
+    </div>
+    <!-- 69 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">69</span></div>
+      <div class="question">Самая длинная горная цепь мира.</div>
+      <div class="answer">Анды (около 9 000 км).</div>
+    </div>
+    <!-- 70 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">70</span></div>
+      <div class="question">Вытянутые озёра востока Африки образованы вследствие чего?</div>
+      <div class="answer">В результате тектонических разломов (рифтов).</div>
+    </div>
+    <!-- 71 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">71</span></div>
+      <div class="question">На каком континенте располагается вулкан Килиманджаро?</div>
+      <div class="answer">В Африке (Танзания), высота 5 895 м.</div>
+    </div>
+    <!-- 72 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">72</span></div>
+      <div class="question">Что такое Эребус и где он располагается?</div>
+      <div class="answer">Действующий вулкан в Антарктиде (остров Росса).</div>
+    </div>
+    <!-- 73 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">73</span></div>
+      <div class="question">Назовите несколько эндемиков Австралии.</div>
+      <div class="answer">Кенгуру, коала, утконос, ехидна, вомбат, эму.</div>
+    </div>
+    <!-- 74 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">74</span></div>
+      <div class="question">Титикака — это?</div>
+      <div class="answer">Высокогорное озеро на границе Перу и Боливии.</div>
+    </div>
+    <!-- 75 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">75</span></div>
+      <div class="question">Пролив Дрейка — он самый…?</div>
+      <div class="answer">Самый широкий и глубокий пролив в мире.</div>
+    </div>
+    <!-- 76 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">76</span></div>
+      <div class="question">Что такое изрезанность береговой линии?</div>
+      <div class="answer">Степень сложности береговой линии — наличие заливов, полуостровов, бухт.</div>
+    </div>
+    <!-- 77 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">77</span></div>
+      <div class="question">Самый большой остров мира.</div>
+      <div class="answer">Гренландия (около 2 130 800 км²).</div>
+    </div>
+    <!-- 78 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">78</span></div>
+      <div class="question">Из каких двух частей света состоит самый большой материк?</div>
+      <div class="answer">Из Европы и Азии (Евразия).</div>
+    </div>
+    <!-- 79 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">79</span></div>
+      <div class="question">Самое длинное озеро в мире?</div>
+      <div class="answer">Танганьика (Африка, около 676 км).</div>
+    </div>
+    <!-- 80 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">80</span></div>
+      <div class="question">Почему люди на севере Австралии не купаются в море?</div>
+      <div class="answer">Морские крокодилы и ядовитые медузы (морская оса).</div>
+    </div>
+    <!-- 81 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">81</span></div>
+      <div class="question">Что такое Большой Барьерный?</div>
+      <div class="answer">Большой Барьерный риф — крупнейшая в мире коралловая система у берегов Австралии.</div>
+    </div>
+    <!-- 82 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">82</span></div>
+      <div class="question">Кто первым поселился на Гренландии?</div>
+      <div class="answer">Викинг Эрик Рыжий (около 985 г. н. э.).</div>
+    </div>
+    <!-- 83 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">83</span></div>
+      <div class="question">Самая длинная река Евразии.</div>
+      <div class="answer">Янцзы (около 6 300 км).</div>
+    </div>
+    <!-- 84 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">84</span></div>
+      <div class="question">По каким горам в России проходит граница между Европой и Азией?</div>
+      <div class="answer">По Уральским горам.</div>
+    </div>
+    <!-- 85 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">85</span></div>
+      <div class="question">Что такое Альпийско-Гималайский и Тихоокеанский?</div>
+      <div class="answer">Сейсмические пояса Земли — зоны активного горообразования и вулканизма.</div>
+    </div>
+    <!-- 86 -->
+    <div class="card">
+      <div class="num-row"><span class="badge">86</span></div>
+      <div class="question">Самая высокая вершина мира и её высота.</div>
+      <div class="answer">Эверест (Джомолунгма) — 8 849 м.</div>
+    </div>
+
+    <!-- 87 (ранее пропущен) -->
+    <div class="card">
+      <div class="num-row"><span class="badge">87</span></div>
+      <div class="question">Что такое атолл? (второе упоминание)</div>
+      <div class="answer">Коралловый остров кольцеобразной формы с лагуной внутри.</div>
+    </div>
+
+    <!-- 88 (религии и народы) -->
+    <div class="card">
+      <div class="num-row"><span class="badge">88</span></div>
+      <div class="question">Религии и народы (основные).</div>
+      <div class="answer">Мировые религии: христианство, ислам, буддизм. Крупнейшие народы: китайцы (хань), хиндустанцы, арабы, русские, американцы и др.</div>
+    </div>
+
+    <hr>
+    <div class="footer-note">география · 7 класс · годовая контрольная</div>
   </div>
-  <p class="explanation">Жёлтым выделены ячейки, где сумма равна 6. Всего таких ячеек: 5. <br>Сами пары: (1,5), (2,4), (3,3), (4,2), (5,1).</p>
-  <p>Вероятность = 5 / 36 ≈ 0,13888... ≈ <span class="answer">0,14</span></p>
-</div>
-
-<!-- Задача 2 -->
-<div class="task">
-  <h3>2. Вероятность, что сумма равна 3 (округлить до сотых).</h3>
-  <p>Снова используем таблицу сумм, но выделим сумму 3.</p>
-  <div class="grid">
-    <table>
-      <tr><th>+</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr>
-      <tr><th>1</th><td>2</td><td class="highlight2">3</td><td>4</td><td>5</td><td>6</td><td>7</td></tr>
-      <tr><th>2</th><td class="highlight2">3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td></tr>
-      <tr><th>3</th><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>
-      <tr><th>4</th><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr>
-      <tr><th>5</th><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td></tr>
-      <tr><th>6</th><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td></tr>
-    </table>
-  </div>
-  <p class="explanation">Зелёные ячейки – сумма 3. Их две: (1,2) и (2,1).</p>
-  <p>Вероятность = 2 / 36 = 1/18 ≈ 0,05555... ≈ <span class="answer">0,06</span></p>
-</div>
-
-<!-- Задача 3 -->
-<div class="task">
-  <h3>3. Вероятность, что сумма более 10 очков (округлить до сотых).</h3>
-  <p>Более 10 – это 11 или 12. Выделим их в таблице.</p>
-  <div class="grid">
-    <table>
-      <tr><th>+</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr>
-      <tr><th>1</th><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td></tr>
-      <tr><th>2</th><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td></tr>
-      <tr><th>3</th><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>
-      <tr><th>4</th><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr>
-      <tr><th>5</th><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td class="highlight3">11</td></tr>
-      <tr><th>6</th><td>7</td><td>8</td><td>9</td><td>10</td><td class="highlight3">11</td><td class="highlight3">12</td></tr>
-    </table>
-  </div>
-  <p class="explanation">Голубые ячейки с суммой 11 или 12. Их три: (5,6), (6,5), (6,6).</p>
-  <p>Вероятность = 3 / 36 = 1/12 ≈ 0,08333... ≈ <span class="answer">0,08</span></p>
-</div>
-
-<!-- Задача 4 -->
-<div class="task">
-  <h3>4. Люда дважды бросает кубик. Сумма = 9. Вероятность, что при одном из бросков выпало 5.</h3>
-  <p>Сначала выпишем все пары бросков, дающие сумму 9. Их всего 4:</p>
-  <div class="pair-list">
-    <span class="pair">(3,6)</span>
-    <span class="pair fav">(4,5)</span>
-    <span class="pair fav">(5,4)</span>
-    <span class="pair">(6,3)</span>
-  </div>
-  <p>Зелёным выделены пары, где есть хотя бы одна пятёрка. Их две. <br>Всего возможных исходов при условии "сумма = 9" – 4. Благоприятных – 2.</p>
-  <p>Вероятность = 2 / 4 = 0,5 = <span class="answer">0,5</span> (или 0,50, если округлять до сотых, но 0,5 достаточно).</p>
-</div>
-
-<!-- Задача 5 -->
-<div class="task">
-  <h3>5. Саша дважды бросает кубик. Сумма = 6. Вероятность, что при одном из бросков выпало 1.</h3>
-  <p>Все пары с суммой 6:</p>
-  <div class="pair-list">
-    <span class="pair fav">(1,5)</span>
-    <span class="pair">(2,4)</span>
-    <span class="pair">(3,3)</span>
-    <span class="pair">(4,2)</span>
-    <span class="pair fav">(5,1)</span>
-  </div>
-  <p>Всего 5 исходов. Благоприятных (есть единица) – 2: (1,5) и (5,1).</p>
-  <p>Вероятность = 2 / 5 = 0,4 = <span class="answer">0,4</span></p>
-</div>
-
-<!-- Задача 6 -->
-<div class="task">
-  <h3>6. Аня дважды бросает кубик. Сумма = 5. Вероятность, что при первом броске выпало 3.</h3>
-  <p>Пары с суммой 5:</p>
-  <div class="pair-list">
-    <span class="pair">(1,4)</span>
-    <span class="pair">(2,3)</span>
-    <span class="pair fav">(3,2)</span>
-    <span class="pair">(4,1)</span>
-  </div>
-  <p>Всего 4 исхода. Условие «первый бросок = 3» выполняется только для пары (3,2).</p>
-  <p>Вероятность = 1 / 4 = 0,25 = <span class="answer">0,25</span></p>
-</div>
-
-<!-- Задача 7 -->
-<div class="task">
-  <h3>7. Наташа и Вика бросают по одной кости. Сумма = 8. Вероятность, что Наташа выиграла (т.е. у неё больше).</h3>
-  <p>Будем считать, что первое число – очки Наташи, второе – очки Вики. Выпишем все пары, дающие сумму 8:</p>
-  <div class="pair-list">
-    <span class="pair">(2,6)</span>
-    <span class="pair">(3,5)</span>
-    <span class="pair draw">(4,4)</span>
-    <span class="pair win">(5,3)</span>
-    <span class="pair win">(6,2)</span>
-  </div>
-  <p>Зелёный – Наташа выиграла (первое число > второго), жёлтый – ничья, красного нет (проигрыш). <br>Всего исходов: 5. Выигрыш Наташи: (5,3) и (6,2) — 2 исхода.</p>
-  <p>Вероятность = 2 / 5 = 0,4 = <span class="answer">0,4</span></p>
-</div>
-
-<!-- Задача 8 -->
-<div class="task">
-  <h3>8. СОНЯ, ИДИ НАХУЙ!! Для последующего получение готовых домашних заданий напиши "Бурмалда" мне в Телеграм. -------- Тоня и Нина бросают по одной кости. Сумма = 6. Вероятность, что Тоня проиграла (т.е. у Тони меньше).</h3>
-  <p>Аналогично: первое число – Тоня, второе – Нина. Пары с суммой 6:</p>
-  <div class="pair-list">
-    <span class="pair lose">(1,5)</span>
-    <span class="pair lose">(2,4)</span>
-    <span class="pair draw">(3,3)</span>
-    <span class="pair win">(4,2)</span>
-    <span class="pair win">(5,1)</span>
-  </div>
-  <p>Красный – Тоня проиграла (её число меньше). Это пары (1,5) и (2,4). Зелёный – выигрыш, жёлтый – ничья. <br>Всего исходов: 5. Проигрыш Тони – 2 исхода.</p>
-  <p>Вероятность = 2 / 5 = 0,4 = <span class="answer">0,4</span></p>
-</div>
-
 </body>
 </html>
